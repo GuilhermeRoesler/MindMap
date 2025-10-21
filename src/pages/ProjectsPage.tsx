@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { History, Plus, Trash2 } from 'lucide-react';
-import { getProjects, createProject, deleteProject, Project } from '../utils/projectManager';
+import { getProjects, createProject, deleteProject, type Project } from '../utils/projectManager';
 
 interface ProjectsPageProps {
     onSelectProject: (projectId: string) => void;
