@@ -139,14 +139,15 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 attributionPosition="bottom-left"
                 deleteKeyCode={null}
                 {...flowConfig}
-            />
-            <Controls />
-            <Background
-                variant={BackgroundVariant.Lines}
-                bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
-                lineWidth={1}
-                color={isDarkTheme ? '#2a2a2a' : '#e9ecef'}
-                gap={40} />
+            >
+                <Controls />
+                <Background
+                    variant={BackgroundVariant.Lines}
+                    bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
+                    lineWidth={1}
+                    color={isDarkTheme ? '#242424' : '#e9ecef'}
+                    gap={40} />
+            </ReactFlow>
             <HeaderPanel onBack={onBackToProjects} />
         </>
     );
