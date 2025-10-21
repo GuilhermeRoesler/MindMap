@@ -9,13 +9,15 @@ interface InteractiveNodeContentProps {
         label: string;
         isEditing?: boolean;
     };
+    parentNodeRef: React.RefObject<HTMLDivElement>;
 }
 
-const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data }) => {
+const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data, parentNodeRef }) => {
     const { isEditing, contentRef, startEditing, saveEdit, cancelEdit } = useNodeEditor({
         id,
         initialLabel: data.label,
-        isInitiallyEditing: data.isEditing
+        isInitiallyEditing: data.isEditing,
+        parentNodeRef
     });
 
     const {

@@ -5,9 +5,10 @@ interface UseNodeEditorProps {
     id: string;
     initialLabel: string;
     isInitiallyEditing?: boolean;
+    parentNodeRef?: React.RefObject<HTMLDivElement>;
 }
 
-export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false }: UseNodeEditorProps) => {
+export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, parentNodeRef }: UseNodeEditorProps) => {
     const [isEditing, setIsEditing] = useState(isInitiallyEditing);
     const contentRef = useRef<HTMLParagraphElement>(null);
     const { setNodes } = useReactFlow();
@@ -28,14 +29,16 @@ export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false }: 
             );
         }
         setIsEditing(false);
-    }, [id, setNodes]);
+        parentNodeRef?.current?.focus();
+    }, [id, setNodes, parentNodeRef]);
 
     const cancelEdit = useCallback(() => {
         if (contentRef.current) {
             contentRef.current.textContent = initialLabel;
         }
         setIsEditing(false);
-    }, [initialLabel]);
+        parentNodeRef?.current?.focus();
+    }, [initialLabel, parentNodeRef]);
 
     return {
         isEditing,
