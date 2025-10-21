@@ -1,6 +1,7 @@
 import { useGlobalConfigStore } from '../store/globalConfigStore';
 
-const API_BASE_URL = 'https://mind-map.fwh.is/api/';
+// const API_BASE_URL = 'https://mind-map.fwh.is/api/';
+const API_BASE_URL = 'http://localhost:8000/';
 
 interface RequestOptions extends RequestInit {
     // You can add custom options here if needed
@@ -27,7 +28,7 @@ const apiRequest = async <T>(endpoint: string, options: RequestOptions = {}): Pr
             const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
+
         if (response.status === 204) {
             return null as T;
         }

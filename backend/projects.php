@@ -35,8 +35,18 @@ try {
             $data = json_decode(file_get_contents('php://input'));
             $project_id = uniqid('proj_');
             $name = $data->name;
-            $nodes = json_encode($data->nodes);
-            $edges = json_encode($data->edges);
+            
+            // Always use the standard initial nodes and edges, ignoring client data
+            $nodes = json_encode([
+                [
+                    'id' => 'root',
+                    'type' => 'interactive',
+                    'data' => ['label' => 'Type something'],
+                    'position' => ['x' => 0, 'y' => 0],
+                    'deletable' => false,
+                ]
+            ]);
+            $edges = json_encode([]);
             $updated_at = date('Y-m-d H:i:s');
 
             $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updatedAt) VALUES (?, ?, ?, ?, ?, ?)");
@@ -46,8 +56,8 @@ try {
             echo json_encode([
                 'id' => $project_id,
                 'name' => $name,
-                'nodes' => $data->nodes,
-                'edges' => $data->edges,
+                'nodes' => json_decode($nodes),
+                'edges' => json_decode($edges),
                 'updatedAt' => $updated_at
             ]);
             break;

@@ -1,7 +1,6 @@
 <?php
 // backend/login.php
 require_once 'database.php';
-require_once 'auth_middleware.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -26,7 +25,8 @@ try {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-        $token = generate_jwt($user['id']);
+        // Return the user ID as the token for simplicity
+        $token = $user['id'];
         http_response_code(200);
         echo json_encode(['token' => $token]);
     } else {

@@ -47,6 +47,26 @@ try {
     $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
     $stmt->execute([$name, $email, $hashed_password]);
 
+    $user_id = $pdo->lastInsertId();
+
+    // Create a default project for the new user
+    $initial_nodes = json_encode([
+        [
+            'id' => 'root',
+            'type' => 'interactive',
+            'data' => ['label' => 'Type something'],
+            'position' => ['x' => 0, 'y' => 0],
+            'deletable' => false,
+        ]
+    ]);
+    $initial_edges = json_encode([]);
+    $project_id = uniqid('proj_');
+    $project_name = 'My first Mind Map';
+    $updated_at = date('Y-m-d H:i:s');
+
+    $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updatedAt) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$project_id, $user_id, $project_name, $initial_nodes, $initial_edges, $updated_at]);
+
     http_response_code(201);
     echo json_encode(['message' => 'User registered successfully.']);
 
