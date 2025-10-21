@@ -5,12 +5,26 @@
 // replacing the previous JWT implementation for simplicity.
 
 function get_bearer_token() {
-    $headers = getallheaders();
-    if (isset($headers['Authorization'])) {
-        if (preg_match('/Bearer\s(\S+)/', $headers['Authorization'], $matches)) {
+    $authorizationHeader = null;
+    // Check for the header in different server variables
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $authorizationHeader = trim($_SERVER['HTTP_AUTHORIZATION']);
+    } else if (function_exists('getallheaders')) {
+        $headers = getallheaders();
+        // Header names are case-insensitive.
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (isset($headers['authorization'])) {
+            $authorizationHeader = trim($headers['authorization']);
+        }
+    }
+
+    if (!empty($authorizationHeader)) {
+        // The preg_match is case-insensitive (the 'i' flag)
+        if (preg_match('/Bearer\s(\S+)/i', $authorizationHeader, $matches)) {
             return $matches[1];
         }
     }
+
     return null;
 }
 

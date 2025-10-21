@@ -1,0 +1,4 @@
+# This file helps pass the Authorization header to PHP, which is often stripped by servers like Apache.
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
