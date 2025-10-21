@@ -205,9 +205,9 @@ input[type="range"] {
   border-radius: 9999px;
   margin: auto;
 
-  &::before {
+  /* &::before {
     translate: 0 -1px;
-  }
+  } */
 }
 
 .interactive-node .node-content {

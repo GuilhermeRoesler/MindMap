@@ -117,6 +117,7 @@ function FlowContent() {
                 // onInit={setReactFlowInstance}
                 fitView
                 attributionPosition="bottom-left"
+                deleteKeyCode={null}
                 {...flowConfig}
             />
             <Controls />

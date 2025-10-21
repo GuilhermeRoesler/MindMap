@@ -96,7 +96,8 @@ const useNodeHandler = () => {
         const edges = getEdges();
 
         // Coleta todos os ids a serem removidos (node + descendentes)
-        const idsToRemove = collectDescendantIds(id, nodes);
+        const idsToRemoveWithRoot = collectDescendantIds(id, nodes);
+        const idsToRemove = idsToRemoveWithRoot.filter(id => id !== 'root');
 
         // Remove nodes
         setNodes(nodes.filter(node => !idsToRemove.includes(node.id)));
