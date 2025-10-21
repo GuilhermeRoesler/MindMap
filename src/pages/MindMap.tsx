@@ -14,7 +14,6 @@ import {
     type NodeChange,
     type EdgeChange,
     SelectionMode,
-    useReactFlow
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -42,7 +41,6 @@ interface FlowContentProps {
 function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [nodes, setNodes] = useState<Node[] | null>(null);
     const [edges, setEdges] = useState<Edge[] | null>(null);
-    const { setNodes: setFlowNodes, setEdges: setFlowEdges } = useReactFlow();
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
     const isSavingRef = useRef(false);
@@ -96,11 +94,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         if (project) {
             setNodes(project.nodes);
             setEdges(project.edges);
-            // Also set them in the react-flow instance
-            setFlowNodes(project.nodes);
-            setFlowEdges(project.edges);
         }
-    }, [projectId, setFlowNodes, setFlowEdges]);
+    }, [projectId]);
 
     // Save data when nodes or edges change
     useEffect(() => {
@@ -146,8 +141,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             <Controls />
             <Background
                 variant={BackgroundVariant.Lines}
-                bgColor='#f2f2f2'
-                lineWidth={1} color='#e6e6e6'
+                bgColor='#f8f9fa'
+                lineWidth={1} color='#e9ecef'
                 gap={40} />
             <HeaderPanel onBack={onBackToProjects} />
         </>
