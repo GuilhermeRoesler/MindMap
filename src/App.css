@@ -36,7 +36,7 @@ button:active {
 }
 
 .react-flow__edge-path {
-    stroke-width: 2.5;
+  stroke-width: 2.5;
 }
 
 .react-flow__controls {
@@ -66,20 +66,20 @@ button:active {
   color: #333;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   min-width: 150px;
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .interactive-node:hover {
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .react-flow__node[data-id="root"] .interactive-node {
-    border: 2px solid #6F34DC;
-    padding: 14px 22px;
-    font-weight: 600;
+  border: 2px solid #6F34DC;
+  padding: 14px 22px;
+  font-weight: 600;
 }
 
 .add-button {
@@ -91,7 +91,7 @@ button:active {
   border-radius: 50%;
   border: 1px solid #ddd;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   color: #555;
   cursor: pointer;
   display: none;
@@ -102,18 +102,18 @@ button:active {
 }
 
 .add-button-right {
-    right: -15px;
+  right: -15px;
 }
 
 .add-button-left {
-    left: -15px;
+  left: -15px;
 }
 
 .add-button:hover {
-    transform: translateY(-50%) scale(1.15);
-    background-color: #6F34DC;
-    color: white;
-    border-color: #6F34DC;
+  transform: translateY(-50%) scale(1.15);
+  background-color: #6F34DC;
+  color: white;
+  border-color: #6F34DC;
 }
 
 .interactive-node:hover .add-button,
@@ -208,6 +208,7 @@ button:active {
   font-size: 1.5rem;
   padding: 0;
 }
+
 .toolbar .more-item span:hover {
   background-color: transparent;
 }
