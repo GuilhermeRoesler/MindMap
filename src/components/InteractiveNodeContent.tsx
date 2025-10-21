@@ -37,8 +37,14 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
     // Auto-focus e seleção quando entra em modo de edição
     useEffect(() => {
         if (isEditing && contentRef.current) {
-            contentRef.current.focus();
-            selectAllText(contentRef.current);
+            // Adiciona um pequeno atraso para garantir que o foco seja definido após
+            // qualquer outra renderização ou mudança de foco da biblioteca.
+            setTimeout(() => {
+                if (contentRef.current) {
+                    contentRef.current.focus();
+                    selectAllText(contentRef.current);
+                }
+            }, 50);
         }
     }, [isEditing, selectAllText]);
 
