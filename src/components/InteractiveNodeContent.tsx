@@ -68,9 +68,11 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
+            e.stopPropagation();
             saveEdit();
         } else if (e.key === 'Escape') {
             e.preventDefault();
+            e.stopPropagation();
             cancelEdit();
         }
     }, [saveEdit, cancelEdit]);
