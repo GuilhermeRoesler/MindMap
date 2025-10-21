@@ -4,10 +4,11 @@ import { useReactFlow } from '@xyflow/react';
 interface UseNodeEditorProps {
     id: string;
     initialLabel: string;
+    isInitiallyEditing?: boolean;
 }
 
-export const useNodeEditor = ({ id, initialLabel }: UseNodeEditorProps) => {
-    const [isEditing, setIsEditing] = useState(false);
+export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false }: UseNodeEditorProps) => {
+    const [isEditing, setIsEditing] = useState(isInitiallyEditing);
     const contentRef = useRef<HTMLParagraphElement>(null);
     const { setNodes } = useReactFlow();
 
@@ -21,7 +22,7 @@ export const useNodeEditor = ({ id, initialLabel }: UseNodeEditorProps) => {
             setNodes((nodes) =>
                 nodes.map((node) =>
                     node.id === id
-                        ? { ...node, data: { ...node.data, label: newValue.trim() } }
+                        ? { ...node, data: { ...node.data, label: newValue.trim(), isEditing: false } }
                         : node
                 )
             );

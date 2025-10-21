@@ -25,6 +25,7 @@ const useNodeHandler = () => {
             data: {
                 label: `Type something`,
                 parentId: id,
+                isEditing: true,
             },
             position: newPosition,
             type: 'interactive',

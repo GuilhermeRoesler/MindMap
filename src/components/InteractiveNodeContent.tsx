@@ -5,13 +5,17 @@ import { useNodeEditor } from '../hooks/useNodeEditor';
 
 interface InteractiveNodeContentProps {
     id: string;
-    data: { label: string };
+    data: {
+        label: string;
+        isEditing?: boolean;
+    };
 }
 
 const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data }) => {
     const { isEditing, contentRef, startEditing, saveEdit, cancelEdit } = useNodeEditor({
         id,
-        initialLabel: data.label
+        initialLabel: data.label,
+        isInitiallyEditing: data.isEditing
     });
 
     const {

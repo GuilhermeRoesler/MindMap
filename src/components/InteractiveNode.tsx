@@ -8,6 +8,7 @@ import useNodeHandler from '../hooks/useNodeHandler';
 interface InteractiveNodeData {
     label: string;
     side: 'right' | 'left';
+    isEditing?: boolean;
 }
 
 function InteractiveNode({ id, data }: { id: string, data: InteractiveNodeData }) {
