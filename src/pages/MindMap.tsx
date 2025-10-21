@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import {
     Background,
     BackgroundVariant,
@@ -12,17 +12,17 @@ import {
     type Node,
     type NodeChange,
     type EdgeChange,
-    SelectionMode
+    SelectionMode,
+    useReactFlow
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import { initialNodes } from '../data/nodes';
-import { initialEdges } from '../data/edges';
 import { useConnectionColors } from '../hooks/useConnectionColors';
-
 import InteractiveNode from '../components/InteractiveNode';
 import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
+import { getProject, saveProject } from '../utils/projectManager';
+import LoadingSpinner from '../icons/LoadingSpinner';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -33,19 +33,35 @@ const flowConfig = {
     multiSelectionKeyCode: 'Shift',
 };
 
-function FlowContent({ onLogout }: { onLogout: () => void }) {
-    const [nodes, setNodes] = useState<Node[]>(initialNodes);
-    const [edges, setEdges] = useState(initialEdges);
+interface FlowContentProps {
+    projectId: string;
+    onBackToProjects: () => void;
+}
+
+function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
+    const [nodes, setNodes] = useState<Node[] | null>(null);
+    const [edges, setEdges] = useState<EdgeChange[] | null>(null);
+    const { setNodes: setFlowNodes, setEdges: setFlowEdges } = useReactFlow();
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
+    const isSavingRef = useRef(false);
+
+    const saveData = useCallback(() => {
+        if (isSavingRef.current || nodes === null || edges === null) return;
+
+        const project = getProject(projectId);
+        if (project) {
+            isSavingRef.current = true;
+            saveProject({ ...project, nodes, edges });
+            setTimeout(() => {
+                isSavingRef.current = false;
+            }, 300); // Debounce saving
+        }
+    }, [projectId, nodes, edges]);
 
     const onNodesChange = useCallback(
         (changes: NodeChange[]) => {
-            setNodes((nds) => {
-                const updatedNodes = applyNodeChanges(changes, nds);
-                localStorage.setItem('nodes', JSON.stringify(updatedNodes));
-                return updatedNodes;
-            })
+            setNodes((nds) => applyNodeChanges(changes, nds!));
         },
         []
     );
@@ -61,43 +77,48 @@ function FlowContent({ onLogout }: { onLogout: () => void }) {
 
     const onEdgesChange = useCallback(
         (changes: EdgeChange[]) => {
-            setEdges((eds) => {
-                const updatedEdges = applyEdgeChanges(changes, eds)
-                localStorage.setItem('edges', JSON.stringify(updatedEdges));
-                return updatedEdges;
-            })
+            setEdges((eds) => applyEdgeChanges(changes, eds!));
         },
         []
     );
 
     const onConnect = useCallback(
         (connection: Connection) => {
-            setEdges((eds) => {
-                const updatedEdges = addEdge(connection, eds);
-                localStorage.setItem('edges', JSON.stringify(updatedEdges));
-                return updatedEdges;
-            })
+            setEdges((eds) => addEdge(connection, eds!));
         },
         []
     );
 
+    // Load project data on mount
     useEffect(() => {
-        const storedNodes = localStorage.getItem('nodes');
-        const storedEdges = localStorage.getItem('edges');
+        const project = getProject(projectId);
+        if (project) {
+            setNodes(project.nodes);
+            setEdges(project.edges);
+            // Also set them in the react-flow instance
+            setFlowNodes(project.nodes);
+            setFlowEdges(project.edges);
+        }
+    }, [projectId, setFlowNodes, setFlowEdges]);
 
-        if (storedNodes) {
-            setNodes(JSON.parse(storedNodes));
-        }
-        if (storedEdges) {
-            setEdges(JSON.parse(storedEdges));
-        }
-    }, []);
+    // Save data when nodes or edges change
+    useEffect(() => {
+        saveData();
+    }, [nodes, edges, saveData]);
 
     useEffect(() => {
-        if (edges.length > 0) {
+        if (edges && edges.length > 0) {
             updateConnectionColors();
         }
-    }, [edges.length, updateConnectionColors]);
+    }, [edges, updateConnectionColors]);
+
+    if (nodes === null || edges === null) {
+        return (
+            <div className="w-full h-full flex justify-center items-center bg-gray-50">
+                <LoadingSpinner size="h-12 w-12" />
+            </div>
+        );
+    }
 
     return (
         <>
@@ -120,15 +141,20 @@ function FlowContent({ onLogout }: { onLogout: () => void }) {
                 bgColor='#f2f2f2'
                 lineWidth={1} color='#e6e6e6'
                 gap={40} />
-            <HeaderPanel onLogout={onLogout} />
+            <HeaderPanel onBack={onBackToProjects} />
         </>
     );
 }
 
-function MindMap({ onLogout }: { onLogout: () => void }) {
+interface MindMapProps {
+    projectId: string;
+    onBackToProjects: () => void;
+}
+
+function MindMap({ projectId, onBackToProjects }: MindMapProps) {
     return (
         <ReactFlowProvider>
-            <FlowContent onLogout={onLogout} />
+            <FlowContent projectId={projectId} onBackToProjects={onBackToProjects} />
         </ReactFlowProvider>
     )
 }

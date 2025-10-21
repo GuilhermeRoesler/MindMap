@@ -2,23 +2,25 @@ import { useState, useEffect } from "react";
 import MindMap from "./pages/MindMap";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProjectsPage from "./pages/ProjectsPage";
 import LoadingSpinner from "./icons/LoadingSpinner";
 import { useGlobalConfigStore } from "./store/globalConfigStore";
 
 const App = () => {
-    const [page, setPage] = useState('loading'); // 'loading', 'login', 'register', 'mindmap'
+    const [page, setPage] = useState('loading'); // 'loading', 'login', 'register', 'projects', 'mindmap'
+    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const { authToken, setAuthToken } = useGlobalConfigStore();
 
     useEffect(() => {
         if (authToken) {
-            setPage('mindmap');
+            setPage('projects');
         } else {
             setPage('login');
         }
     }, [authToken]);
 
     const handleLoginSuccess = () => {
-        setPage('mindmap');
+        setPage('projects');
     };
 
     const handleRegisterSuccess = () => {
@@ -29,6 +31,16 @@ const App = () => {
         setAuthToken(null);
         setPage('login');
     }
+
+    const handleSelectProject = (projectId: string) => {
+        setSelectedProjectId(projectId);
+        setPage('mindmap');
+    };
+
+    const handleBackToProjects = () => {
+        setSelectedProjectId(null);
+        setPage('projects');
+    };
 
     if (page === 'loading') {
         return (
@@ -41,8 +53,14 @@ const App = () => {
     switch (page) {
         case 'register':
             return <RegisterPage onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setPage('login')} />;
+        case 'projects':
+            return <ProjectsPage onSelectProject={handleSelectProject} onLogout={handleLogout} />;
         case 'mindmap':
-            return <MindMap onLogout={handleLogout} />;
+            if (!selectedProjectId) {
+                // Fallback in case there's no project ID
+                return <ProjectsPage onSelectProject={handleSelectProject} onLogout={handleLogout} />;
+            }
+            return <MindMap projectId={selectedProjectId} onBackToProjects={handleBackToProjects} />;
         case 'login':
         default:
             return <LoginPage onLoginSuccess={handleLoginSuccess} onNavigateToRegister={() => setPage('register')} />;

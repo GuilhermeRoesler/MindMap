@@ -3,14 +3,14 @@ import { Panel } from '@xyflow/react';
 import { useHeaderActions } from '../hooks/useHeaderActions';
 import SettingsModal from './SettingsModal';
 
-const HeaderPanel = ({ onLogout }: { onLogout: () => void }) => {
-    const { handleHome, handleLayoutNodes, handleExport, handleImport, handleColorize } = useHeaderActions();
+const HeaderPanel = ({ onBack }: { onBack: () => void }) => {
+    const { handleLayoutNodes, handleExport, handleImport, handleColorize } = useHeaderActions();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     return (
         <Panel position="top-left" className='HeaderPanel toolbar'>
-            <span onClick={handleHome} title='Home'>MindMap</span>
+            <span className="material-symbols-outlined" title="Back to Projects" onClick={onBack}>arrow_back</span>
             <span className="material-symbols-outlined" title="Download" onClick={handleExport}>download</span>
             <span className="material-symbols-outlined" title="Upload" onClick={handleImport}>upload</span>
             <span className="material-symbols-outlined" title="More" onClick={() => setIsSettingsOpen(!isSettingsOpen)}>more_vert
@@ -34,7 +34,6 @@ const HeaderPanel = ({ onLogout }: { onLogout: () => void }) => {
                     </div>
                 )}
             </span>
-            <span className="material-symbols-outlined" title="Logout" onClick={onLogout}>logout</span>
             {isDialogOpen && <SettingsModal isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />}
         </Panel>
     )
