@@ -3,7 +3,7 @@ import { Panel } from '@xyflow/react';
 import { useHeaderActions } from '../hooks/useHeaderActions';
 import SettingsModal from './SettingsModal';
 
-const HeaderPanel = () => {
+const HeaderPanel = ({ onLogout }: { onLogout: () => void }) => {
     const { handleHome, handleLayoutNodes, handleExport, handleImport, handleColorize } = useHeaderActions();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -34,6 +34,7 @@ const HeaderPanel = () => {
                     </div>
                 )}
             </span>
+            <span className="material-symbols-outlined" title="Logout" onClick={onLogout}>logout</span>
             {isDialogOpen && <SettingsModal isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />}
         </Panel>
     )

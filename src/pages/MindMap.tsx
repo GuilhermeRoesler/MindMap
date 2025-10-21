@@ -20,8 +20,8 @@ import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
 import { useConnectionColors } from '../hooks/useConnectionColors';
 
-import InteractiveNode from './InteractiveNode';
-import HeaderPanel from './HeaderPanel';
+import InteractiveNode from '../components/InteractiveNode';
+import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 
 const nodeTypes = {
@@ -33,8 +33,7 @@ const flowConfig = {
     multiSelectionKeyCode: 'Shift',
 };
 
-
-function FlowContent() {
+function FlowContent({ onLogout }: { onLogout: () => void }) {
     const [nodes, setNodes] = useState<Node[]>(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
     const { updateConnectionColors } = useConnectionColors();
@@ -53,8 +52,6 @@ function FlowContent() {
 
     const onNodesDelete = useCallback(
         (_: Node[]) => {
-            // onNodesChange handles the actual deletion and saving to localStorage.
-            // This callback is just to trigger a re-layout.
             setTimeout(() => {
                 layoutNodes();
             }, 100);
@@ -84,7 +81,6 @@ function FlowContent() {
         []
     );
 
-    // Load data from localStorage
     useEffect(() => {
         const storedNodes = localStorage.getItem('nodes');
         const storedEdges = localStorage.getItem('edges');
@@ -97,7 +93,6 @@ function FlowContent() {
         }
     }, []);
 
-    // Update connection colors when edges change
     useEffect(() => {
         if (edges.length > 0) {
             updateConnectionColors();
@@ -125,17 +120,17 @@ function FlowContent() {
                 bgColor='#f2f2f2'
                 lineWidth={1} color='#e6e6e6'
                 gap={40} />
-            <HeaderPanel />
+            <HeaderPanel onLogout={onLogout} />
         </>
     );
 }
 
-function Flow() {
+function MindMap({ onLogout }: { onLogout: () => void }) {
     return (
         <ReactFlowProvider>
-            <FlowContent />
+            <FlowContent onLogout={onLogout} />
         </ReactFlowProvider>
     )
 }
 
-export default Flow;
+export default MindMap;

@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@xyflow/react": "^12.8.2",
+    "autoprefixer": "^10.4.21",
     "dagre": "^0.8.5",
+    "lucide-react": "^0.546.0",
+    "postcss": "^8.5.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.15",
     "ulid": "^3.0.1",
     "zustand": "^5.0.6"
   },
