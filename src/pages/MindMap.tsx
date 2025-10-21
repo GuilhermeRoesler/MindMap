@@ -145,7 +145,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                     variant={BackgroundVariant.Lines}
                     bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
                     lineWidth={1}
-                    color={isDarkTheme ? '#242424' : '#e9ecef'}
+                    color={isDarkTheme ? '#141414' : '#e9ecef'}
                     gap={40} />
             </ReactFlow>
             <HeaderPanel onBack={onBackToProjects} />
