@@ -26,9 +26,11 @@ button:active {
   background: transparent;
 }
 
-.react-flow__node:focus {
-  outline: 2px solid #6F34DC !important;
+.react-flow__node.selected .interactive-node,
+.react-flow__node.focused .interactive-node {
+  outline: 2px solid #6F34DC;
   outline-offset: 2px;
+  box-shadow: 0 6px 16px rgba(111, 52, 220, 0.2);
 }
 
 .react-flow__handle {
@@ -80,12 +82,6 @@ button:active {
     border: 2px solid #6F34DC;
     padding: 14px 22px;
     font-weight: 600;
-}
-
-.react-flow__node.selected[data-id="root"],
-.react-flow__node[data-id="root"]:focus {
-    outline: none !important;
-    box-shadow: none !important;
 }
 
 .add-button {
