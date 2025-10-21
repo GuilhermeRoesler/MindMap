@@ -62,10 +62,6 @@ const useNodeHandler = () => {
 
         setTimeout(() => {
             layoutNodes();
-
-            const newNodeElement = document.getElementById(newNodeId);
-            if (newNodeElement)
-                newNodeElement.focus();
         }, 100);
 
     };

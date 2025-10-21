@@ -350,3 +350,7 @@ button:active {
     border-color: #8a5cf6;
   }
 }
+
+.react-flow__panel[data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"] {
+  display: none;
+}
