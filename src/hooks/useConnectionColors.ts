@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useReactFlow } from "@xyflow/react";
+import { useReactFlow, type Edge } from "@xyflow/react";
 import { getConnectionColor } from "../utils/colorUtils";
 
 export const useConnectionColors = () => {
@@ -8,7 +8,7 @@ export const useConnectionColors = () => {
     const updateConnectionColors = useCallback(() => {
         const edges = getEdges();
 
-        // Agrupa edges por pai E por lado
+        // Group edges by parent AND by side
         const edgesByParentAndSide = edges.reduce((acc, edge) => {
             const key = `${edge.source}-${edge.targetHandle}`;
             if (!acc[key]) {
@@ -16,9 +16,9 @@ export const useConnectionColors = () => {
             }
             acc[key].push(edge);
             return acc;
-        }, {} as Record<string, any[]>);
+        }, {} as Record<string, Edge[]>);
 
-        // Atualiza as cores baseado na ordem por lado
+        // Update colors based on order per side
         const updatedEdges = edges.map(edge => {
             const key = `${edge.source}-${edge.targetHandle}`;
             const sideEdges = edgesByParentAndSide[key] || [];
@@ -42,7 +42,7 @@ export const useConnectionColors = () => {
 
         setEdges(updatedEdges);
 
-        // Atualiza localStorage
+        // Update localStorage
         localStorage.setItem('edges', JSON.stringify(updatedEdges));
     }, [getEdges, setEdges]);
 

@@ -2,14 +2,11 @@ import { useState } from 'react';
 import { Panel } from '@xyflow/react';
 import { useHeaderActions } from '../hooks/useHeaderActions';
 import SettingsModal from './SettingsModal';
-// import HeaderMenu from './HeaderMenu';
 
 const HeaderPanel = () => {
-    const { handleHome, handleLayoutNodes, handleExport, handleImport } = useHeaderActions();
+    const { handleHome, handleLayoutNodes, handleExport, handleImport, handleColorize } = useHeaderActions();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-    const applyColorize = () => { }
 
     return (
         <Panel position="top-left" className='HeaderPanel toolbar'>
@@ -23,11 +20,14 @@ const HeaderPanel = () => {
                             <span className="material-symbols-outlined">stacks</span>
                             <p>Adjust layout</p>
                         </div>
-                        <div className="more-item" title="Colorize" onClick={applyColorize}>
+                        <div className="more-item" title="Colorize" onClick={handleColorize}>
                             <span className="material-symbols-outlined">palette</span>
                             <p>Colorize</p>
                         </div>
-                        <div className="more-item" title="Settings" onClick={() => setIsDialogOpen(true)}>
+                        <div className="more-item" title="Settings" onClick={() => {
+                            setIsDialogOpen(true);
+                            setIsSettingsOpen(false);
+                        }}>
                             <span className="material-symbols-outlined">settings</span>
                             <p>Settings</p>
                         </div>

@@ -3,7 +3,7 @@ import Flow from './components/Flow'
 
 function App() {
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className="app-container">
       <Flow />
     </div>
   )

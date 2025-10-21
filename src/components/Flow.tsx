@@ -10,8 +10,9 @@ import {
     addEdge,
     type Connection,
     type Node,
+    type NodeChange,
+    type EdgeChange,
     SelectionMode
-    // type ReactFlowInstance
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -34,14 +35,13 @@ const flowConfig = {
 
 
 function FlowContent() {
-    const [nodes, setNodes] = useState(initialNodes);
+    const [nodes, setNodes] = useState<Node[]>(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
-    // const [_, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
 
     const onNodesChange = useCallback(
-        (changes: any) => {
+        (changes: NodeChange[]) => {
             setNodes((nds) => {
                 const updatedNodes = applyNodeChanges(changes, nds);
                 localStorage.setItem('nodes', JSON.stringify(updatedNodes));
@@ -52,18 +52,18 @@ function FlowContent() {
     );
 
     const onNodesDelete = useCallback(
-        (nodes: Node[]) => {
-            setNodes((nds) => nds.filter((node) => !nodes.includes(node)));
-            localStorage.setItem('nodes', JSON.stringify(nodes));
+        (_: Node[]) => {
+            // onNodesChange handles the actual deletion and saving to localStorage.
+            // This callback is just to trigger a re-layout.
             setTimeout(() => {
                 layoutNodes();
             }, 100);
         },
-        [layoutNodes, nodes]
+        [layoutNodes]
     );
 
     const onEdgesChange = useCallback(
-        (changes: any) => {
+        (changes: EdgeChange[]) => {
             setEdges((eds) => {
                 const updatedEdges = applyEdgeChanges(changes, eds)
                 localStorage.setItem('edges', JSON.stringify(updatedEdges));
@@ -84,7 +84,7 @@ function FlowContent() {
         []
     );
 
-    // Carrega dados do localStorage
+    // Load data from localStorage
     useEffect(() => {
         const storedNodes = localStorage.getItem('nodes');
         const storedEdges = localStorage.getItem('edges');
@@ -97,7 +97,7 @@ function FlowContent() {
         }
     }, []);
 
-    // Atualiza cores das conexões quando edges mudam
+    // Update connection colors when edges change
     useEffect(() => {
         if (edges.length > 0) {
             updateConnectionColors();
@@ -114,7 +114,6 @@ function FlowContent() {
                 onNodesDelete={onNodesDelete}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-                // onInit={setReactFlowInstance}
                 fitView
                 attributionPosition="bottom-left"
                 deleteKeyCode={null}

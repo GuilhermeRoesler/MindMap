@@ -17,7 +17,7 @@ export const exportMindMap = async (nodes: Node[], edges: Edge[]): Promise<void>
             suggestedName: nodes[0].data.label,
             types: [
                 {
-                    description: 'Arquivo JSON',
+                    description: 'JSON File',
                     accept: {
                         'application/json': ['.json'],
                     },
@@ -29,7 +29,7 @@ export const exportMindMap = async (nodes: Node[], edges: Edge[]): Promise<void>
         await writable.write(blob);
         await writable.close();
     } catch (err) {
-        console.error('Operação de exportação cancelada ou erro:', err);
+        console.error('Export operation canceled or failed:', err);
         throw err;
     }
 };
@@ -39,7 +39,7 @@ export const importMindMap = async (): Promise<MindMapData> => {
         const [fileHandle] = await window.showOpenFilePicker({
             types: [
                 {
-                    description: 'Arquivo JSON',
+                    description: 'JSON File',
                     accept: {
                         'application/json': ['.json'],
                     },
@@ -51,14 +51,14 @@ export const importMindMap = async (): Promise<MindMapData> => {
         const contents = await file.text();
         const data = JSON.parse(contents) as MindMapData;
 
-        // Validação básica
+        // Basic validation
         if (!data.nodes || !data.edges) {
-            throw new Error('Formato de arquivo inválido');
+            throw new Error('Invalid file format');
         }
 
         return data;
     } catch (err) {
-        console.error('Operação de importação cancelada ou erro:', err);
+        console.error('Import operation canceled or failed:', err);
         throw err;
     }
 };

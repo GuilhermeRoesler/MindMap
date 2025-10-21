@@ -33,15 +33,6 @@ body {
   color: #333;
 }
 
-/* button {
-  border: none;
-  border-radius: 8px;
-  padding: 0.6em 1.2em;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: .3s;
-} */
-
 button:active {
   transform: scale(.96);
 }
@@ -204,10 +195,6 @@ input[type="range"] {
   height: 12px;
   border-radius: 9999px;
   margin: auto;
-
-  /* &::before {
-    translate: 0 -1px;
-  } */
 }
 
 .interactive-node .node-content {
@@ -313,4 +300,66 @@ input[type="range"] {
 
 .toolbar .more-item span {
   font-size: 1.5rem;
+}
+
+/* App Container */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Error Boundary */
+.error-boundary {
+  padding: 24px;
+}
+
+.error-boundary h2 {
+  color: #333;
+}
+
+.error-boundary pre {
+  color: red;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Settings Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  max-width: 90%;
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-close-button:hover {
+  color: #333;
 }

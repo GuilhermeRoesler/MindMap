@@ -1,6 +1,4 @@
-// src/hooks/useAddNode.ts
-
-import { useReactFlow } from '@xyflow/react';
+import { useReactFlow, type Node } from '@xyflow/react';
 import { useLayoutNodes } from './useLayoutNodes';
 import { ulid } from 'ulid';
 import { getConnectionColor } from '../utils/colorUtils';
@@ -13,7 +11,7 @@ const useNodeHandler = () => {
         const currentNode = getNode(id);
         if (!currentNode) return;
 
-        const offset = 50; // Distância entre os nodes
+        const offset = 50; // Distance between nodes
         const newPosition = {
             x: currentNode.position.x + (direction === 'right'
                 ? offset + (currentNode.measured?.width || 0)
@@ -22,12 +20,11 @@ const useNodeHandler = () => {
         };
 
         const newNodeId = ulid();
-        const newNode = {
+        const newNode: Node = {
             id: newNodeId,
             data: {
                 label: `Type something`,
                 parentId: id,
-                // side: type
             },
             position: newPosition,
             type: 'interactive',
@@ -62,11 +59,9 @@ const useNodeHandler = () => {
         setNodes((nodes) => [...nodes, newNode]);
         setEdges((edges) => [...edges, newEdge]);
 
-        // layout
         setTimeout(() => {
             layoutNodes();
 
-            // focus
             const newNodeElement = document.getElementById(newNodeId);
             if (newNodeElement)
                 newNodeElement.focus();
@@ -79,10 +74,12 @@ const useNodeHandler = () => {
         if (!currentNode) return;
 
         const parentId = currentNode.data.parentId as string;
-        createAdjacentNode(parentId);
+        if (parentId) {
+            createAdjacentNode(parentId);
+        }
     }
 
-    const collectDescendantIds = (id: string, nodes: any[]): string[] => {
+    const collectDescendantIds = (id: string, nodes: Node[]): string[] => {
         const children = nodes.filter(node => node.data.parentId === id);
         let ids = [id];
         children.forEach(child => {
@@ -92,17 +89,14 @@ const useNodeHandler = () => {
     };
 
     const deleteNode = (id: string) => {
+        if (id === 'root') return; // Prevent deleting the root node
+
         const nodes = getNodes();
         const edges = getEdges();
 
-        // Coleta todos os ids a serem removidos (node + descendentes)
-        const idsToRemoveWithRoot = collectDescendantIds(id, nodes);
-        const idsToRemove = idsToRemoveWithRoot.filter(id => id !== 'root');
+        const idsToRemove = collectDescendantIds(id, nodes);
 
-        // Remove nodes
         setNodes(nodes.filter(node => !idsToRemove.includes(node.id)));
-
-        // Remove edges ligados a qualquer um dos nodes removidos
         setEdges(edges.filter(edge => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)));
 
         setTimeout(() => {
