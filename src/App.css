@@ -115,15 +115,22 @@ input[type="range"] {
 /* INTERNAL */
 
 .react-flow__node {
-  border-radius: 40px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: none;
 }
 
 .react-flow__node:focus {
-  outline: #3859ff solid 1px !important;
+  outline: 2px solid #3859ff !important;
+  outline-offset: 2px;
 }
 
 .react-flow__handle {
   opacity: 0;
+}
+
+.react-flow__edge-path {
+    stroke-width: 2;
 }
 
 .react-flow__controls-button {
@@ -140,61 +147,59 @@ input[type="range"] {
 /* INTERACTIVE NODE */
 
 .interactive-node {
-  padding: .6rem 1rem;
-  font-size: .5rem;
+  background: #fff;
+  padding: .8rem 1.2rem;
+  font-size: .9rem;
+  font-weight: 500;
   text-align: center;
-  color: #111;
+  color: #333;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 150px;
 }
 
 .add-button {
   position: absolute;
-  left: -27px;
+  left: -15px;
   top: 50%;
-  translate: 0 -50%;
-  width: 30px;
-  height: 30px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
-  background: none;
-  color: white;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  color: #555;
   cursor: pointer;
   display: none;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  z-index: 10;
+}
 
-  &:hover i {
-    background-color: #4262ff;
-  }
+.add-button:hover {
+    transform: translateY(-50%) scale(1.1);
+    background-color: #6F34DC;
+    color: white;
+}
 
-  &:last-of-type {
+.add-button:last-of-type {
     left: auto;
-    right: -27px;
-  }
+    right: -15px;
 }
 
 .interactive-node:focus {
-  outline: #3859ff solid 1px !important;
+  outline: none !important;
 }
 
 .interactive-node:hover .add-button,
 .interactive-node:focus .add-button {
-  display: block;
-}
-
-.add-button[type="left"] {
-  background-color: red;
-}
-
-.add-button i {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 7px;
-  background-color: #cfcfcfcc;
-  color: white;
-  width: 12px;
-  height: 12px;
-  border-radius: 9999px;
-  margin: auto;
+}
+
+.add-button i {
+  font-size: 12px;
 }
 
 .interactive-node .node-content {
