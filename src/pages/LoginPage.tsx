@@ -2,15 +2,7 @@ import React, { useState } from 'react'
 import { History, Eye, EyeOff } from 'lucide-react';
 import LoadingSpinner from '../icons/LoadingSpinner';
 import { useGlobalConfigStore } from '../store/globalConfigStore';
-
-const mockLogin = async (email?: string, password?: string) => {
-    console.log('Login attempt with:', email, password);
-    return new Promise<{ token: string }>(resolve => {
-        setTimeout(() => {
-            resolve({ token: 'fake-jwt-token' });
-        }, 500);
-    });
-};
+import apiRequest from '../utils/api';
 
 const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: any, onNavigateToRegister: any }) => {
     const [email, setEmail] = useState('');
@@ -25,7 +17,10 @@ const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: a
         setError('');
         setLoading(true);
         try {
-            const data = await mockLogin(email, password);
+            const data = await apiRequest<{ token: string }>('login.php', {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+            });
             if (data.token) {
                 setAuthToken(data.token);
                 onLoginSuccess();

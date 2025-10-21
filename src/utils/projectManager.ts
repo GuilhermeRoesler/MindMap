@@ -1,7 +1,7 @@
 import { type Node, type Edge } from '@xyflow/react';
-import { ulid } from 'ulid';
 import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
+import apiRequest from './api';
 
 export interface Project {
     id: string;
@@ -11,102 +11,68 @@ export interface Project {
     updatedAt: string;
 }
 
-const PROJECTS_KEY = 'mindmap_projects';
-
-// Função para migrar dados antigos do localStorage para o novo formato de projetos
-const migrateOldData = (): void => {
-    const oldNodes = localStorage.getItem('nodes');
-    const oldEdges = localStorage.getItem('edges');
-
-    if (oldNodes) {
-        try {
-            const parsedNodes = JSON.parse(oldNodes);
-            const parsedEdges = oldEdges ? JSON.parse(oldEdges) : [];
-
-            const migratedProject: Project = {
-                id: ulid(),
-                name: 'My First Mind Map',
-                nodes: parsedNodes,
-                edges: parsedEdges,
-                updatedAt: new Date().toISOString(),
-            };
-
-            saveProjects([migratedProject]);
-
-            localStorage.removeItem('nodes');
-            localStorage.removeItem('edges');
-        } catch (error) {
-            console.error("Failed to migrate old data:", error);
-            localStorage.removeItem('nodes');
-            localStorage.removeItem('edges');
-        }
-    }
-};
-
-
-export const getProjects = (): Project[] => {
-    // Verifica se existem dados antigos para migrar
-    if (localStorage.getItem('nodes')) {
-        migrateOldData();
-    }
-
-    const projectsJson = localStorage.getItem(PROJECTS_KEY);
-    if (!projectsJson) {
-        return [];
-    }
+export const getProjects = async (): Promise<Project[]> => {
     try {
-        const projects = JSON.parse(projectsJson) as Project[];
-        // Ordena por data de atualização, do mais recente para o mais antigo
+        const projects = await apiRequest<Project[]>('projects.php');
         return projects.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     } catch (error) {
-        console.error("Failed to parse projects from localStorage:", error);
+        console.error("Failed to fetch projects:", error);
         return [];
     }
 };
 
-export const saveProjects = (projects: Project[]): void => {
-    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
-};
-
-export const createProject = (name: string): Project => {
-    const newProject: Project = {
-        id: ulid(),
+export const createProject = async (name: string): Promise<Project> => {
+    const newProjectData = {
         name,
         nodes: initialNodes,
         edges: initialEdges,
-        updatedAt: new Date().toISOString(),
     };
-
-    const projects = getProjects();
-    saveProjects([newProject, ...projects]);
-    return newProject;
-};
-
-export const getProject = (id: string): Project | null => {
-    const projects = getProjects();
-    return projects.find(p => p.id === id) || null;
-};
-
-export const saveProject = (projectToSave: Project): void => {
-    const projects = getProjects();
-    const projectIndex = projects.findIndex(p => p.id === projectToSave.id);
-
-    const updatedProject = {
-        ...projectToSave,
-        updatedAt: new Date().toISOString(),
-    };
-
-    if (projectIndex > -1) {
-        projects[projectIndex] = updatedProject;
-    } else {
-        projects.push(updatedProject);
+    
+    try {
+        const newProject = await apiRequest<Project>('projects.php', {
+            method: 'POST',
+            body: JSON.stringify(newProjectData),
+        });
+        return newProject;
+    } catch (error) {
+        console.error("Failed to create project:", error);
+        throw error;
     }
-    saveProjects(projects);
 };
 
+export const getProject = async (id: string): Promise<Project | null> => {
+    try {
+        const project = await apiRequest<Project>(`projects.php?id=${id}`);
+        return project;
+    } catch (error) {
+        console.error(`Failed to fetch project ${id}:`, error);
+        return null;
+    }
+};
 
-export const deleteProject = (id: string): void => {
-    const projects = getProjects();
-    const filteredProjects = projects.filter(p => p.id !== id);
-    saveProjects(filteredProjects);
+export const saveProject = async (projectToSave: Project): Promise<void> => {
+    try {
+        await apiRequest(`projects.php?id=${projectToSave.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: projectToSave.name,
+                nodes: projectToSave.nodes,
+                edges: projectToSave.edges,
+            }),
+        });
+    } catch (error) {
+        console.error("Failed to save project:", error);
+        throw error;
+    }
+};
+
+export const deleteProject = async (id: string): Promise<void> => {
+    try {
+        await apiRequest(`projects.php?id=${id}`, {
+            method: 'DELETE',
+        });
+    } catch (error) {
+        console.error("Failed to delete project:", error);
+        throw error;
+    }
 };

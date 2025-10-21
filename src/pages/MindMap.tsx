@@ -47,16 +47,22 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const isSavingRef = useRef(false);
     const isDarkTheme = useThemeDetector();
 
-    const saveData = useCallback(() => {
+    const saveData = useCallback(async () => {
         if (isSavingRef.current || nodes === null || edges === null) return;
 
-        const project = getProject(projectId);
+        const project = await getProject(projectId);
         if (project) {
             isSavingRef.current = true;
-            saveProject({ ...project, nodes, edges });
-            setTimeout(() => {
-                isSavingRef.current = false;
-            }, 300); // Debounce saving
+            try {
+                await saveProject({ ...project, nodes, edges });
+            } catch (error) {
+                console.error("Failed to save project:", error);
+                // Optionally, show a toast notification to the user
+            } finally {
+                setTimeout(() => {
+                    isSavingRef.current = false;
+                }, 500); // Debounce saving
+            }
         }
     }, [projectId, nodes, edges]);
 
@@ -92,16 +98,24 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 
     // Load project data on mount
     useEffect(() => {
-        const project = getProject(projectId);
-        if (project) {
-            setNodes(project.nodes);
-            setEdges(project.edges);
-        }
-    }, [projectId]);
+        const loadProjectData = async () => {
+            const project = await getProject(projectId);
+            if (project) {
+                setNodes(project.nodes);
+                setEdges(project.edges);
+            } else {
+                console.error(`Project with id ${projectId} not found.`);
+                onBackToProjects();
+            }
+        };
+        loadProjectData();
+    }, [projectId, onBackToProjects]);
 
     // Save data when nodes or edges change
     useEffect(() => {
-        saveData();
+        if (nodes !== null && edges !== null) {
+            saveData();
+        }
     }, [nodes, edges, saveData]);
 
     const edgeStructureSignature = useMemo(() => {

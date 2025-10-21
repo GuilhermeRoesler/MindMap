@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MindMap from "./pages/MindMap";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -37,10 +37,10 @@ const App = () => {
         setPage('mindmap');
     };
 
-    const handleBackToProjects = () => {
+    const handleBackToProjects = useCallback(() => {
         setSelectedProjectId(null);
         setPage('projects');
-    };
+    }, []);
 
     if (page === 'loading') {
         return (

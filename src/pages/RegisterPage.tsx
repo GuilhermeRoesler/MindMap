@@ -1,15 +1,7 @@
 import { useState } from "react";
 import LoadingSpinner from "../icons/LoadingSpinner";
 import { History } from "lucide-react";
-
-const mockRegister = async (name?: string, email?: string, password?: string) => {
-    console.log('Register attempt with:', name, email, password);
-    return new Promise<{ success: boolean }>(resolve => {
-        setTimeout(() => {
-            resolve({ success: true });
-        }, 500);
-    });
-};
+import apiRequest from "../utils/api";
 
 const RegisterPage = ({ onRegisterSuccess, onNavigateToLogin }: { onRegisterSuccess: any, onNavigateToLogin: any }) => {
     const [name, setName] = useState('');
@@ -23,7 +15,10 @@ const RegisterPage = ({ onRegisterSuccess, onNavigateToLogin }: { onRegisterSucc
         setError('');
         setLoading(true);
         try {
-            await mockRegister(name, email, password);
+            await apiRequest('register.php', {
+                method: 'POST',
+                body: JSON.stringify({ name, email, password }),
+            });
             onRegisterSuccess();
         } catch (err: any) {
             setError(err.message || 'Could not create account.');
