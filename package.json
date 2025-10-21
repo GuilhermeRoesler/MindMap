@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.15",
     "@xyflow/react": "^12.8.2",
     "autoprefixer": "^10.4.21",
     "dagre": "^0.8.5",
