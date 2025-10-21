@@ -12,7 +12,7 @@ try {
     switch ($method) {
         case 'GET':
             if (isset($_GET['id'])) {
-                $stmt = $pdo->prepare("SELECT id, name, nodes, edges, updatedAt FROM projects WHERE id = ? AND user_id = ?");
+                $stmt = $pdo->prepare("SELECT id, name, nodes, edges, updated_at as updatedAt FROM projects WHERE id = ? AND user_id = ?");
                 $stmt->execute([$_GET['id'], $user_id]);
                 $project = $stmt->fetch();
                 if ($project) {
@@ -24,7 +24,7 @@ try {
                     echo json_encode(['message' => 'Project not found.']);
                 }
             } else {
-                $stmt = $pdo->prepare("SELECT id, name, updatedAt FROM projects WHERE user_id = ?");
+                $stmt = $pdo->prepare("SELECT id, name, updated_at as updatedAt FROM projects WHERE user_id = ?");
                 $stmt->execute([$user_id]);
                 $projects = $stmt->fetchAll();
                 echo json_encode($projects);
@@ -49,7 +49,7 @@ try {
             $edges = json_encode([]);
             $updated_at = date('Y-m-d H:i:s');
 
-            $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updatedAt) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$project_id, $user_id, $name, $nodes, $edges, $updated_at]);
             
             http_response_code(201);
@@ -75,7 +75,7 @@ try {
             $edges = json_encode($data->edges);
             $updated_at = date('Y-m-d H:i:s');
 
-            $stmt = $pdo->prepare("UPDATE projects SET name = ?, nodes = ?, edges = ?, updatedAt = ? WHERE id = ? AND user_id = ?");
+            $stmt = $pdo->prepare("UPDATE projects SET name = ?, nodes = ?, edges = ?, updated_at = ? WHERE id = ? AND user_id = ?");
             $stmt->execute([$name, $nodes, $edges, $updated_at, $project_id, $user_id]);
             
             http_response_code(204);

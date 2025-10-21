@@ -64,7 +64,7 @@ try {
     $project_name = 'My first Mind Map';
     $updated_at = date('Y-m-d H:i:s');
 
-    $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updatedAt) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$project_id, $user_id, $project_name, $initial_nodes, $initial_edges, $updated_at]);
 
     http_response_code(201);
