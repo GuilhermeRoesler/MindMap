@@ -82,8 +82,10 @@ button:active {
     font-weight: 600;
 }
 
+.react-flow__node.selected[data-id="root"],
 .react-flow__node[data-id="root"]:focus {
     outline: none !important;
+    box-shadow: none !important;
 }
 
 .add-button {
@@ -127,7 +129,6 @@ button:active {
 
 .add-button i {
   font-size: 12px;
-  line-height: 1;
 }
 
 .interactive-node .node-content {
