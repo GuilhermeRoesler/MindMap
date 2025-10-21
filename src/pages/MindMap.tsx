@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import {
     Background,
     BackgroundVariant,
@@ -10,6 +10,7 @@ import {
     addEdge,
     type Connection,
     type Node,
+    type Edge,
     type NodeChange,
     type EdgeChange,
     SelectionMode,
@@ -40,7 +41,7 @@ interface FlowContentProps {
 
 function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [nodes, setNodes] = useState<Node[] | null>(null);
-    const [edges, setEdges] = useState<EdgeChange[] | null>(null);
+    const [edges, setEdges] = useState<Edge[] | null>(null);
     const { setNodes: setFlowNodes, setEdges: setFlowEdges } = useReactFlow();
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
@@ -106,11 +107,18 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         saveData();
     }, [nodes, edges, saveData]);
 
+    const edgeStructureSignature = useMemo(() => {
+        if (!edges) return '';
+        // Create a unique signature for the graph structure.
+        // This prevents the color update from running in a loop.
+        return edges.map(e => `${e.source}-${e.target}-${e.sourceHandle}-${e.targetHandle}`).sort().join(',');
+    }, [edges]);
+
     useEffect(() => {
         if (edges && edges.length > 0) {
             updateConnectionColors();
         }
-    }, [edges, updateConnectionColors]);
+    }, [edgeStructureSignature, updateConnectionColors]);
 
     if (nodes === null || edges === null) {
         return (
@@ -153,9 +161,11 @@ interface MindMapProps {
 
 function MindMap({ projectId, onBackToProjects }: MindMapProps) {
     return (
-        <ReactFlowProvider>
-            <FlowContent projectId={projectId} onBackToProjects={onBackToProjects} />
-        </ReactFlowProvider>
+        <div className="app-container">
+            <ReactFlowProvider>
+                <FlowContent projectId={projectId} onBackToProjects={onBackToProjects} />
+            </ReactFlowProvider>
+        </div>
     )
 }
 
