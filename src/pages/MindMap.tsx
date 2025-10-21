@@ -23,6 +23,7 @@ import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, saveProject } from '../utils/projectManager';
 import LoadingSpinner from '../icons/LoadingSpinner';
+import { useThemeDetector } from '../hooks/useThemeDetector';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -44,6 +45,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
     const isSavingRef = useRef(false);
+    const isDarkTheme = useThemeDetector();
 
     const saveData = useCallback(() => {
         if (isSavingRef.current || nodes === null || edges === null) return;
@@ -141,8 +143,9 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             <Controls />
             <Background
                 variant={BackgroundVariant.Lines}
-                bgColor='#f8f9fa'
-                lineWidth={1} color='#e9ecef'
+                bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
+                lineWidth={1}
+                color={isDarkTheme ? '#2a2a2a' : '#e9ecef'}
                 gap={40} />
             <HeaderPanel onBack={onBackToProjects} />
         </>

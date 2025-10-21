@@ -36,7 +36,7 @@ button:active {
 }
 
 .react-flow__edge-path {
-  stroke-width: 2.5;
+    stroke-width: 2.5;
 }
 
 .react-flow__controls {
@@ -66,20 +66,20 @@ button:active {
   color: #333;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   min-width: 150px;
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .interactive-node:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
 }
 
 .react-flow__node[data-id="root"] .interactive-node {
-  border: 2px solid #6F34DC;
-  padding: 14px 22px;
-  font-weight: 600;
+    border: 2px solid #6F34DC;
+    padding: 14px 22px;
+    font-weight: 600;
 }
 
 .add-button {
@@ -91,7 +91,7 @@ button:active {
   border-radius: 50%;
   border: 1px solid #ddd;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
   color: #555;
   cursor: pointer;
   display: none;
@@ -102,18 +102,18 @@ button:active {
 }
 
 .add-button-right {
-  right: -15px;
+    right: -15px;
 }
 
 .add-button-left {
-  left: -15px;
+    left: -15px;
 }
 
 .add-button:hover {
-  transform: translateY(-50%) scale(1.15);
-  background-color: #6F34DC;
-  color: white;
-  border-color: #6F34DC;
+    transform: translateY(-50%) scale(1.15);
+    background-color: #6F34DC;
+    color: white;
+    border-color: #6F34DC;
 }
 
 .interactive-node:hover .add-button,
@@ -208,7 +208,6 @@ button:active {
   font-size: 1.5rem;
   padding: 0;
 }
-
 .toolbar .more-item span:hover {
   background-color: transparent;
 }
@@ -273,4 +272,68 @@ button:active {
 
 .modal-close-button:hover {
   color: #333;
+}
+
+/* DARK MODE STYLES */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a1a;
+  }
+  * {
+    color: #f0f0f0;
+  }
+
+  .react-flow__controls-button {
+    background: #2a2a2a !important;
+    color: #f0f0f0 !important;
+    border-bottom: 1px solid #444;
+  }
+  .react-flow__controls-button:hover {
+    background: #3a3a3a !important;
+  }
+
+  .interactive-node {
+    background: #252526;
+    color: #ccc;
+    border-color: #444;
+  }
+  .react-flow__node[data-id="root"] .interactive-node {
+    border-color: #8a5cf6;
+  }
+  .interactive-node .node-label[contenteditable="true"] {
+    background-color: rgba(138, 92, 246, 0.2);
+  }
+  .interactive-node .node-label[contenteditable="true"]:focus {
+    outline-color: #8a5cf6;
+  }
+
+  .toolbar {
+    background: #252526;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  .toolbar span {
+    color: #ccc;
+  }
+  .toolbar span:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+  }
+  .toolbar .more-container {
+    background-color: #252526;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  .toolbar .more-item:hover {
+    background-color: #3a3a3a;
+  }
+
+  .add-button {
+    background: #3a3a3a;
+    color: #ccc;
+    border-color: #555;
+  }
+  .add-button:hover {
+    background-color: #8a5cf6;
+    color: white;
+    border-color: #8a5cf6;
+  }
 }
