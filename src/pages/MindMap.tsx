@@ -35,7 +35,7 @@ const flowConfig = {
 };
 
 interface FlowContentProps {
-    projectId: string;
+    projectId: number;
     onBackToProjects: () => void;
 }
 
@@ -168,7 +168,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 }
 
 interface MindMapProps {
-    projectId: string;
+    projectId: number;
     onBackToProjects: () => void;
 }
 

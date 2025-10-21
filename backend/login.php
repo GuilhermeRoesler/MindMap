@@ -20,13 +20,13 @@ $email = $data->email;
 $password = $data->password;
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT user_id, password_hash FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
+    if ($user && password_verify($password, $user['password_hash'])) {
         // Return the user ID as the token for simplicity
-        $token = $user['id'];
+        $token = $user['user_id'];
         http_response_code(200);
         echo json_encode(['token' => $token]);
     } else {

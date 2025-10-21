@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import LoadingSpinner from '../icons/LoadingSpinner';
 
 interface ProjectsPageProps {
-    onSelectProject: (projectId: string) => void;
+    onSelectProject: (projectId: number) => void;
     onLogout: () => void;
 }
 
@@ -37,7 +37,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
         }
     };
 
-    const handleDeleteProject = async (id: string) => {
+    const handleDeleteProject = async (id: number) => {
         if (window.confirm('Are you sure you want to delete this mind map?')) {
             try {
                 await deleteProject(id);

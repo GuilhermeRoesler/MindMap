@@ -48,7 +48,7 @@ function authenticate() {
     $user_id = intval($token);
 
     // Check if user exists in the database
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
     if (!$stmt->fetch()) {
         http_response_code(401);

@@ -4,7 +4,7 @@ import { initialEdges } from '../data/edges';
 import apiRequest from './api';
 
 export interface Project {
-    id: string;
+    id: number;
     name: string;
     nodes: Node[];
     edges: Edge[];
@@ -40,7 +40,7 @@ export const createProject = async (name: string): Promise<Project> => {
     }
 };
 
-export const getProject = async (id: string): Promise<Project | null> => {
+export const getProject = async (id: number): Promise<Project | null> => {
     try {
         const project = await apiRequest<Project>(`projects.php?id=${id}`);
         return project;
@@ -66,7 +66,7 @@ export const saveProject = async (projectToSave: Project): Promise<void> => {
     }
 };
 
-export const deleteProject = async (id: string): Promise<void> => {
+export const deleteProject = async (id: number): Promise<void> => {
     try {
         await apiRequest(`projects.php?id=${id}`, {
             method: 'DELETE',

@@ -34,7 +34,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     // Check if email already exists
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
         http_response_code(409);
@@ -44,28 +44,41 @@ try {
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
     $stmt->execute([$name, $email, $hashed_password]);
 
     $user_id = $pdo->lastInsertId();
 
     // Create a default project for the new user
-    $initial_nodes = json_encode([
-        [
-            'id' => 'root',
-            'type' => 'interactive',
-            'data' => ['label' => 'Type something'],
-            'position' => ['x' => 0, 'y' => 0],
-            'deletable' => false,
-        ]
-    ]);
-    $initial_edges = json_encode([]);
-    $project_id = uniqid('proj_');
     $project_name = 'My first Mind Map';
     $updated_at = date('Y-m-d H:i:s');
 
-    $stmt = $pdo->prepare("INSERT INTO projects (id, user_id, name, nodes, edges, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$project_id, $user_id, $project_name, $initial_nodes, $initial_edges, $updated_at]);
+    $stmt = $pdo->prepare("INSERT INTO projects (user_id, project_name, updated_at) VALUES (?, ?, ?)");
+    $stmt->execute([$user_id, $project_name, $updated_at]);
+    $project_id = $pdo->lastInsertId();
+
+    // Insert the initial root node
+    $root_node = [
+        'id' => 'root',
+        'type' => 'interactive',
+        'data' => ['label' => 'Type something'],
+        'position' => ['x' => 0, 'y' => 0],
+        'deletable' => false,
+    ];
+
+    $stmt = $pdo->prepare("
+        INSERT INTO nodes (project_id, node_id, label, position_x, position_y, type, other_data)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->execute([
+        $project_id,
+        $root_node['id'],
+        $root_node['data']['label'],
+        $root_node['position']['x'],
+        $root_node['position']['y'],
+        $root_node['type'],
+        json_encode(['deletable' => $root_node['deletable']])
+    ]);
 
     http_response_code(201);
     echo json_encode(['message' => 'User registered successfully.']);
