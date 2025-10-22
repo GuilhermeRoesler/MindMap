@@ -21,7 +21,7 @@ function assemble_node($row) {
         'data' => $node_data,
         'position' => ['x' => (float)$row['position_x'], 'y' => (float)$row['position_y']],
         'type' => $row['type'],
-        'style' => json_decode($row['style'], true)
+        'style' => json_decode($row['style'], true) ?: new stdClass()
     ];
 }
 
@@ -31,9 +31,9 @@ function assemble_edge($row) {
         'id' => $row['edge_id'],
         'source' => $row['source_node'],
         'target' => $row['target_node'],
-        'type' => $row['type'],
-        'style' => json_decode($row['style'], true),
-        'data' => json_decode($row['data'], true)
+        'type' => $row['type'] ?? 'default',
+        'style' => json_decode($row['style'], true) ?: new stdClass(),
+        'data' => json_decode($row['data'], true) ?: new stdClass()
     ];
 }
 
