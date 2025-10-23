@@ -5,7 +5,7 @@ interface UseNodeEditorProps {
     id: string;
     initialLabel: string;
     isInitiallyEditing?: boolean;
-    parentNodeRef?: React.RefObject<HTMLDivElement>;
+    parentNodeRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, parentNodeRef }: UseNodeEditorProps) => {

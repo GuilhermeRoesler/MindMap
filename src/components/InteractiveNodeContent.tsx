@@ -9,7 +9,7 @@ interface InteractiveNodeContentProps {
         label: string;
         isEditing?: boolean;
     };
-    parentNodeRef: React.RefObject<HTMLDivElement>;
+    parentNodeRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data, parentNodeRef }) => {

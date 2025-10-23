@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { Search, Home, Plus } from 'lucide-react';
 
 const Sidebar = () => {
