@@ -53,8 +53,9 @@ export const getProject = async (id: number): Promise<Project | null> => {
 export const saveProject = async (projectToSave: Project): Promise<void> => {
     try {
         await apiRequest(`projects.php?id=${projectToSave.id}`, {
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify({
+                _method: 'PUT',
                 name: projectToSave.name,
                 nodes: projectToSave.nodes,
                 edges: projectToSave.edges,
@@ -69,7 +70,10 @@ export const saveProject = async (projectToSave: Project): Promise<void> => {
 export const deleteProject = async (id: number): Promise<void> => {
     try {
         await apiRequest(`projects.php?id=${id}`, {
-            method: 'DELETE',
+            method: 'POST',
+            body: JSON.stringify({
+                _method: 'DELETE',
+            }),
         });
     } catch (error) {
         console.error("Failed to delete project:", error);

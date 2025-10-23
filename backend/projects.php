@@ -6,7 +6,13 @@ require_once 'auth_middleware.php';
 // Authenticate user for all project operations
 $user_id = authenticate();
 
-$method = $_SERVER['REQUEST_METHOD'];
+$real_method = $_SERVER['REQUEST_METHOD'];
+$data = json_decode(file_get_contents('php://input'));
+
+$method = $real_method;
+if ($real_method === 'POST' && isset($data->_method)) {
+    $method = strtoupper($data->_method);
+}
 
 // Helper function to assemble node object from DB row
 function assemble_node($row) {
@@ -87,7 +93,6 @@ try {
             break;
 
         case 'POST':
-            $data = json_decode(file_get_contents('php://input'));
             $name = $data->name;
             $updated_at = date('Y-m-d H:i:s');
 
@@ -134,7 +139,6 @@ try {
                 exit();
             }
             $project_id = $_GET['id'];
-            $data = json_decode(file_get_contents('php://input'));
             $name = $data->name;
             $nodes = $data->nodes;
             $edges = $data->edges;
