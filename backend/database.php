@@ -71,6 +71,8 @@ if (!$tableExists) {
             project_id INTEGER NOT NULL,
             source_node TEXT NOT NULL,
             target_node TEXT NOT NULL,
+            source_handle TEXT,
+            target_handle TEXT,
             type TEXT,
             style TEXT,
             data TEXT,
@@ -78,5 +80,14 @@ if (!$tableExists) {
             FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
         );
     ");
+} else {
+    // Simple migration for existing databases
+    $columns = $pdo->query("PRAGMA table_info(edges)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('source_handle', $columns)) {
+        $pdo->exec("ALTER TABLE edges ADD COLUMN source_handle TEXT");
+    }
+    if (!in_array('target_handle', $columns)) {
+        $pdo->exec("ALTER TABLE edges ADD COLUMN target_handle TEXT");
+    }
 }
 ?>

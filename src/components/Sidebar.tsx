@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Home, Clock, Star, Plus } from 'lucide-react';
+import { Search, Home, Plus } from 'lucide-react';
 
 const Sidebar = () => {
     // Mock user data
@@ -29,7 +29,7 @@ const Sidebar = () => {
                             <span>Home</span>
                         </a>
                     </li>
-                    <li>
+                    {/* <li>
                         <a href="#">
                             <Clock size={20} />
                             <span>Recent</span>
@@ -40,7 +40,7 @@ const Sidebar = () => {
                             <Star size={20} />
                             <span>Starred</span>
                         </a>
-                    </li>
+                    </li> */}
                 </ul>
             </nav>
         </aside>

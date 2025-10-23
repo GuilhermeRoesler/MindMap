@@ -31,6 +31,8 @@ function assemble_edge($row) {
         'id' => $row['edge_id'],
         'source' => $row['source_node'],
         'target' => $row['target_node'],
+        'sourceHandle' => $row['source_handle'],
+        'targetHandle' => $row['target_handle'],
         'type' => $row['type'] ?? 'default',
         'style' => json_decode($row['style'] ?? '', true) ?: new stdClass(),
         'data' => json_decode($row['data'] ?? '', true) ?: new stdClass()
@@ -167,12 +169,14 @@ try {
 
             // Insert new edges
             $edge_stmt = $pdo->prepare("
-                INSERT INTO edges (project_id, edge_id, source_node, target_node, type, style, data)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO edges (project_id, edge_id, source_node, target_node, source_handle, target_handle, type, style, data)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             foreach ($edges as $edge) {
                 $edge_stmt->execute([
-                    $project_id, $edge->id, $edge->source, $edge->target, $edge->type ?? 'default',
+                    $project_id, $edge->id, $edge->source, $edge->target,
+                    $edge->sourceHandle ?? null, $edge->targetHandle ?? null,
+                    $edge->type ?? 'default',
                     json_encode($edge->style ?? null), json_encode($edge->data ?? null)
                 ]);
             }

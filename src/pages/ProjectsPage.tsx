@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, MoreHorizontal, Star, History } from 'lucide-react';
+import { Plus, Trash2, History } from 'lucide-react';
 import { getProjects, createProject, deleteProject, type Project } from '../utils/projectManager';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
@@ -102,9 +102,9 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                             {formatDate(project.updatedAt)}
                                         </div>
                                         <div className="col-actions">
-                                            <button className="action-btn" onClick={(e) => e.stopPropagation()}><Star size={16} /></button>
-                                            <button className="action-btn" onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}>
-                                                <MoreHorizontal size={16} />
+                                            {/* <button className="action-btn" onClick={(e) => e.stopPropagation()}><Star size={16} /></button> */}
+                                            <button className="action-btn group" onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}>
+                                                <Trash2 size={16} className='group-hover:stroke-red-500 transition-all duration-300' />
                                             </button>
                                         </div>
                                     </div>
