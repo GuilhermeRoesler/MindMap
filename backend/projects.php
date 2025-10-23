@@ -10,7 +10,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Helper function to assemble node object from DB row
 function assemble_node($row) {
-    $other_data = json_decode($row['other_data'], true) ?: [];
+    $other_data = json_decode($row['other_data'] ?? '', true) ?: [];
     $node_data = array_merge($other_data, ['label' => $row['label']]);
     
     // Ensure isEditing is not carried over from the DB
@@ -21,7 +21,7 @@ function assemble_node($row) {
         'data' => $node_data,
         'position' => ['x' => (float)$row['position_x'], 'y' => (float)$row['position_y']],
         'type' => $row['type'],
-        'style' => json_decode($row['style'], true) ?: new stdClass()
+        'style' => json_decode($row['style'] ?? '', true) ?: new stdClass()
     ];
 }
 
@@ -32,8 +32,8 @@ function assemble_edge($row) {
         'source' => $row['source_node'],
         'target' => $row['target_node'],
         'type' => $row['type'] ?? 'default',
-        'style' => json_decode($row['style'], true) ?: new stdClass(),
-        'data' => json_decode($row['data'], true) ?: new stdClass()
+        'style' => json_decode($row['style'] ?? '', true) ?: new stdClass(),
+        'data' => json_decode($row['data'] ?? '', true) ?: new stdClass()
     ];
 }
 

@@ -24,6 +24,7 @@ button:active {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -35,13 +36,24 @@ button:active {
 }
 
 @keyframes shake {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-5px);
   }
-  20%, 40%, 60%, 80% {
+
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(5px);
   }
 }
@@ -706,7 +718,8 @@ button:active {
     border-right-color: #444;
   }
 
-  .user-name, .sidebar-nav li a {
+  .user-name,
+  .sidebar-nav li a {
     color: #f0f0f0;
   }
 
