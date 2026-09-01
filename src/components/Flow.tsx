@@ -10,25 +10,25 @@ import {
     addEdge,
     type Connection,
     type ReactFlowInstance
-
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
+import { useConnectionColors } from '../hooks/useConnectionColors';
 
 import InteractiveNode from './InteractiveNode';
+import HeaderPanel from './HeaderPanel';
 
 const nodeTypes = {
     interactive: InteractiveNode,
 }
 
-function Flow() {
+function FlowContent() {
     const [nodes, setNodes] = useState(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
     const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
-    const [nodeId, setNodeId] = useState(4);
-    const isDragging = useRef(false);
+    const { updateConnectionColors } = useConnectionColors();
 
     const onNodesChange = useCallback(
         (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -45,21 +45,28 @@ function Flow() {
         []
     );
 
-    // Função para criar um novo nó
-    const createNode = useCallback((position: { x: number; y: number }) => {
-        const newNode = {
-            id: nodeId.toString(),
-            data: { label: `Node ${nodeId}` },
-            position,
-            type: 'interactive'
-        };
+    // Carrega dados do localStorage
+    useEffect(() => {
+        const storedNodes = localStorage.getItem('nodes');
+        const storedEdges = localStorage.getItem('edges');
 
-        setNodes((nds) => [...nds, newNode]);
-        setNodeId((id) => id + 1);
-    }, [nodeId]);
+        if (storedNodes) {
+            setNodes(JSON.parse(storedNodes));
+        }
+        if (storedEdges) {
+            setEdges(JSON.parse(storedEdges));
+        }
+    }, []);
+
+    // Atualiza cores das conexões quando edges mudam
+    useEffect(() => {
+        if (edges.length > 0) {
+            updateConnectionColors();
+        }
+    }, [edges.length, updateConnectionColors]);
 
     return (
-        <ReactFlowProvider>
+        <>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -76,8 +83,17 @@ function Flow() {
                 bgColor='#f2f2f2'
                 lineWidth={1} color='#e6e6e6'
                 gap={40} />
-        </ReactFlowProvider>
+            <HeaderPanel />
+        </>
     );
+}
+
+function Flow() {
+    return (
+        <ReactFlowProvider>
+            <FlowContent />
+        </ReactFlowProvider>
+    )
 }
 
 export default Flow;
