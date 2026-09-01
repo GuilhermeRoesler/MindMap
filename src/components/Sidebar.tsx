@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Home, Download, Upload, Code } from 'lucide-react';
 import { GITHUB_REPO_URL } from '../constants';
+import MindMapIcon from '../icons/MindMapIcon';
 import ThemeToggle from './ThemeToggle';
 
 interface SidebarProps {
@@ -25,7 +26,9 @@ const Sidebar = ({ onExport, onImport }: SidebarProps) => {
         <aside className="sidebar">
             <div className="sidebar-header">
                 <div className="user-info">
-                    <div className="user-avatar">M</div>
+                    <div className="user-avatar">
+                        <MindMapIcon size={32} withBackground />
+                    </div>
                     <span className="user-name">MindMap</span>
                 </div>
             </div>

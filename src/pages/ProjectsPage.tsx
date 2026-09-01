@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, History, Pencil } from 'lucide-react';
+import { Plus, Trash2, Pencil } from 'lucide-react';
 import {
     getProjects,
     createProject,
@@ -13,6 +13,7 @@ import { DEMO_PROJECT_ID } from '../data/demoProject';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import LoadingSpinner from '../icons/LoadingSpinner';
+import MindMapIcon from '../icons/MindMapIcon';
 import CreateProjectModal from '../components/CreateProjectModal';
 import DashboardHero from '../components/DashboardHero';
 import RenameProjectModal from '../components/RenameProjectModal';
@@ -160,7 +161,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
                                     >
                                         <div className="col-name">
                                             <div className="project-icon">
-                                                <History size={20} />
+                                                <MindMapIcon size={20} />
                                             </div>
                                             <div className="project-details">
                                                 <span className="project-name">

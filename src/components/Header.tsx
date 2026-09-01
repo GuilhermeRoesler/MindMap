@@ -1,11 +1,15 @@
 import { Code, ExternalLink } from 'lucide-react';
 import { GITHUB_REPO_URL, LIVE_DEMO_URL } from '../constants';
+import MindMapIcon from '../icons/MindMapIcon';
 import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
     return (
         <header className="main-header">
-            <h1 className="logo">MindMap</h1>
+            <h1 className="logo">
+                <MindMapIcon size={28} withBackground className="logo-icon" />
+                MindMap
+            </h1>
             <div className="header-actions">
                 <span className="header-subtitle">Data saved locally in your browser</span>
                 <ThemeToggle compact />
