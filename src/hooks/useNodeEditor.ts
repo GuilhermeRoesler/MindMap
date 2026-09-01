@@ -4,10 +4,12 @@ import { useReactFlow } from '@xyflow/react';
 interface UseNodeEditorProps {
     id: string;
     initialLabel: string;
+    isInitiallyEditing?: boolean;
+    parentNodeRef?: React.RefObject<HTMLDivElement>;
 }
 
-export const useNodeEditor = ({ id, initialLabel }: UseNodeEditorProps) => {
-    const [isEditing, setIsEditing] = useState(false);
+export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, parentNodeRef }: UseNodeEditorProps) => {
+    const [isEditing, setIsEditing] = useState(isInitiallyEditing);
     const contentRef = useRef<HTMLParagraphElement>(null);
     const { setNodes } = useReactFlow();
 
@@ -21,20 +23,22 @@ export const useNodeEditor = ({ id, initialLabel }: UseNodeEditorProps) => {
             setNodes((nodes) =>
                 nodes.map((node) =>
                     node.id === id
-                        ? { ...node, data: { ...node.data, label: newValue.trim() } }
+                        ? { ...node, data: { ...node.data, label: newValue.trim(), isEditing: false } }
                         : node
                 )
             );
         }
         setIsEditing(false);
-    }, [id, setNodes]);
+        parentNodeRef?.current?.focus();
+    }, [id, setNodes, parentNodeRef]);
 
     const cancelEdit = useCallback(() => {
         if (contentRef.current) {
             contentRef.current.textContent = initialLabel;
         }
         setIsEditing(false);
-    }, [initialLabel]);
+        parentNodeRef?.current?.focus();
+    }, [initialLabel, parentNodeRef]);
 
     return {
         isEditing,

@@ -5,13 +5,19 @@ import { useNodeEditor } from '../hooks/useNodeEditor';
 
 interface InteractiveNodeContentProps {
     id: string;
-    data: { label: string };
+    data: {
+        label: string;
+        isEditing?: boolean;
+    };
+    parentNodeRef: React.RefObject<HTMLDivElement>;
 }
 
-const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data }) => {
+const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data, parentNodeRef }) => {
     const { isEditing, contentRef, startEditing, saveEdit, cancelEdit } = useNodeEditor({
         id,
-        initialLabel: data.label
+        initialLabel: data.label,
+        isInitiallyEditing: data.isEditing,
+        parentNodeRef
     });
 
     const {
@@ -33,8 +39,14 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
     // Auto-focus e seleção quando entra em modo de edição
     useEffect(() => {
         if (isEditing && contentRef.current) {
-            contentRef.current.focus();
-            selectAllText(contentRef.current);
+            // Adiciona um pequeno atraso para garantir que o foco seja definido após
+            // qualquer outra renderização ou mudança de foco da biblioteca.
+            setTimeout(() => {
+                if (contentRef.current) {
+                    contentRef.current.focus();
+                    selectAllText(contentRef.current);
+                }
+            }, 50);
         }
     }, [isEditing, selectAllText]);
 
@@ -58,9 +70,11 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
+            e.stopPropagation();
             saveEdit();
         } else if (e.key === 'Escape') {
             e.preventDefault();
+            e.stopPropagation();
             cancelEdit();
         }
     }, [saveEdit, cancelEdit]);

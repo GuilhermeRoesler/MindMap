@@ -25,6 +25,7 @@ const useNodeHandler = () => {
             data: {
                 label: `Type something`,
                 parentId: id,
+                isEditing: true,
             },
             position: newPosition,
             type: 'interactive',
@@ -61,10 +62,6 @@ const useNodeHandler = () => {
 
         setTimeout(() => {
             layoutNodes();
-
-            const newNodeElement = document.getElementById(newNodeId);
-            if (newNodeElement)
-                newNodeElement.focus();
         }, 100);
 
     };

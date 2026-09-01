@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
 import AddButton from './AddButton';
@@ -8,10 +8,12 @@ import useNodeHandler from '../hooks/useNodeHandler';
 interface InteractiveNodeData {
     label: string;
     side: 'right' | 'left';
+    isEditing?: boolean;
 }
 
 function InteractiveNode({ id, data }: { id: string, data: InteractiveNodeData }) {
     const { createAdjacentNode, createSiblingNode, deleteNode } = useNodeHandler();
+    const nodeRef = useRef<HTMLDivElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Tab') {
@@ -30,10 +32,10 @@ function InteractiveNode({ id, data }: { id: string, data: InteractiveNodeData }
     }
 
     return (
-        <div id={id} className="interactive-node" tabIndex={0} onKeyDown={handleKeyDown}>
+        <div ref={nodeRef} id={id} className="interactive-node" tabIndex={0} onKeyDown={handleKeyDown}>
             <AddButton type="left" id={id} />
             <AddButton type="right" id={id} />
-            <InteractiveNodeContent id={id} data={data} />
+            <InteractiveNodeContent id={id} data={data} parentNodeRef={nodeRef} />
             <Handle type="source" position={Position.Left} id={"left"} />
             <Handle type="target" position={Position.Left} id={"left-target"} />
             <Handle type="source" position={Position.Right} id={"right"} />
