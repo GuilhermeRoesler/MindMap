@@ -3,32 +3,49 @@ import { Plus, MoreHorizontal, Star, History } from 'lucide-react';
 import { getProjects, createProject, deleteProject, type Project } from '../utils/projectManager';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
+import LoadingSpinner from '../icons/LoadingSpinner';
 
 interface ProjectsPageProps {
-    onSelectProject: (projectId: string) => void;
+    onSelectProject: (projectId: number) => void;
     onLogout: () => void;
 }
 
 const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }) => {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setProjects(getProjects());
+        const fetchProjects = async () => {
+            setIsLoading(true);
+            const fetchedProjects = await getProjects();
+            setProjects(fetchedProjects);
+            setIsLoading(false);
+        };
+        fetchProjects();
     }, []);
 
-    const handleCreateProject = () => {
+    const handleCreateProject = async () => {
         const name = prompt("Enter a name for your new mind map:");
         if (name && name.trim()) {
-            const newProject = createProject(name.trim());
-            // Navigate to the new project immediately
-            onSelectProject(newProject.id);
+            try {
+                const newProject = await createProject(name.trim());
+                onSelectProject(newProject.id);
+            } catch (error) {
+                alert('Failed to create project. Please try again.');
+                console.error(error);
+            }
         }
     };
 
-    const handleDeleteProject = (id: string) => {
+    const handleDeleteProject = async (id: number) => {
         if (window.confirm('Are you sure you want to delete this mind map?')) {
-            deleteProject(id);
-            setProjects(prev => prev.filter(p => p.id !== id));
+            try {
+                await deleteProject(id);
+                setProjects(prev => prev.filter(p => p.id !== id));
+            } catch (error) {
+                alert('Failed to delete project. Please try again.');
+                console.error(error);
+            }
         }
     };
 
@@ -38,7 +55,6 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
         if (date.toDateString() === today.toDateString()) {
             return 'Today';
         }
-        // Simple date format like "Jul 31"
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
 
@@ -63,7 +79,12 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                             <div className="col-actions"></div>
                         </div>
                         <div className="table-body">
-                            {projects.length > 0 ? (
+                            {isLoading ? (
+                                <div className="loading-state">
+                                    <LoadingSpinner />
+                                    <p>Loading your mind maps...</p>
+                                </div>
+                            ) : projects.length > 0 ? (
                                 projects.map(project => (
                                     <div key={project.id} className="table-row" onClick={() => onSelectProject(project.id)}>
                                         <div className="col-name">

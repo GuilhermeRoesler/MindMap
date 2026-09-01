@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MindMap from "./pages/MindMap";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -8,7 +8,7 @@ import { useGlobalConfigStore } from "./store/globalConfigStore";
 
 const App = () => {
     const [page, setPage] = useState('loading'); // 'loading', 'login', 'register', 'projects', 'mindmap'
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
     const { authToken, setAuthToken } = useGlobalConfigStore();
 
     useEffect(() => {
@@ -32,15 +32,15 @@ const App = () => {
         setPage('login');
     }
 
-    const handleSelectProject = (projectId: string) => {
+    const handleSelectProject = (projectId: number) => {
         setSelectedProjectId(projectId);
         setPage('mindmap');
     };
 
-    const handleBackToProjects = () => {
+    const handleBackToProjects = useCallback(() => {
         setSelectedProjectId(null);
         setPage('projects');
-    };
+    }, []);
 
     if (page === 'loading') {
         return (
