@@ -1,15 +1,20 @@
 import { useReactFlow } from "@xyflow/react";
 import { exportMindMap, importMindMap } from "../utils/fileOperations";
+import { useLayoutNodes } from "./useLayoutNodes";
 
 export const useHeaderActions = () => {
-    const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
+    const { getNodes, getEdges, setNodes, setEdges, fitView } = useReactFlow();
+    const { layoutNodes } = useLayoutNodes();
 
     const handleHome = () => {
         console.log('Home');
     }
 
-    const handleMenu = () => {
-        console.log('Menu');
+    const handleLayoutNodes = () => {
+        layoutNodes();
+        setTimeout(() => {
+            fitView({ duration: 800 });
+        }, 100);
     }
 
     const handleExport = async () => {
@@ -34,7 +39,7 @@ export const useHeaderActions = () => {
 
     return {
         handleHome,
-        handleMenu,
+        handleLayoutNodes,
         handleExport,
         handleImport
     }

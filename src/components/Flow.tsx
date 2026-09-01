@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import {
     Background,
     BackgroundVariant,
@@ -9,7 +9,8 @@ import {
     applyNodeChanges,
     addEdge,
     type Connection,
-    type ReactFlowInstance
+    type Node
+    // type ReactFlowInstance
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -19,6 +20,7 @@ import { useConnectionColors } from '../hooks/useConnectionColors';
 
 import InteractiveNode from './InteractiveNode';
 import HeaderPanel from './HeaderPanel';
+import { useLayoutNodes } from '../hooks/useLayoutNodes';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -27,21 +29,51 @@ const nodeTypes = {
 function FlowContent() {
     const [nodes, setNodes] = useState(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
-    const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+    // const [_, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
     const { updateConnectionColors } = useConnectionColors();
+    const { layoutNodes } = useLayoutNodes();
 
     const onNodesChange = useCallback(
-        (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
+        (changes: any) => {
+            setNodes((nds) => {
+                const updatedNodes = applyNodeChanges(changes, nds);
+                localStorage.setItem('nodes', JSON.stringify(updatedNodes));
+                return updatedNodes;
+            })
+        },
         []
     );
 
+    const onNodesDelete = useCallback(
+        (nodes: Node[]) => {
+            setNodes((nds) => nds.filter((node) => !nodes.includes(node)));
+            localStorage.setItem('nodes', JSON.stringify(nodes));
+            setTimeout(() => {
+                layoutNodes();
+            }, 100);
+        },
+        [layoutNodes, nodes]
+    );
+
     const onEdgesChange = useCallback(
-        (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+        (changes: any) => {
+            setEdges((eds) => {
+                const updatedEdges = applyEdgeChanges(changes, eds)
+                localStorage.setItem('edges', JSON.stringify(updatedEdges));
+                return updatedEdges;
+            })
+        },
         []
     );
 
     const onConnect = useCallback(
-        (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+        (connection: Connection) => {
+            setEdges((eds) => {
+                const updatedEdges = addEdge(connection, eds);
+                localStorage.setItem('edges', JSON.stringify(updatedEdges));
+                return updatedEdges;
+            })
+        },
         []
     );
 
@@ -72,10 +104,12 @@ function FlowContent() {
                 edges={edges}
                 nodeTypes={nodeTypes}
                 onNodesChange={onNodesChange}
+                onNodesDelete={onNodesDelete}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-                onInit={setReactFlowInstance}
+                // onInit={setReactFlowInstance}
                 fitView
+                attributionPosition="bottom-left"
             />
             <Controls />
             <Background
