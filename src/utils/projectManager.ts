@@ -117,3 +117,60 @@ export const deleteProject = async (id: string): Promise<void> => {
     const filtered = projects.filter((p) => p.id !== id);
     persistProjects(filtered);
 };
+
+export const exportProjects = (): string => {
+    const projects = ensureInitialized();
+    return JSON.stringify(projects, null, 2);
+};
+
+const isValidProject = (value: unknown): value is Project => {
+    if (!value || typeof value !== 'object') return false;
+    const p = value as Project;
+    return (
+        typeof p.id === 'string' &&
+        typeof p.name === 'string' &&
+        Array.isArray(p.nodes) &&
+        Array.isArray(p.edges) &&
+        typeof p.updatedAt === 'string'
+    );
+};
+
+export const importProjects = async (json: string, mode: 'merge' | 'replace'): Promise<number> => {
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(json);
+    } catch {
+        throw new Error('Invalid JSON file.');
+    }
+
+    if (!Array.isArray(parsed)) {
+        throw new Error('Expected an array of projects.');
+    }
+
+    const imported = parsed.filter(isValidProject);
+    if (imported.length === 0) {
+        throw new Error('No valid projects found in file.');
+    }
+
+    if (mode === 'replace') {
+        const demo = seedDemoProject();
+        const withoutDemo = imported.filter((p) => p.id !== DEMO_PROJECT_ID && !p.isDemo);
+        persistProjects([demo, ...withoutDemo]);
+        return withoutDemo.length;
+    }
+
+    const existing = ensureInitialized();
+    const existingIds = new Set(existing.map((p) => p.id));
+    let added = 0;
+
+    for (const project of imported) {
+        if (project.isDemo || project.id === DEMO_PROJECT_ID) continue;
+        if (existingIds.has(project.id)) continue;
+        existing.push(project);
+        existingIds.add(project.id);
+        added++;
+    }
+
+    persistProjects(existing);
+    return added;
+};

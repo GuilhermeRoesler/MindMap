@@ -19,11 +19,13 @@ import '@xyflow/react/dist/style.css';
 
 import { useConnectionColors } from '../hooks/useConnectionColors';
 import InteractiveNode from '../components/InteractiveNode';
-import HeaderPanel from '../components/HeaderPanel';
+import HeaderPanel, { type SaveStatus } from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, updateProjectData } from '../utils/projectManager';
 import LoadingSpinner from '../icons/LoadingSpinner';
-import { useThemeDetector } from '../hooks/useThemeDetector';
+import { useTheme } from '../hooks/useTheme';
+import OnboardingBanner from '../components/OnboardingBanner';
+import { ONBOARDING_KEY } from '../constants';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -42,19 +44,30 @@ interface FlowContentProps {
 function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [nodes, setNodes] = useState<Node[] | null>(null);
     const [edges, setEdges] = useState<Edge[] | null>(null);
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+    const [showOnboarding, setShowOnboarding] = useState(
+        () => !localStorage.getItem(ONBOARDING_KEY),
+    );
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
     const isSavingRef = useRef(false);
-    const isDarkTheme = useThemeDetector();
+    const isInitialLoad = useRef(true);
+    const savedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { isDark } = useTheme();
 
     const saveData = useCallback(async () => {
         if (isSavingRef.current || nodes === null || edges === null) return;
 
         isSavingRef.current = true;
+        setSaveStatus('saving');
         try {
             await updateProjectData(projectId, nodes, edges);
+            setSaveStatus('saved');
+            if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+            savedTimeoutRef.current = setTimeout(() => setSaveStatus('idle'), 2000);
         } catch (error) {
             console.error('Failed to save project:', error);
+            setSaveStatus('idle');
         } finally {
             setTimeout(() => {
                 isSavingRef.current = false;
@@ -82,6 +95,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 
     useEffect(() => {
         const loadProjectData = async () => {
+            isInitialLoad.current = true;
             const project = await getProject(projectId);
             if (project) {
                 setNodes(project.nodes);
@@ -95,10 +109,19 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     }, [projectId, onBackToProjects]);
 
     useEffect(() => {
-        if (nodes !== null && edges !== null) {
-            saveData();
+        if (nodes === null || edges === null) return;
+        if (isInitialLoad.current) {
+            isInitialLoad.current = false;
+            return;
         }
+        saveData();
     }, [nodes, edges, saveData]);
+
+    useEffect(() => {
+        return () => {
+            if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
+        };
+    }, []);
 
     const edgeStructureSignature = useMemo(() => {
         if (!edges) return '';
@@ -114,6 +137,11 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps -- edgeStructureSignature replaces edges to avoid update loops
     }, [edgeStructureSignature, updateConnectionColors]);
+
+    const dismissOnboarding = () => {
+        localStorage.setItem(ONBOARDING_KEY, '1');
+        setShowOnboarding(false);
+    };
 
     if (nodes === null || edges === null) {
         return (
@@ -141,13 +169,14 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 <Controls />
                 <Background
                     variant={BackgroundVariant.Lines}
-                    bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
+                    bgColor={isDark ? '#1a1a1a' : '#f8f9fa'}
                     lineWidth={1}
-                    color={isDarkTheme ? '#141414' : '#e9ecef'}
+                    color={isDark ? '#141414' : '#e9ecef'}
                     gap={40}
                 />
             </ReactFlow>
-            <HeaderPanel onBack={onBackToProjects} />
+            {showOnboarding && <OnboardingBanner onDismiss={dismissOnboarding} />}
+            <HeaderPanel onBack={onBackToProjects} saveStatus={saveStatus} />
         </>
     );
 }

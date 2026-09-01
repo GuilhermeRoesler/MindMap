@@ -7,6 +7,8 @@ import {
     updateProjectData,
     renameProject,
     deleteProject,
+    exportProjects,
+    importProjects,
 } from './projectManager';
 import { DEMO_PROJECT_ID, DEMO_PROJECT_NAME } from '../data/demoProject';
 
@@ -109,5 +111,32 @@ describe('projectManager (localStorage)', () => {
 
         const parsed = JSON.parse(raw!) as { name: string }[];
         expect(parsed.some((p) => p.name === 'Persisted')).toBe(true);
+    });
+
+    it('exports projects as JSON', async () => {
+        await getProjects();
+        await createProject('Export Me');
+
+        const json = exportProjects();
+        const parsed = JSON.parse(json) as { name: string }[];
+
+        expect(parsed.some((p) => p.name === 'Export Me')).toBe(true);
+    });
+
+    it('imports projects in merge mode', async () => {
+        await getProjects();
+        await createProject('Imported Project');
+        const backup = exportProjects();
+        localStorage.clear();
+
+        const added = await importProjects(backup, 'merge');
+        const projects = await getProjects();
+
+        expect(added).toBe(1);
+        expect(projects.some((p) => p.name === 'Imported Project')).toBe(true);
+    });
+
+    it('rejects invalid import JSON', async () => {
+        await expect(importProjects('not json', 'merge')).rejects.toThrow('Invalid JSON file.');
     });
 });

@@ -1,15 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Plus } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Pencil } from 'lucide-react';
 import LoadingSpinner from '../icons/LoadingSpinner';
 
-interface CreateProjectModalProps {
+interface RenameProjectModalProps {
     isOpen: boolean;
+    currentName: string;
     onClose: () => void;
-    onCreate: (name: string) => Promise<void>;
+    onRename: (name: string) => Promise<void>;
 }
 
-const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose, onCreate }) => {
-    const [name, setName] = useState('');
+const RenameProjectModal = ({
+    isOpen,
+    currentName,
+    onClose,
+    onRename,
+}: RenameProjectModalProps) => {
+    const [name, setName] = useState(currentName);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -21,8 +27,8 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
     }, [isOpen]);
 
     useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') onClose();
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -30,16 +36,22 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim()) {
-            setError('Please enter a name for your mind map.');
+        const trimmed = name.trim();
+        if (!trimmed) {
+            setError('Please enter a name.');
+            return;
+        }
+        if (trimmed === currentName) {
+            onClose();
             return;
         }
         setError('');
         setIsLoading(true);
         try {
-            await onCreate(name.trim());
+            await onRename(trimmed);
+            onClose();
         } catch {
-            setError('Failed to create project. Please try again.');
+            setError('Failed to rename project. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -50,18 +62,17 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
     return (
         <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className="modal-title">New Mind Map</h2>
-                <p className="modal-description">Give your new project a name to get started.</p>
+                <h2 className="modal-title">Rename mind map</h2>
+                <p className="modal-description">Choose a new name for your project.</p>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="project-name" className="modal-label">
+                    <label htmlFor="rename-input" className="modal-label">
                         Name
                     </label>
                     <input
                         ref={inputRef}
+                        id="rename-input"
                         type="text"
-                        id="project-name"
                         className="modal-input"
-                        placeholder="e.g., Marketing Plan Q3"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
@@ -74,9 +85,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                             {isLoading ? (
                                 <LoadingSpinner size="h-5 w-5" color="border-white" />
                             ) : (
-                                <Plus size={16} />
+                                <Pencil size={16} />
                             )}
-                            {isLoading ? 'Creating...' : 'Create Project'}
+                            {isLoading ? 'Saving...' : 'Rename'}
                         </button>
                     </div>
                 </form>
@@ -85,4 +96,4 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
     );
 };
 
-export default CreateProjectModal;
+export default RenameProjectModal;

@@ -1,44 +1,70 @@
 # MindMap
 
-Aplicação web interativa para criação de mapas mentais — projeto de portfólio com persistência local no browser, sem backend.
+Interactive mind map editor — portfolio project with local browser storage, no backend required.
+
+**Live demo:** [guilhermeroesler.github.io/MindMap](https://guilhermeroesler.github.io/MindMap/) · **Source:** [github.com/GuilhermeRoesler/MindMap](https://github.com/GuilhermeRoesler/MindMap)
 
 ![](public/demo.jpeg)
 
-**Demo ao vivo:** [guilhermeroesler.github.io/MindMap](https://guilhermeroesler.github.io/MindMap/)
+---
 
-## Funcionalidades
+## English
 
-- **Mapas mentais interativos:** criação de nós e conexões com [React Flow](https://reactflow.dev/)
-- **Layout automático:** organização dos nós com Dagre
-- **Dashboard de projetos:** CRUD completo (criar, renomear, abrir, apagar)
-- **Projeto demo:** mapa pré-carregado na primeira visita para explorar as funcionalidades
-- **Persistência local:** dados salvos em `localStorage` — sem servidor, sem login
-- **Temas:** suporte a modo claro e escuro
-- **Deploy automático:** GitHub Pages via GitHub Actions
+### Highlights
 
-## Tecnologias
+- Interactive mind maps with [React Flow](https://reactflow.dev/) — drag, connect, and edit nodes inline
+- Auto layout powered by Dagre
+- Full project dashboard with create, rename, open, delete, export, and import
+- Pre-loaded **Demo Mind Map** on first visit
+- Local storage persistence — no login, no server
+- Light / dark / system theme toggle
+- Keyboard shortcuts panel and first-visit onboarding
+- Auto-save with visual feedback in the editor
+- Deployed on GitHub Pages with CI/CD
 
-- **React 19** + **Vite** + **TypeScript**
-- **React Flow (@xyflow/react)** — grafos interativos
-- **TailwindCSS** — estilização
-- **Dagre** — layout automático
-- **Vitest** — testes unitários
+### Tech stack
 
-## Estrutura
+React 19 · Vite · TypeScript · React Flow · TailwindCSS · Dagre · Vitest
 
-```text
-mind-map/
-├── src/
-│   ├── components/     # Nós, header, sidebar, modais
-│   ├── data/           # Nós iniciais e projeto demo
-│   ├── hooks/          # Layout, cores, edição de nós
-│   ├── pages/          # Dashboard e editor MindMap
-│   └── utils/          # projectManager (localStorage)
-├── .github/workflows/  # CI + deploy GitHub Pages
-└── vite.config.ts
+### Quick start
+
+```bash
+npm install
+npm run dev
 ```
 
-## Instalação
+Open `http://localhost:5173`.
+
+### Keyboard shortcuts (editor)
+
+| Key         | Action                  |
+| ----------- | ----------------------- |
+| `Tab`       | Create child node       |
+| `Enter`     | Create sibling node     |
+| `Delete`    | Remove selected node    |
+| `+` buttons | Add nodes on left/right |
+
+### Deploy
+
+Push to `main` triggers `.github/workflows/deploy.yml`. Enable **GitHub Actions** as the Pages source in repository settings.
+
+---
+
+## Português
+
+### Destaques
+
+- Mapas mentais interativos com [React Flow](https://reactflow.dev/)
+- Layout automático com Dagre
+- Dashboard com CRUD completo + export/import de backup JSON
+- Projeto **Demo Mind Map** criado automaticamente na primeira visita
+- Persistência em `localStorage` — sem login, sem backend
+- Tema claro / escuro / sistema
+- Painel de atalhos e onboarding na primeira visita ao editor
+- Auto-save com indicador visual
+- Deploy automático no GitHub Pages
+
+### Instalação
 
 ```bash
 npm install
@@ -47,39 +73,27 @@ npm run dev
 
 Acesse `http://localhost:5173`.
 
-## Scripts
+### Atalhos (editor)
+
+| Tecla    | Ação                   |
+| -------- | ---------------------- |
+| `Tab`    | Criar nó filho         |
+| `Enter`  | Criar nó irmão         |
+| `Delete` | Remover nó selecionado |
+
+### Scripts
 
 | Script             | Descrição                                |
 | ------------------ | ---------------------------------------- |
 | `npm run dev`      | Servidor de desenvolvimento              |
 | `npm run build`    | Build de produção                        |
-| `npm run preview`  | Preview da build local                   |
 | `npm run test`     | Testes unitários                         |
 | `npm run validate` | typecheck + lint + format + test + build |
 
-## Deploy (GitHub Pages)
+### Persistência
 
-O workflow `.github/workflows/deploy.yml` publica automaticamente em cada push para `main`.
-
-1. Em **Settings → Pages**, selecione **GitHub Actions** como source
-2. Faça push para `main` — o deploy roda sozinho
-3. A app fica em `https://<usuario>.github.io/MindMap/`
-
-Para build local com o mesmo base path do Pages:
-
-```bash
-VITE_BASE_PATH=/MindMap/ npm run build
-```
-
-## Persistência
-
-Os projetos ficam em `localStorage` (chave `mindmap_projects`). Na primeira visita, um **Demo Mind Map** é criado automaticamente. Dados são locais ao browser — limpar cache ou trocar de dispositivo apaga os projetos.
-
-## CI
-
-- **`.github/workflows/ci.yml`:** typecheck, lint, format, testes e build em PRs e pushes
-- **`.github/workflows/deploy.yml`:** build + deploy para GitHub Pages
+Projetos ficam em `localStorage` (chave `mindmap_projects`). Use **Export backup** / **Import backup** no dashboard para transferir dados entre browsers.
 
 ---
 
-Desenvolvido com React e React Flow.
+Developed with React and React Flow.
