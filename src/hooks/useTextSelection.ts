@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 
 export const useTextSelection = () => {
-    const selectionTimeoutRef = useRef<number | null>(null);
+    const selectionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const selectAllText = useCallback((element: HTMLElement) => {
         const range = document.createRange();

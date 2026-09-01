@@ -22,7 +22,7 @@ import InteractiveNode from '../components/InteractiveNode';
 import HeaderPanel, { type SaveStatus } from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, updateProjectData } from '../utils/projectManager';
-import LoadingSpinner from '../icons/LoadingSpinner';
+import { Loader2 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import OnboardingBanner from '../components/OnboardingBanner';
 import { ONBOARDING_KEY } from '../constants';
@@ -145,8 +145,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 
     if (nodes === null || edges === null) {
         return (
-            <div className="w-full h-full flex justify-center items-center bg-gray-50">
-                <LoadingSpinner size="h-12 w-12" />
+            <div className="flex h-full w-full items-center justify-center bg-background">
+                <Loader2 className="size-12 animate-spin text-primary" />
             </div>
         );
     }

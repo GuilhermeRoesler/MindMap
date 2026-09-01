@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Pencil } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import {
     getProjects,
     createProject,
@@ -8,23 +8,35 @@ import {
     exportProjects,
     importProjects,
     type Project,
-} from '../utils/projectManager';
-import { DEMO_PROJECT_ID } from '../data/demoProject';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
-import LoadingSpinner from '../icons/LoadingSpinner';
-import MindMapIcon from '../icons/MindMapIcon';
-import CreateProjectModal from '../components/CreateProjectModal';
-import DashboardHero from '../components/DashboardHero';
-import RenameProjectModal from '../components/RenameProjectModal';
-import ConfirmModal from '../components/ConfirmModal';
-import { useToast } from '../context/ToastContext';
+} from '@/utils/projectManager';
+import { DEMO_PROJECT_ID } from '@/data/demoProject';
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
+import MindMapIcon from '@/icons/MindMapIcon';
+import CreateProjectModal from '@/components/CreateProjectModal';
+import DashboardHero from '@/components/DashboardHero';
+import RenameProjectModal from '@/components/RenameProjectModal';
+import ConfirmModal from '@/components/ConfirmModal';
+import { useToast } from '@/context/ToastContext';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface ProjectsPageProps {
     onSelectProject: (projectId: string) => void;
 }
 
-const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
+const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -123,108 +135,118 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
     };
 
     return (
-        <div className="projects-layout">
+        <div className="flex h-screen w-screen bg-background">
             <Sidebar onExport={handleExport} onImport={handleImportFile} />
-            <main className="main-content">
+            <main className="flex flex-1 flex-col overflow-y-auto">
                 <Header />
-                <div className="projects-area">
+                <div className="flex-1 px-10 py-6">
                     <DashboardHero
                         onTryDemo={() => onSelectProject(DEMO_PROJECT_ID)}
                         onCreateNew={() => setIsModalOpen(true)}
                     />
-                    <div className="projects-header">
-                        <h2>Your mind maps</h2>
-                        <div className="projects-header-actions">
-                            <button onClick={() => setIsModalOpen(true)} className="create-new-btn">
-                                <Plus size={16} /> Create new
-                            </button>
-                        </div>
+
+                    <div className="mb-6 flex items-center justify-between">
+                        <h2 className="text-xl font-semibold">Your mind maps</h2>
+                        <Button onClick={() => setIsModalOpen(true)}>
+                            <Plus />
+                            Create new
+                        </Button>
                     </div>
-                    <div className="projects-table">
-                        <div className="table-header">
-                            <div className="col-name">Name</div>
-                            <div className="col-last-opened">Last opened</div>
-                            <div className="col-actions"></div>
-                        </div>
-                        <div className="table-body">
+
+                    <Card>
+                        <CardContent className="p-0">
+                            <div className="grid grid-cols-[1fr_auto_auto] items-center border-b px-6 py-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                <div>Name</div>
+                                <div className="hidden w-32 sm:block">Last opened</div>
+                                <div className="w-20" />
+                            </div>
+
                             {isLoading ? (
-                                <div className="loading-state">
-                                    <LoadingSpinner />
+                                <div className="flex flex-col items-center justify-center gap-4 py-12 text-muted-foreground">
+                                    <Loader2 className="size-8 animate-spin text-primary" />
                                     <p>Loading your mind maps...</p>
                                 </div>
                             ) : projects.length > 0 ? (
-                                projects.map((project) => (
-                                    <div
-                                        key={project.id}
-                                        className="table-row"
-                                        onClick={() => onSelectProject(project.id)}
-                                    >
-                                        <div className="col-name">
-                                            <div className="project-icon">
-                                                <MindMapIcon size={20} />
+                                <div>
+                                    {projects.map((project) => (
+                                        <div
+                                            key={project.id}
+                                            className="grid cursor-pointer grid-cols-[1fr_auto_auto] items-center border-b px-6 py-4 transition-colors last:border-b-0 hover:bg-muted/50"
+                                            onClick={() => onSelectProject(project.id)}
+                                        >
+                                            <div className="flex min-w-0 items-center gap-4">
+                                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                                    <MindMapIcon size={20} />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2 font-semibold">
+                                                        <span className="truncate">
+                                                            {project.name}
+                                                        </span>
+                                                        {project.isDemo && (
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="shrink-0"
+                                                            >
+                                                                Demo
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        Modified {formatDate(project.updatedAt)}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="project-details">
-                                                <span className="project-name">
-                                                    {project.name}
-                                                    {project.isDemo && (
-                                                        <span className="demo-badge">Demo</span>
-                                                    )}
-                                                </span>
-                                                <span className="project-modified">
-                                                    Modified {formatDate(project.updatedAt)}
-                                                </span>
+                                            <div className="hidden w-32 text-sm text-muted-foreground sm:block">
+                                                {formatDate(project.updatedAt)}
                                             </div>
-                                        </div>
-                                        <div className="col-last-opened">
-                                            {formatDate(project.updatedAt)}
-                                        </div>
-                                        <div className="col-actions">
-                                            <button
-                                                className="action-btn group"
-                                                title="Rename"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (project.isDemo) {
-                                                        showToast(
-                                                            'The demo project cannot be renamed.',
-                                                            'info',
-                                                        );
-                                                        return;
-                                                    }
-                                                    setRenameTarget(project);
-                                                }}
-                                            >
-                                                <Pencil
-                                                    size={16}
-                                                    className="group-hover:stroke-blue-500 transition-all duration-300"
-                                                />
-                                            </button>
-                                            {!project.isDemo && (
-                                                <button
-                                                    className="action-btn group"
-                                                    title="Delete"
+                                            <div className="flex w-20 justify-end gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    title="Rename"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        setDeleteTarget(project);
+                                                        if (project.isDemo) {
+                                                            showToast(
+                                                                'The demo project cannot be renamed.',
+                                                                'info',
+                                                            );
+                                                            return;
+                                                        }
+                                                        setRenameTarget(project);
                                                     }}
                                                 >
-                                                    <Trash2
-                                                        size={16}
-                                                        className="group-hover:stroke-red-500 transition-all duration-300"
-                                                    />
-                                                </button>
-                                            )}
+                                                    <Pencil />
+                                                </Button>
+                                                {!project.isDemo && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon-sm"
+                                                        title="Delete"
+                                                        className="hover:text-destructive"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setDeleteTarget(project);
+                                                        }}
+                                                    >
+                                                        <Trash2 />
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
+                                    ))}
+                                </div>
                             ) : (
-                                <div className="empty-state">
-                                    <h3>No mind maps yet.</h3>
-                                    <p>Use the "Create new" button to start one.</p>
+                                <div className="py-12 text-center text-muted-foreground">
+                                    <h3 className="mb-1 text-lg font-medium text-foreground">
+                                        No mind maps yet.
+                                    </h3>
+                                    <p>Use the &quot;Create new&quot; button to start one.</p>
                                 </div>
                             )}
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </main>
 
@@ -254,39 +276,35 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
                 onClose={() => setDeleteTarget(null)}
             />
 
-            {pendingImportFile && (
-                <div className="modal-overlay" onClick={() => setPendingImportFile(null)}>
-                    <div className="modal-content modal-sm" onClick={(e) => e.stopPropagation()}>
-                        <h2 className="modal-title">Import backup</h2>
-                        <p className="modal-description">
-                            Choose how to import <strong>{pendingImportFile.name}</strong>.
-                        </p>
-                        <div className="modal-actions modal-actions-stack">
-                            <button
-                                type="button"
-                                className="btn-brand"
-                                onClick={() => void handleImportConfirm('merge')}
-                            >
-                                Merge — add new projects only
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-danger"
-                                onClick={() => void handleImportConfirm('replace')}
-                            >
-                                Replace — restore full backup
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-secondary"
-                                onClick={() => setPendingImportFile(null)}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <AlertDialog
+                open={!!pendingImportFile}
+                onOpenChange={(open) => !open && setPendingImportFile(null)}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Import backup</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Choose how to import <strong>{pendingImportFile?.name}</strong>.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+                        <AlertDialogAction
+                            className="w-full"
+                            onClick={() => void handleImportConfirm('merge')}
+                        >
+                            Merge — add new projects only
+                        </AlertDialogAction>
+                        <AlertDialogAction
+                            variant="destructive"
+                            className="w-full"
+                            onClick={() => void handleImportConfirm('replace')}
+                        >
+                            Replace — restore full backup
+                        </AlertDialogAction>
+                        <AlertDialogCancel className="w-full">Cancel</AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

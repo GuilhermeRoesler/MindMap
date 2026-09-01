@@ -1,6 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Plus } from 'lucide-react';
-import LoadingSpinner from '../icons/LoadingSpinner';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, Plus } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface CreateProjectModalProps {
     isOpen: boolean;
@@ -8,7 +17,7 @@ interface CreateProjectModalProps {
     onCreate: (name: string) => Promise<void>;
 }
 
-const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose, onCreate }) => {
+const CreateProjectModal = ({ isOpen, onClose, onCreate }: CreateProjectModalProps) => {
     const [name, setName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -20,13 +29,13 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
         return () => clearTimeout(timer);
     }, [isOpen]);
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
+    const handleOpenChange = (open: boolean) => {
+        if (!open) {
+            setName('');
+            setError('');
+            onClose();
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,43 +54,40 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
         }
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className="modal-title">New Mind Map</h2>
-                <p className="modal-description">Give your new project a name to get started.</p>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="project-name" className="modal-label">
-                        Name
-                    </label>
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        id="project-name"
-                        className="modal-input"
-                        placeholder="e.g., Marketing Plan Q3"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    {error && <p className="modal-error">{error}</p>}
-                    <div className="modal-actions">
-                        <button type="button" className="btn-secondary" onClick={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+            <DialogContent showCloseButton={false} className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>New Mind Map</DialogTitle>
+                    <DialogDescription>
+                        Give your new project a name to get started.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="project-name">Name</Label>
+                        <Input
+                            ref={inputRef}
+                            id="project-name"
+                            placeholder="e.g., Marketing Plan Q3"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            aria-invalid={!!error}
+                        />
+                        {error && <p className="text-sm text-destructive">{error}</p>}
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
-                        </button>
-                        <button type="submit" className="btn-brand" disabled={isLoading}>
-                            {isLoading ? (
-                                <LoadingSpinner size="h-5 w-5" color="border-white" />
-                            ) : (
-                                <Plus size={16} />
-                            )}
+                        </Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? <Loader2 className="animate-spin" /> : <Plus />}
                             {isLoading ? 'Creating...' : 'Create Project'}
-                        </button>
+                        </Button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 

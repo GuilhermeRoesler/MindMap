@@ -25,6 +25,7 @@ const applyTheme = (mode: ThemeMode) => {
     const isDark = resolveIsDark(mode);
     document.documentElement.dataset.theme = mode;
     document.documentElement.classList.toggle('dark-theme', isDark);
+    document.documentElement.classList.toggle('dark', isDark);
 };
 
 const loadThemeMode = (): ThemeMode => {

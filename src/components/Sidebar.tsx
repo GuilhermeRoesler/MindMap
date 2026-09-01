@@ -1,8 +1,9 @@
 import { useRef } from 'react';
-import { Home, Download, Upload, Code } from 'lucide-react';
-import { GITHUB_REPO_URL } from '../constants';
-import MindMapIcon from '../icons/MindMapIcon';
+import { Code, Download, Home, Upload } from 'lucide-react';
+import { GITHUB_REPO_URL } from '@/constants';
+import MindMapIcon from '@/icons/MindMapIcon';
 import ThemeToggle from './ThemeToggle';
+import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
     onExport: () => void;
@@ -23,55 +24,46 @@ const Sidebar = ({ onExport, onImport }: SidebarProps) => {
     };
 
     return (
-        <aside className="sidebar">
-            <div className="sidebar-header">
-                <div className="user-info">
-                    <div className="user-avatar">
-                        <MindMapIcon size={32} withBackground />
-                    </div>
-                    <span className="user-name">MindMap</span>
-                </div>
+        <aside className="flex w-65 shrink-0 flex-col border-r bg-sidebar p-3">
+            <div className="flex items-center gap-3 px-2 py-3">
+                <MindMapIcon size={32} withBackground />
+                <span className="font-semibold">MindMap</span>
             </div>
-            <nav className="sidebar-nav">
-                <ul>
-                    <li className="active">
-                        <button type="button" className="sidebar-link">
-                            <Home size={20} />
-                            <span>Dashboard</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" className="sidebar-link" onClick={onExport}>
-                            <Download size={20} />
-                            <span>Export backup</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" className="sidebar-link" onClick={handleImportClick}>
-                            <Upload size={20} />
-                            <span>Import backup</span>
-                        </button>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="application/json,.json"
-                            className="hidden"
-                            onChange={handleFileChange}
-                        />
-                    </li>
-                </ul>
-            </nav>
-            <div className="sidebar-footer">
-                <ThemeToggle />
-                <a
-                    href={GITHUB_REPO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="sidebar-link sidebar-github"
+
+            <nav className="flex-1 space-y-1 py-2">
+                <Button variant="secondary" className="w-full justify-start">
+                    <Home />
+                    Dashboard
+                </Button>
+                <Button variant="ghost" className="w-full justify-start" onClick={onExport}>
+                    <Download />
+                    Export backup
+                </Button>
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={handleImportClick}
                 >
-                    <Code size={18} />
-                    <span>View on GitHub</span>
-                </a>
+                    <Upload />
+                    Import backup
+                </Button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="application/json,.json"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+            </nav>
+
+            <div className="space-y-2 border-t pt-3">
+                <ThemeToggle />
+                <Button variant="ghost" className="w-full justify-start" asChild>
+                    <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
+                        <Code />
+                        View on GitHub
+                    </a>
+                </Button>
             </div>
         </aside>
     );

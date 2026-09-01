@@ -1,5 +1,6 @@
-import { Monitor, Sun, Moon } from 'lucide-react';
-import { useTheme, type ThemeMode } from '../hooks/useTheme';
+import { Monitor, Moon, Sun } from 'lucide-react';
+import { useTheme, type ThemeMode } from '@/hooks/useTheme';
+import { Button } from '@/components/ui/button';
 
 const labels: Record<ThemeMode, string> = {
     system: 'System theme',
@@ -22,16 +23,18 @@ const ThemeToggle = ({ compact = false }: ThemeToggleProps) => {
     const Icon = icons[themeMode];
 
     return (
-        <button
+        <Button
             type="button"
-            className={`theme-toggle ${compact ? 'theme-toggle-compact' : ''}`}
+            variant="ghost"
+            size={compact ? 'icon-sm' : 'default'}
             onClick={cycleTheme}
             title={labels[themeMode]}
             aria-label={labels[themeMode]}
+            className={compact ? '' : 'w-full justify-start'}
         >
-            <Icon size={18} />
+            <Icon />
             {!compact && <span>{labels[themeMode]}</span>}
-        </button>
+        </Button>
     );
 };
 

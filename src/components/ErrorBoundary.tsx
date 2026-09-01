@@ -1,4 +1,6 @@
 import React from 'react';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface ErrorBoundaryProps {
     children: React.ReactNode;
@@ -26,9 +28,16 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     render() {
         if (this.state.hasError) {
             return (
-                <div className="error-boundary">
-                    <h2>😢 Something went wrong.</h2>
-                    <pre>{this.state.error?.toString()}</pre>
+                <div className="flex min-h-screen items-center justify-center p-6">
+                    <Alert variant="destructive" className="max-w-lg">
+                        <AlertCircle />
+                        <AlertTitle>Something went wrong.</AlertTitle>
+                        <AlertDescription>
+                            <pre className="mt-2 overflow-auto text-xs whitespace-pre-wrap">
+                                {this.state.error?.toString()}
+                            </pre>
+                        </AlertDescription>
+                    </Alert>
                 </div>
             );
         }

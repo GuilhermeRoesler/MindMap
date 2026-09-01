@@ -3,7 +3,7 @@ import MindMap from './pages/MindMap';
 import ProjectsPage from './pages/ProjectsPage';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './hooks/useTheme';
-import ToastContainer from './components/ToastContainer';
+import { Toaster } from '@/components/ui/sonner';
 
 type Page = 'projects' | 'mindmap';
 
@@ -32,7 +32,7 @@ const App = () => (
     <ThemeProvider>
         <ToastProvider>
             <AppContent />
-            <ToastContainer />
+            <Toaster position="bottom-right" richColors closeButton />
         </ToastProvider>
     </ThemeProvider>
 );

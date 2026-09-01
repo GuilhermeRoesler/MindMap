@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { Pencil } from 'lucide-react';
-import LoadingSpinner from '../icons/LoadingSpinner';
+import { Loader2, Pencil } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface RenameProjectModalProps {
     isOpen: boolean;
@@ -26,13 +35,12 @@ const RenameProjectModal = ({
         return () => clearTimeout(timer);
     }, [isOpen]);
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
+    const handleOpenChange = (open: boolean) => {
+        if (!open) {
+            setError('');
+            onClose();
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,42 +65,37 @@ const RenameProjectModal = ({
         }
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className="modal-title">Rename mind map</h2>
-                <p className="modal-description">Choose a new name for your project.</p>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="rename-input" className="modal-label">
-                        Name
-                    </label>
-                    <input
-                        ref={inputRef}
-                        id="rename-input"
-                        type="text"
-                        className="modal-input"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    {error && <p className="modal-error">{error}</p>}
-                    <div className="modal-actions">
-                        <button type="button" className="btn-secondary" onClick={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+            <DialogContent showCloseButton={false} className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Rename mind map</DialogTitle>
+                    <DialogDescription>Choose a new name for your project.</DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="rename-input">Name</Label>
+                        <Input
+                            ref={inputRef}
+                            id="rename-input"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            aria-invalid={!!error}
+                        />
+                        {error && <p className="text-sm text-destructive">{error}</p>}
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
-                        </button>
-                        <button type="submit" className="btn-brand" disabled={isLoading}>
-                            {isLoading ? (
-                                <LoadingSpinner size="h-5 w-5" color="border-white" />
-                            ) : (
-                                <Pencil size={16} />
-                            )}
+                        </Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? <Loader2 className="animate-spin" /> : <Pencil />}
                             {isLoading ? 'Saving...' : 'Rename'}
-                        </button>
+                        </Button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 

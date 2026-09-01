@@ -1,5 +1,15 @@
-import { AlertTriangle } from 'lucide-react';
-import LoadingSpinner from '../icons/LoadingSpinner';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogMedia,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -24,43 +34,34 @@ const ConfirmModal = ({
     onConfirm,
     onClose,
 }: ConfirmModalProps) => {
-    if (!isOpen) return null;
-
     return (
-        <div
-            className="modal-overlay"
-            onClick={onClose}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="confirm-modal-title"
-        >
-            <div className="modal-content modal-sm" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-icon-wrap">
-                    <AlertTriangle
-                        size={24}
-                        className={variant === 'danger' ? 'text-red-500' : 'text-brand'}
-                    />
-                </div>
-                <h2 id="confirm-modal-title" className="modal-title">
-                    {title}
-                </h2>
-                <p className="modal-description">{message}</p>
-                <div className="modal-actions">
-                    <button type="button" className="btn-secondary" onClick={onClose}>
-                        {cancelLabel}
-                    </button>
-                    <button
-                        type="button"
-                        className={variant === 'danger' ? 'btn-danger' : 'btn-brand'}
+        <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogMedia>
+                        <AlertTriangle
+                            className={variant === 'danger' ? 'text-destructive' : 'text-primary'}
+                        />
+                    </AlertDialogMedia>
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    <AlertDialogDescription>{message}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel disabled={isLoading}>{cancelLabel}</AlertDialogCancel>
+                    <AlertDialogAction
+                        variant={variant === 'danger' ? 'destructive' : 'default'}
                         disabled={isLoading}
-                        onClick={() => void onConfirm()}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            void onConfirm();
+                        }}
                     >
-                        {isLoading ? <LoadingSpinner size="h-5 w-5" color="border-white" /> : null}
+                        {isLoading && <Loader2 className="animate-spin" />}
                         {isLoading ? 'Processing...' : confirmLabel}
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 };
 
