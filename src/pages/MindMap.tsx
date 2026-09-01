@@ -14,7 +14,6 @@ import {
     type NodeChange,
     type EdgeChange,
     SelectionMode,
-    useReactFlow
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -24,6 +23,7 @@ import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, saveProject } from '../utils/projectManager';
 import LoadingSpinner from '../icons/LoadingSpinner';
+import { useThemeDetector } from '../hooks/useThemeDetector';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -42,10 +42,10 @@ interface FlowContentProps {
 function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [nodes, setNodes] = useState<Node[] | null>(null);
     const [edges, setEdges] = useState<Edge[] | null>(null);
-    const { setNodes: setFlowNodes, setEdges: setFlowEdges } = useReactFlow();
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
     const isSavingRef = useRef(false);
+    const isDarkTheme = useThemeDetector();
 
     const saveData = useCallback(() => {
         if (isSavingRef.current || nodes === null || edges === null) return;
@@ -96,11 +96,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         if (project) {
             setNodes(project.nodes);
             setEdges(project.edges);
-            // Also set them in the react-flow instance
-            setFlowNodes(project.nodes);
-            setFlowEdges(project.edges);
         }
-    }, [projectId, setFlowNodes, setFlowEdges]);
+    }, [projectId]);
 
     // Save data when nodes or edges change
     useEffect(() => {
@@ -142,13 +139,15 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 attributionPosition="bottom-left"
                 deleteKeyCode={null}
                 {...flowConfig}
-            />
-            <Controls />
-            <Background
-                variant={BackgroundVariant.Lines}
-                bgColor='#f2f2f2'
-                lineWidth={1} color='#e6e6e6'
-                gap={40} />
+            >
+                <Controls />
+                <Background
+                    variant={BackgroundVariant.Lines}
+                    bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
+                    lineWidth={1}
+                    color={isDarkTheme ? '#141414' : '#e9ecef'}
+                    gap={40} />
+            </ReactFlow>
             <HeaderPanel onBack={onBackToProjects} />
         </>
     );

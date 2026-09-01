@@ -31,6 +31,7 @@ function InteractiveNode({ id, data }: { id: string, data: InteractiveNodeData }
 
     return (
         <div id={id} className="interactive-node" tabIndex={0} onKeyDown={handleKeyDown}>
+            <AddButton type="left" id={id} />
             <AddButton type="right" id={id} />
             <InteractiveNodeContent id={id} data={data} />
             <Handle type="source" position={Position.Left} id={"left"} />
