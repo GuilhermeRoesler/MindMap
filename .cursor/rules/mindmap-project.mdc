@@ -1,0 +1,15 @@
+---
+description: Convenções gerais do projeto MindMap
+alwaysApply: true
+---
+
+# MindMap — Projeto
+
+Editor de mapas mentais com React Flow, persistência em `localStorage`, sem backend.
+
+- Stack: React 19, Vite, TypeScript, TailwindCSS 4, @xyflow/react, Dagre, Vitest
+- Idioma da UI: inglês (mensagens, labels, toasts)
+- Escopo mínimo: não alterar código não relacionado à tarefa
+- Validação antes de finalizar: `npm run validate`
+
+**Skill detalhada:** leia `.cursor/skills/mindmap-project/SKILL.md` para arquitetura, estrutura de pastas, scripts e convenções de código.

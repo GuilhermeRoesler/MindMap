@@ -1,0 +1,14 @@
+---
+description: Regras do editor de mapas mentais (React Flow)
+globs: src/pages/MindMap.tsx,src/components/InteractiveNode*.tsx,src/hooks/useNode*.ts,src/hooks/useLayoutNodes.ts,src/hooks/useConnectionColors.ts,src/hooks/useMouseTracking.ts,src/hooks/useTextSelection.ts
+alwaysApply: false
+---
+
+# Editor de mapas mentais
+
+- Nós customizados usam `type: 'interactive'` e o hook `useNodeHandler`
+- Layout automático via Dagre (`useLayoutNodes`) — chamar após criar/deletar nós
+- Auto-save em `MindMap.tsx` — não salvar no carregamento inicial (`isInitialLoad`)
+- Atalhos: `Tab` (filho), `Enter` (irmão), `Delete` (remover; nó `root` é protegido)
+
+**Skill detalhada:** leia `.cursor/skills/mindmap-editor/SKILL.md` antes de alterar o editor, nós ou hooks relacionados.

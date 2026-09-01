@@ -1,0 +1,14 @@
+---
+description: Persistência de projetos em localStorage
+globs: src/utils/projectManager.ts,src/data/**/*
+alwaysApply: false
+---
+
+# Persistência de projetos
+
+- Chave: `mindmap_projects` — toda leitura/escrita passa por `projectManager.ts`
+- Projeto demo (`id: 'demo'`, `isDemo: true`) é criado na primeira visita e não pode ser deletado
+- IDs de projeto com `ulid()`; nó raiz de novos projetos usa `id: 'root'`
+- Import/export JSON: validar com `isValidProject` antes de persistir
+
+**Skill detalhada:** leia `.cursor/skills/mindmap-persistence/SKILL.md` antes de alterar dados, storage ou backup.

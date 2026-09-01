@@ -1,0 +1,14 @@
+---
+description: UI, tema e componentes visuais
+globs: src/components/**/*.tsx,src/App.css,src/index.css,src/hooks/useTheme.tsx,src/constants.ts
+alwaysApply: false
+---
+
+# UI e tema
+
+- Cor da marca: `#6f34dc` (`BRAND_COLOR` em `constants.ts`)
+- Tema via `ThemeProvider` — modos `light` / `dark` / `system`, chave `mindmap_theme`
+- Estilos globais e React Flow em `App.css`; Tailwind para utilitários em componentes
+- Modais reutilizáveis: `ConfirmModal`, `CreateProjectModal`, `RenameProjectModal`
+
+**Skill detalhada:** leia `.cursor/skills/mindmap-ui/SKILL.md` antes de alterar componentes, estilos ou tema.

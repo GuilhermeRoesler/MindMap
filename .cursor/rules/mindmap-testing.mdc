@@ -1,0 +1,13 @@
+---
+description: Padrões de testes unitários
+globs: **/*.{test,spec}.{ts,tsx},src/test/**/*
+alwaysApply: false
+---
+
+# Testes
+
+- Framework: Vitest + jsdom; rodar com `npm run test`
+- Testes de `projectManager` limpam `localStorage` em `beforeEach`/`afterEach`
+- Testar comportamento real, não implementação interna; evitar testes triviais
+
+**Skill detalhada:** leia `.cursor/skills/mindmap-testing/SKILL.md` antes de adicionar ou alterar testes.
