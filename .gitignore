@@ -7,11 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 dist
 dist-ssr
-*.local
+
+# Environment
 .env
+.env.local
+.env.*.local
 
 # Database (generated at runtime)
 backend/*.sqlite
@@ -21,10 +25,13 @@ backend/*.sqlite
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-todo.txt
+# Other package managers (project uses npm)
+pnpm-lock.yaml
+yarn.lock

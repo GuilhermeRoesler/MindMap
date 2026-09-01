@@ -2,9 +2,7 @@ import { useGlobalConfigStore } from '../store/globalConfigStore';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/';
 
-interface RequestOptions extends RequestInit {
-    // You can add custom options here if needed
-}
+type RequestOptions = RequestInit;
 
 const apiRequest = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
     const { authToken } = useGlobalConfigStore.getState();

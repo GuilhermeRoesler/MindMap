@@ -74,7 +74,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     );
 
     const onNodesDelete = useCallback(
-        (_: Node[]) => {
+        () => {
             setTimeout(() => {
                 layoutNodes();
             }, 100);
@@ -129,6 +129,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         if (edges && edges.length > 0) {
             updateConnectionColors();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- edgeStructureSignature replaces edges to avoid update loops
     }, [edgeStructureSignature, updateConnectionColors]);
 
     if (nodes === null || edges === null) {

@@ -48,7 +48,7 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
                 }
             }, 50);
         }
-    }, [isEditing, selectAllText]);
+    }, [isEditing, selectAllText, contentRef]);
 
     // Cleanup na desmontagem
     useEffect(() => {
@@ -65,7 +65,7 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
         } else if (contentRef.current) {
             selectAllText(contentRef.current);
         }
-    }, [isEditing, startEditing, selectAllText]);
+    }, [isEditing, startEditing, selectAllText, contentRef]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {

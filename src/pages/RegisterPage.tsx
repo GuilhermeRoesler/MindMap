@@ -3,7 +3,7 @@ import LoadingSpinner from "../icons/LoadingSpinner";
 import { History } from "lucide-react";
 import apiRequest from "../utils/api";
 
-const RegisterPage = ({ onRegisterSuccess, onNavigateToLogin }: { onRegisterSuccess: any, onNavigateToLogin: any }) => {
+const RegisterPage = ({ onRegisterSuccess, onNavigateToLogin }: { onRegisterSuccess: () => void; onNavigateToLogin: () => void }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,8 +20,8 @@ const RegisterPage = ({ onRegisterSuccess, onNavigateToLogin }: { onRegisterSucc
                 body: JSON.stringify({ name, email, password }),
             });
             onRegisterSuccess();
-        } catch (err: any) {
-            setError(err.message || 'Could not create account.');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Could not create account.');
         } finally {
             setLoading(false);
         }

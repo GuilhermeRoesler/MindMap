@@ -1,23 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import MindMap from "./pages/MindMap";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProjectsPage from "./pages/ProjectsPage";
-import LoadingSpinner from "./icons/LoadingSpinner";
 import { useGlobalConfigStore } from "./store/globalConfigStore";
 
-const App = () => {
-    const [page, setPage] = useState('loading'); // 'loading', 'login', 'register', 'projects', 'mindmap'
-    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
-    const { authToken, setAuthToken } = useGlobalConfigStore();
+type Page = 'login' | 'register' | 'projects' | 'mindmap';
 
-    useEffect(() => {
-        if (authToken) {
-            setPage('projects');
-        } else {
-            setPage('login');
-        }
-    }, [authToken]);
+const App = () => {
+    const { authToken, setAuthToken } = useGlobalConfigStore();
+    const [page, setPage] = useState<Page>(() => authToken ? 'projects' : 'login');
+    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
 
     const handleLoginSuccess = () => {
         setPage('projects');
@@ -25,12 +18,12 @@ const App = () => {
 
     const handleRegisterSuccess = () => {
         setPage('login');
-    }
+    };
 
     const handleLogout = () => {
         setAuthToken(null);
         setPage('login');
-    }
+    };
 
     const handleSelectProject = (projectId: number) => {
         setSelectedProjectId(projectId);
@@ -42,14 +35,6 @@ const App = () => {
         setPage('projects');
     }, []);
 
-    if (page === 'loading') {
-        return (
-            <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-                <LoadingSpinner size="h-16 w-16" />
-            </div>
-        )
-    }
-
     switch (page) {
         case 'register':
             return <RegisterPage onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setPage('login')} />;
@@ -57,7 +42,6 @@ const App = () => {
             return <ProjectsPage onSelectProject={handleSelectProject} onLogout={handleLogout} />;
         case 'mindmap':
             if (!selectedProjectId) {
-                // Fallback in case there's no project ID
                 return <ProjectsPage onSelectProject={handleSelectProject} onLogout={handleLogout} />;
             }
             return <MindMap projectId={selectedProjectId} onBackToProjects={handleBackToProjects} />;

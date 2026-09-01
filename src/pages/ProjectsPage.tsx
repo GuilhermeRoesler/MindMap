@@ -118,6 +118,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                 </div>
             </main>
             <CreateProjectModal
+                key={isModalOpen ? 'open' : 'closed'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onCreate={handleCreateProject}

@@ -4,7 +4,7 @@ import LoadingSpinner from '../icons/LoadingSpinner';
 import { useGlobalConfigStore } from '../store/globalConfigStore';
 import apiRequest from '../utils/api';
 
-const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: any, onNavigateToRegister: any }) => {
+const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: () => void; onNavigateToRegister: () => void }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -29,8 +29,8 @@ const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: a
             } else {
                 setError('Authentication token not received.');
             }
-        } catch (err: any) {
-            setError(err.message || 'Failed to login. Please check your credentials.');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to login. Please check your credentials.');
             setAuthToken(null);
         } finally {
             setLoading(false);

@@ -15,14 +15,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (isOpen) {
-            setName('');
-            setError('');
-            setIsLoading(false);
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 150); // Delay focus for transition
-        }
+        if (!isOpen) return;
+        const timer = setTimeout(() => {
+            inputRef.current?.focus();
+        }, 150);
+        return () => clearTimeout(timer);
     }, [isOpen]);
 
     // Handle Escape key to close
@@ -49,7 +46,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
         try {
             await onCreate(name.trim());
             // Parent component will handle closing/navigating on success
-        } catch (err) {
+        } catch {
             setError('Failed to create project. Please try again.');
         } finally {
             setIsLoading(false);
