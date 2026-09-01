@@ -10,8 +10,9 @@ import {
     addEdge,
     type Connection,
     type Node,
+    type NodeChange,
+    type EdgeChange,
     SelectionMode
-    // type ReactFlowInstance
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -19,8 +20,8 @@ import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
 import { useConnectionColors } from '../hooks/useConnectionColors';
 
-import InteractiveNode from './InteractiveNode';
-import HeaderPanel from './HeaderPanel';
+import InteractiveNode from '../components/InteractiveNode';
+import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 
 const nodeTypes = {
@@ -32,16 +33,14 @@ const flowConfig = {
     multiSelectionKeyCode: 'Shift',
 };
 
-
-function FlowContent() {
-    const [nodes, setNodes] = useState(initialNodes);
+function FlowContent({ onLogout }: { onLogout: () => void }) {
+    const [nodes, setNodes] = useState<Node[]>(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
-    // const [_, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
 
     const onNodesChange = useCallback(
-        (changes: any) => {
+        (changes: NodeChange[]) => {
             setNodes((nds) => {
                 const updatedNodes = applyNodeChanges(changes, nds);
                 localStorage.setItem('nodes', JSON.stringify(updatedNodes));
@@ -52,18 +51,16 @@ function FlowContent() {
     );
 
     const onNodesDelete = useCallback(
-        (nodes: Node[]) => {
-            setNodes((nds) => nds.filter((node) => !nodes.includes(node)));
-            localStorage.setItem('nodes', JSON.stringify(nodes));
+        (_: Node[]) => {
             setTimeout(() => {
                 layoutNodes();
             }, 100);
         },
-        [layoutNodes, nodes]
+        [layoutNodes]
     );
 
     const onEdgesChange = useCallback(
-        (changes: any) => {
+        (changes: EdgeChange[]) => {
             setEdges((eds) => {
                 const updatedEdges = applyEdgeChanges(changes, eds)
                 localStorage.setItem('edges', JSON.stringify(updatedEdges));
@@ -84,7 +81,6 @@ function FlowContent() {
         []
     );
 
-    // Carrega dados do localStorage
     useEffect(() => {
         const storedNodes = localStorage.getItem('nodes');
         const storedEdges = localStorage.getItem('edges');
@@ -97,7 +93,6 @@ function FlowContent() {
         }
     }, []);
 
-    // Atualiza cores das conexões quando edges mudam
     useEffect(() => {
         if (edges.length > 0) {
             updateConnectionColors();
@@ -114,9 +109,9 @@ function FlowContent() {
                 onNodesDelete={onNodesDelete}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-                // onInit={setReactFlowInstance}
                 fitView
                 attributionPosition="bottom-left"
+                deleteKeyCode={null}
                 {...flowConfig}
             />
             <Controls />
@@ -125,17 +120,17 @@ function FlowContent() {
                 bgColor='#f2f2f2'
                 lineWidth={1} color='#e6e6e6'
                 gap={40} />
-            <HeaderPanel />
+            <HeaderPanel onLogout={onLogout} />
         </>
     );
 }
 
-function Flow() {
+function MindMap({ onLogout }: { onLogout: () => void }) {
     return (
         <ReactFlowProvider>
-            <FlowContent />
+            <FlowContent onLogout={onLogout} />
         </ReactFlowProvider>
     )
 }
 
-export default Flow;
+export default MindMap;

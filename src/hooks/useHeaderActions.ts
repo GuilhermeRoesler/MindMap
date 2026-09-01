@@ -1,10 +1,12 @@
 import { useReactFlow } from "@xyflow/react";
 import { exportMindMap, importMindMap } from "../utils/fileOperations";
 import { useLayoutNodes } from "./useLayoutNodes";
+import { useConnectionColors } from "./useConnectionColors";
 
 export const useHeaderActions = () => {
     const { getNodes, getEdges, setNodes, setEdges, fitView } = useReactFlow();
     const { layoutNodes } = useLayoutNodes();
+    const { updateConnectionColors } = useConnectionColors();
 
     const handleHome = () => {
         console.log('Home');
@@ -23,7 +25,7 @@ export const useHeaderActions = () => {
             const edges = getEdges();
             await exportMindMap(nodes, edges);
         } catch (error) {
-            console.error('Erro ao exportar:', error);
+            console.error('Error exporting:', error);
         }
     }
 
@@ -33,14 +35,19 @@ export const useHeaderActions = () => {
             setNodes(data.nodes);
             setEdges(data.edges);
         } catch (error) {
-            console.error('Erro ao importar:', error);
+            console.error('Error importing:', error);
         }
     };
+
+    const handleColorize = () => {
+        updateConnectionColors();
+    }
 
     return {
         handleHome,
         handleLayoutNodes,
         handleExport,
-        handleImport
+        handleImport,
+        handleColorize
     }
 }
