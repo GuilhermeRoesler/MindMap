@@ -13,10 +13,12 @@ const useNodeHandler = () => {
 
         const offset = 50; // Distance between nodes
         const newPosition = {
-            x: currentNode.position.x + (direction === 'right'
-                ? offset + (currentNode.measured?.width || 0)
-                : -offset - 98),
-            y: (currentNode.measured?.height || 0) / 2 + currentNode.position.y - 16.5
+            x:
+                currentNode.position.x +
+                (direction === 'right'
+                    ? offset + (currentNode.measured?.width || 0)
+                    : -offset - 98),
+            y: (currentNode.measured?.height || 0) / 2 + currentNode.position.y - 16.5,
         };
 
         const newNodeId = ulid();
@@ -31,11 +33,11 @@ const useNodeHandler = () => {
             type: 'interactive',
             style: {
                 border: 'none',
-            }
+            },
         };
 
         const currentEdges = getEdges();
-        const childIndex = currentEdges.filter(edge => {
+        const childIndex = currentEdges.filter((edge) => {
             const expectedHandle = direction === 'right' ? 'left-target' : 'right-target';
             return edge.source === id && edge.targetHandle === expectedHandle;
         }).length;
@@ -53,8 +55,8 @@ const useNodeHandler = () => {
             },
             data: {
                 color: connectionColor,
-                childIndex: childIndex
-            }
+                childIndex: childIndex,
+            },
         };
 
         setNodes((nodes) => [...nodes, newNode]);
@@ -63,7 +65,6 @@ const useNodeHandler = () => {
         setTimeout(() => {
             layoutNodes();
         }, 100);
-
     };
 
     const createSiblingNode = (id: string) => {
@@ -74,12 +75,12 @@ const useNodeHandler = () => {
         if (parentId) {
             createAdjacentNode(parentId);
         }
-    }
+    };
 
     const collectDescendantIds = (id: string, nodes: Node[]): string[] => {
-        const children = nodes.filter(node => node.data.parentId === id);
+        const children = nodes.filter((node) => node.data.parentId === id);
         let ids = [id];
-        children.forEach(child => {
+        children.forEach((child) => {
             ids = ids.concat(collectDescendantIds(child.id, nodes));
         });
         return ids;
@@ -93,8 +94,12 @@ const useNodeHandler = () => {
 
         const idsToRemove = collectDescendantIds(id, nodes);
 
-        setNodes(nodes.filter(node => !idsToRemove.includes(node.id)));
-        setEdges(edges.filter(edge => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)));
+        setNodes(nodes.filter((node) => !idsToRemove.includes(node.id)));
+        setEdges(
+            edges.filter(
+                (edge) => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target),
+            ),
+        );
 
         setTimeout(() => {
             layoutNodes();

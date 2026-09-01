@@ -64,14 +64,19 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">New Mind Map</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        New Mind Map
+                    </h2>
                     <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         Give your new project a name to get started.
                     </p>
 
                     <form onSubmit={handleSubmit} className="mt-6">
                         <div>
-                            <label htmlFor="project-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label
+                                htmlFor="project-name"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
                                 Name
                             </label>
                             <div className="mt-1">
@@ -87,7 +92,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                                 />
                             </div>
                         </div>
-                        
+
                         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
                         <div className="mt-8 flex justify-end space-x-3">
@@ -103,7 +108,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ isOpen, onClose
                                 disabled={isLoading}
                                 className="inline-flex justify-center items-center gap-2 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400 disabled:cursor-not-allowed"
                             >
-                                {isLoading ? <LoadingSpinner size="h-5 w-5" color="border-white" /> : <Plus size={16} />}
+                                {isLoading ? (
+                                    <LoadingSpinner size="h-5 w-5" color="border-white" />
+                                ) : (
+                                    <Plus size={16} />
+                                )}
                                 {isLoading ? 'Creating...' : 'Create Project'}
                             </button>
                         </div>

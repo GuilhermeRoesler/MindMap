@@ -10,10 +10,15 @@ export const useMouseTracking = (threshold: number = 3) => {
     const isSelectingRef = useRef(false);
     const hasTextSelectionRef = useRef(false);
 
-    const hasMouseMoved = useCallback((startPos: MousePosition, endPos: MousePosition) => {
-        return Math.abs(endPos.x - startPos.x) > threshold ||
-            Math.abs(endPos.y - startPos.y) > threshold;
-    }, [threshold]);
+    const hasMouseMoved = useCallback(
+        (startPos: MousePosition, endPos: MousePosition) => {
+            return (
+                Math.abs(endPos.x - startPos.x) > threshold ||
+                Math.abs(endPos.y - startPos.y) > threshold
+            );
+        },
+        [threshold],
+    );
 
     const startTracking = useCallback((x: number, y: number) => {
         mouseDownPosRef.current = { x, y };
@@ -21,17 +26,20 @@ export const useMouseTracking = (threshold: number = 3) => {
         hasTextSelectionRef.current = false;
     }, []);
 
-    const updateTracking = useCallback((x: number, y: number) => {
-        if (mouseDownPosRef.current && hasMouseMoved(mouseDownPosRef.current, { x, y })) {
-            hasTextSelectionRef.current = true;
-        }
-    }, [hasMouseMoved]);
+    const updateTracking = useCallback(
+        (x: number, y: number) => {
+            if (mouseDownPosRef.current && hasMouseMoved(mouseDownPosRef.current, { x, y })) {
+                hasTextSelectionRef.current = true;
+            }
+        },
+        [hasMouseMoved],
+    );
 
     const stopTracking = useCallback(() => {
         isSelectingRef.current = false;
         return {
             hadMovement: hasTextSelectionRef.current,
-            startPosition: mouseDownPosRef.current
+            startPosition: mouseDownPosRef.current,
         };
     }, []);
 
@@ -42,6 +50,6 @@ export const useMouseTracking = (threshold: number = 3) => {
         updateTracking,
         stopTracking,
         isCurrentlySelecting,
-        hasMouseMoved
+        hasMouseMoved,
     };
 };

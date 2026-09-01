@@ -22,7 +22,9 @@ const apiRequest = async <T>(endpoint: string, options: RequestOptions = {}): Pr
         const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
+            const errorData = await response
+                .json()
+                .catch(() => ({ message: 'An unknown error occurred' }));
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
@@ -30,7 +32,7 @@ const apiRequest = async <T>(endpoint: string, options: RequestOptions = {}): Pr
             return null as T;
         }
 
-        return await response.json() as T;
+        return (await response.json()) as T;
     } catch (error) {
         console.error('API request failed:', error);
         throw error;

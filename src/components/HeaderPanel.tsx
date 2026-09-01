@@ -23,11 +23,25 @@ const HeaderPanel = ({ onBack }: { onBack: () => void }) => {
                 </button>
                 {isMenuOpen && (
                     <div className="more-container">
-                        <div className="more-item" title="Adjust layout" onClick={() => { handleLayoutNodes(); setIsMenuOpen(false); }}>
+                        <div
+                            className="more-item"
+                            title="Adjust layout"
+                            onClick={() => {
+                                handleLayoutNodes();
+                                setIsMenuOpen(false);
+                            }}
+                        >
                             <Layers size={20} />
                             <p>Adjust layout</p>
                         </div>
-                        <div className="more-item" title="Colorize" onClick={() => { handleColorize(); setIsMenuOpen(false); }}>
+                        <div
+                            className="more-item"
+                            title="Colorize"
+                            onClick={() => {
+                                handleColorize();
+                                setIsMenuOpen(false);
+                            }}
+                        >
                             <Palette size={20} />
                             <p>Colorize</p>
                         </div>

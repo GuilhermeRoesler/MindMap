@@ -2,7 +2,7 @@ import { Home } from 'lucide-react';
 import { getDisplayName, useGlobalConfigStore } from '../store/globalConfigStore';
 
 const Sidebar = () => {
-    const userEmail = useGlobalConfigStore(state => state.userEmail);
+    const userEmail = useGlobalConfigStore((state) => state.userEmail);
     const displayName = getDisplayName(userEmail);
     const userInitial = displayName.charAt(0).toUpperCase();
 

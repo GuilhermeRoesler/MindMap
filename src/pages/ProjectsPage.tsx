@@ -40,7 +40,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
         if (window.confirm('Are you sure you want to delete this mind map?')) {
             try {
                 await deleteProject(id);
-                setProjects(prev => prev.filter(p => p.id !== id));
+                setProjects((prev) => prev.filter((p) => p.id !== id));
             } catch (error) {
                 alert('Failed to delete project. Please try again.');
                 console.error(error);
@@ -84,8 +84,12 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                     <p>Loading your mind maps...</p>
                                 </div>
                             ) : projects.length > 0 ? (
-                                projects.map(project => (
-                                    <div key={project.id} className="table-row" onClick={() => onSelectProject(project.id)}>
+                                projects.map((project) => (
+                                    <div
+                                        key={project.id}
+                                        className="table-row"
+                                        onClick={() => onSelectProject(project.id)}
+                                    >
                                         <div className="col-name">
                                             <div className="project-icon">
                                                 <History size={20} />
@@ -101,8 +105,17 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                             {formatDate(project.updatedAt)}
                                         </div>
                                         <div className="col-actions">
-                                            <button className="action-btn group" onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}>
-                                                <Trash2 size={16} className='group-hover:stroke-red-500 transition-all duration-300' />
+                                            <button
+                                                className="action-btn group"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteProject(project.id);
+                                                }}
+                                            >
+                                                <Trash2
+                                                    size={16}
+                                                    className="group-hover:stroke-red-500 transition-all duration-300"
+                                                />
                                             </button>
                                         </div>
                                     </div>

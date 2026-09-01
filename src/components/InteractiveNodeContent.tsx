@@ -12,12 +12,16 @@ interface InteractiveNodeContentProps {
     parentNodeRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, data, parentNodeRef }) => {
+const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({
+    id,
+    data,
+    parentNodeRef,
+}) => {
     const { isEditing, contentRef, startEditing, saveEdit, cancelEdit } = useNodeEditor({
         id,
         initialLabel: data.label,
         isInitiallyEditing: data.isEditing,
-        parentNodeRef
+        parentNodeRef,
     });
 
     const {
@@ -25,16 +29,11 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
         preserveSelection,
         setCursorPosition,
         preserveSelectionWithDelay,
-        clearSelectionTimeout
+        clearSelectionTimeout,
     } = useTextSelection();
 
-    const {
-        startTracking,
-        updateTracking,
-        stopTracking,
-        isCurrentlySelecting,
-        hasMouseMoved
-    } = useMouseTracking();
+    const { startTracking, updateTracking, stopTracking, isCurrentlySelecting, hasMouseMoved } =
+        useMouseTracking();
 
     // Auto-focus e seleção quando entra em modo de edição
     useEffect(() => {
@@ -58,26 +57,32 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
     }, [clearSelectionTimeout]);
 
     // Event Handlers
-    const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (!isEditing) {
-            startEditing();
-        } else if (contentRef.current) {
-            selectAllText(contentRef.current);
-        }
-    }, [isEditing, startEditing, selectAllText, contentRef]);
+    const handleDoubleClick = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation();
+            if (!isEditing) {
+                startEditing();
+            } else if (contentRef.current) {
+                selectAllText(contentRef.current);
+            }
+        },
+        [isEditing, startEditing, selectAllText, contentRef],
+    );
 
-    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            e.stopPropagation();
-            saveEdit();
-        } else if (e.key === 'Escape') {
-            e.preventDefault();
-            e.stopPropagation();
-            cancelEdit();
-        }
-    }, [saveEdit, cancelEdit]);
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                saveEdit();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                cancelEdit();
+            }
+        },
+        [saveEdit, cancelEdit],
+    );
 
     const handleBlur = useCallback(() => {
         setTimeout(() => {
@@ -87,47 +92,61 @@ const InteractiveNodeContent: React.FC<InteractiveNodeContentProps> = ({ id, dat
         }, 100);
     }, [saveEdit, isCurrentlySelecting]);
 
-    const handleClick = useCallback((e: React.MouseEvent) => {
-        if (!isEditing) return;
+    const handleClick = useCallback(
+        (e: React.MouseEvent) => {
+            if (!isEditing) return;
 
-        e.stopPropagation();
+            e.stopPropagation();
 
-        // Clique simples - posiciona cursor
-        const trackingResult = stopTracking();
-        if (trackingResult.startPosition &&
-            !hasMouseMoved(trackingResult.startPosition, { x: e.clientX, y: e.clientY })) {
-            setCursorPosition(e.clientX, e.clientY);
-        }
-    }, [isEditing, stopTracking, hasMouseMoved, setCursorPosition]);
-
-    const handleMouseDown = useCallback((e: React.MouseEvent) => {
-        if (!isEditing) return;
-
-        e.stopPropagation();
-        startTracking(e.clientX, e.clientY);
-        clearSelectionTimeout();
-    }, [isEditing, startTracking, clearSelectionTimeout]);
-
-    const handleMouseMove = useCallback((e: React.MouseEvent) => {
-        if (!isEditing || !isCurrentlySelecting()) return;
-
-        e.stopPropagation();
-        updateTracking(e.clientX, e.clientY);
-    }, [isEditing, isCurrentlySelecting, updateTracking]);
-
-    const handleMouseUp = useCallback((e: React.MouseEvent) => {
-        if (!isEditing) return;
-
-        e.stopPropagation();
-
-        const trackingResult = stopTracking();
-        if (trackingResult.hadMovement) {
-            const currentSelection = preserveSelection();
-            if (currentSelection) {
-                preserveSelectionWithDelay(currentSelection);
+            // Clique simples - posiciona cursor
+            const trackingResult = stopTracking();
+            if (
+                trackingResult.startPosition &&
+                !hasMouseMoved(trackingResult.startPosition, { x: e.clientX, y: e.clientY })
+            ) {
+                setCursorPosition(e.clientX, e.clientY);
             }
-        }
-    }, [isEditing, stopTracking, preserveSelection, preserveSelectionWithDelay]);
+        },
+        [isEditing, stopTracking, hasMouseMoved, setCursorPosition],
+    );
+
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent) => {
+            if (!isEditing) return;
+
+            e.stopPropagation();
+            startTracking(e.clientX, e.clientY);
+            clearSelectionTimeout();
+        },
+        [isEditing, startTracking, clearSelectionTimeout],
+    );
+
+    const handleMouseMove = useCallback(
+        (e: React.MouseEvent) => {
+            if (!isEditing || !isCurrentlySelecting()) return;
+
+            e.stopPropagation();
+            updateTracking(e.clientX, e.clientY);
+        },
+        [isEditing, isCurrentlySelecting, updateTracking],
+    );
+
+    const handleMouseUp = useCallback(
+        (e: React.MouseEvent) => {
+            if (!isEditing) return;
+
+            e.stopPropagation();
+
+            const trackingResult = stopTracking();
+            if (trackingResult.hadMovement) {
+                const currentSelection = preserveSelection();
+                if (currentSelection) {
+                    preserveSelectionWithDelay(currentSelection);
+                }
+            }
+        },
+        [isEditing, stopTracking, preserveSelection, preserveSelectionWithDelay],
+    );
 
     const handlePaste = useCallback((e: React.ClipboardEvent) => {
         e.preventDefault();

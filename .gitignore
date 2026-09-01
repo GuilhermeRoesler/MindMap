@@ -35,3 +35,6 @@ Thumbs.db
 # Other package managers (project uses npm)
 pnpm-lock.yaml
 yarn.lock
+
+# Test coverage
+coverage

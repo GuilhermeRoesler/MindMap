@@ -1,4 +1,4 @@
-import type { Edge } from "@xyflow/react";
+import type { Edge } from '@xyflow/react';
 
 export const CONNECTION_COLORS = [
     '#6F34DC',
@@ -17,15 +17,22 @@ export const CONNECTION_COLORS = [
 
 export const getConnectionColor = (childIndex: number): string => {
     return CONNECTION_COLORS[childIndex % CONNECTION_COLORS.length];
-}
+};
 
-export const getChildIndex = (parentId: string, childId: string, edges: Edge[], side?: 'left' | 'right'): number => {
+export const getChildIndex = (
+    parentId: string,
+    childId: string,
+    edges: Edge[],
+    side?: 'left' | 'right',
+): number => {
     let parentConnections = edges.filter((edge) => edge.source === parentId);
 
     // If a specific side is provided, filter only for that side
     if (side) {
         const expectedHandle = side === 'right' ? 'left-target' : 'right-target';
-        parentConnections = parentConnections.filter(edge => edge.targetHandle === expectedHandle);
+        parentConnections = parentConnections.filter(
+            (edge) => edge.targetHandle === expectedHandle,
+        );
     }
 
     parentConnections.sort((a, b) => {

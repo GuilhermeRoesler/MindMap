@@ -8,7 +8,12 @@ interface UseNodeEditorProps {
     parentNodeRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, parentNodeRef }: UseNodeEditorProps) => {
+export const useNodeEditor = ({
+    id,
+    initialLabel,
+    isInitiallyEditing = false,
+    parentNodeRef,
+}: UseNodeEditorProps) => {
     const [isEditing, setIsEditing] = useState(isInitiallyEditing);
     const contentRef = useRef<HTMLParagraphElement>(null);
     const { setNodes } = useReactFlow();
@@ -23,9 +28,12 @@ export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, pa
             setNodes((nodes) =>
                 nodes.map((node) =>
                     node.id === id
-                        ? { ...node, data: { ...node.data, label: newValue.trim(), isEditing: false } }
-                        : node
-                )
+                        ? {
+                              ...node,
+                              data: { ...node.data, label: newValue.trim(), isEditing: false },
+                          }
+                        : node,
+                ),
             );
         }
         setIsEditing(false);
@@ -45,6 +53,6 @@ export const useNodeEditor = ({ id, initialLabel, isInitiallyEditing = false, pa
         contentRef,
         startEditing,
         saveEdit,
-        cancelEdit
+        cancelEdit,
     };
 };

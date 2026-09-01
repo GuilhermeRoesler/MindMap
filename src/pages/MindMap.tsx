@@ -27,7 +27,7 @@ import { useThemeDetector } from '../hooks/useThemeDetector';
 
 const nodeTypes = {
     interactive: InteractiveNode,
-}
+};
 
 const flowConfig = {
     selectionMode: SelectionMode.Partial,
@@ -56,7 +56,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             try {
                 await saveProject({ ...project, nodes, edges });
             } catch (error) {
-                console.error("Failed to save project:", error);
+                console.error('Failed to save project:', error);
                 // Optionally, show a toast notification to the user
             } finally {
                 setTimeout(() => {
@@ -66,35 +66,23 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         }
     }, [projectId, nodes, edges]);
 
-    const onNodesChange = useCallback(
-        (changes: NodeChange[]) => {
-            setNodes((nds) => applyNodeChanges(changes, nds!));
-        },
-        []
-    );
+    const onNodesChange = useCallback((changes: NodeChange[]) => {
+        setNodes((nds) => applyNodeChanges(changes, nds!));
+    }, []);
 
-    const onNodesDelete = useCallback(
-        () => {
-            setTimeout(() => {
-                layoutNodes();
-            }, 100);
-        },
-        [layoutNodes]
-    );
+    const onNodesDelete = useCallback(() => {
+        setTimeout(() => {
+            layoutNodes();
+        }, 100);
+    }, [layoutNodes]);
 
-    const onEdgesChange = useCallback(
-        (changes: EdgeChange[]) => {
-            setEdges((eds) => applyEdgeChanges(changes, eds!));
-        },
-        []
-    );
+    const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+        setEdges((eds) => applyEdgeChanges(changes, eds!));
+    }, []);
 
-    const onConnect = useCallback(
-        (connection: Connection) => {
-            setEdges((eds) => addEdge(connection, eds!));
-        },
-        []
-    );
+    const onConnect = useCallback((connection: Connection) => {
+        setEdges((eds) => addEdge(connection, eds!));
+    }, []);
 
     // Load project data on mount
     useEffect(() => {
@@ -122,14 +110,17 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         if (!edges) return '';
         // Create a unique signature for the graph structure.
         // This prevents the color update from running in a loop.
-        return edges.map(e => `${e.source}-${e.target}-${e.sourceHandle}-${e.targetHandle}`).sort().join(',');
+        return edges
+            .map((e) => `${e.source}-${e.target}-${e.sourceHandle}-${e.targetHandle}`)
+            .sort()
+            .join(',');
     }, [edges]);
 
     useEffect(() => {
         if (edges && edges.length > 0) {
             updateConnectionColors();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- edgeStructureSignature replaces edges to avoid update loops
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- edgeStructureSignature replaces edges to avoid update loops
     }, [edgeStructureSignature, updateConnectionColors]);
 
     if (nodes === null || edges === null) {
@@ -161,7 +152,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                     bgColor={isDarkTheme ? '#1a1a1a' : '#f8f9fa'}
                     lineWidth={1}
                     color={isDarkTheme ? '#141414' : '#e9ecef'}
-                    gap={40} />
+                    gap={40}
+                />
             </ReactFlow>
             <HeaderPanel onBack={onBackToProjects} />
         </>
@@ -180,7 +172,7 @@ function MindMap({ projectId, onBackToProjects }: MindMapProps) {
                 <FlowContent projectId={projectId} onBackToProjects={onBackToProjects} />
             </ReactFlowProvider>
         </div>
-    )
+    );
 }
 
 export default MindMap;

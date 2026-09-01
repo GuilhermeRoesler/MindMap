@@ -107,7 +107,19 @@ npm run dev
 - `npm run dev`: Inicia o servidor de desenvolvimento Vite.
 - `npm run build`: Compila o TypeScript e gera a build de produção.
 - `npm run lint`: Executa o ESLint para verificar a qualidade do código.
+- `npm run typecheck`: Verifica tipos TypeScript sem gerar build.
+- `npm run test`: Executa os testes unitários (Vitest).
+- `npm run test:watch`: Executa testes em modo watch.
+- `npm run format`: Formata o código com Prettier.
+- `npm run validate`: Pipeline completo (typecheck, lint, format, test, build).
 - `npm run preview`: Visualiza a build de produção localmente.
+
+## ✅ Qualidade e CI
+
+O projeto inclui validação automática:
+
+- **Pre-commit (Husky):** typecheck + lint/format nos ficheiros staged.
+- **GitHub Actions (`.github/workflows/ci.yml`):** typecheck, lint, format, testes, build (frontend) e syntax check PHP (backend).
 
 ## 🔒 Base de Dados
 

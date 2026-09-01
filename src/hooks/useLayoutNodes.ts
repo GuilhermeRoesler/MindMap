@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { useReactFlow, type Node, type Edge, Position } from "@xyflow/react";
+import { useCallback } from 'react';
+import { useReactFlow, type Node, type Edge, Position } from '@xyflow/react';
 import dagre from 'dagre';
 
 const nodeWidth = 172;

@@ -43,17 +43,20 @@ export const useTextSelection = () => {
         }
     }, []);
 
-    const preserveSelectionWithDelay = useCallback((range: Range | null, delay: number = 50) => {
-        if (range) {
-            if (selectionTimeoutRef.current) {
-                clearTimeout(selectionTimeoutRef.current);
-            }
+    const preserveSelectionWithDelay = useCallback(
+        (range: Range | null, delay: number = 50) => {
+            if (range) {
+                if (selectionTimeoutRef.current) {
+                    clearTimeout(selectionTimeoutRef.current);
+                }
 
-            selectionTimeoutRef.current = setTimeout(() => {
-                restoreSelection(range);
-            }, delay);
-        }
-    }, [restoreSelection]);
+                selectionTimeoutRef.current = setTimeout(() => {
+                    restoreSelection(range);
+                }, delay);
+            }
+        },
+        [restoreSelection],
+    );
 
     const clearSelectionTimeout = useCallback(() => {
         if (selectionTimeoutRef.current) {
@@ -67,6 +70,6 @@ export const useTextSelection = () => {
         restoreSelection,
         setCursorPosition,
         preserveSelectionWithDelay,
-        clearSelectionTimeout
+        clearSelectionTimeout,
     };
 };

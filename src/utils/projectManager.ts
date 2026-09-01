@@ -14,9 +14,11 @@ export interface Project {
 export const getProjects = async (): Promise<Project[]> => {
     try {
         const projects = await apiRequest<Project[]>('projects.php');
-        return projects.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        return projects.sort(
+            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        );
     } catch (error) {
-        console.error("Failed to fetch projects:", error);
+        console.error('Failed to fetch projects:', error);
         return [];
     }
 };
@@ -27,7 +29,7 @@ export const createProject = async (name: string): Promise<Project> => {
         nodes: initialNodes,
         edges: initialEdges,
     };
-    
+
     try {
         const newProject = await apiRequest<Project>('projects.php', {
             method: 'POST',
@@ -35,7 +37,7 @@ export const createProject = async (name: string): Promise<Project> => {
         });
         return newProject;
     } catch (error) {
-        console.error("Failed to create project:", error);
+        console.error('Failed to create project:', error);
         throw error;
     }
 };
@@ -62,7 +64,7 @@ export const saveProject = async (projectToSave: Project): Promise<void> => {
             }),
         });
     } catch (error) {
-        console.error("Failed to save project:", error);
+        console.error('Failed to save project:', error);
         throw error;
     }
 };
@@ -76,7 +78,7 @@ export const deleteProject = async (id: number): Promise<void> => {
             }),
         });
     } catch (error) {
-        console.error("Failed to delete project:", error);
+        console.error('Failed to delete project:', error);
         throw error;
     }
 };
