@@ -38,7 +38,6 @@ mind-map/
 │   ├── auth_middleware.php
 │   ├── database.php
 │   ├── login.php
-│   ├── mindmap.sqlite  # Ficheiro da base de dados
 │   └── ...
 ├── src/                # Código fonte Frontend (React)
 │   ├── components/     # Componentes reutilizáveis (Nós, Modais, Paineis)
@@ -54,7 +53,7 @@ mind-map/
 ## ⚙️ Pré-requisitos
 
 - **Node.js** (versão 18 ou superior)
-- **Gestor de pacotes:** pnpm (recomendado devido à presença do `pnpm-lock.yaml`), npm ou yarn.
+- **npm** (gestor de pacotes)
 - **Servidor PHP:** Necessário para rodar a pasta `/backend` (ex: Apache, Nginx, ou o servidor embutido do PHP).
 - **Extensão SQLite:** Habilitada no PHP (`php.ini`).
 
@@ -70,8 +69,8 @@ A aplicação requer que o backend PHP esteja a correr para funcionar a autentic
 cd backend
 ```
 
-2. Garanta que o ficheiro da base de dados e a pasta têm permissões de escrita.
-3. Pode iniciar um servidor PHP embutido para testes (na porta 8000, por exemplo):
+2. Garanta que a pasta `backend/` tem permissões de escrita (a base de dados é criada automaticamente).
+3. Inicie um servidor PHP embutido para testes (na porta 8000, por exemplo):
 
 ```bash
 php -S localhost:8000
@@ -84,16 +83,12 @@ _Nota: Poderá ser necessário ajustar a URL da API no frontend (`src/utils/api.
 1. Instale as dependências:
 
 ```bash
-pnpm install
-# ou
 npm install
 ```
 
 2. Inicie o servidor de desenvolvimento:
 
 ```bash
-pnpm dev
-# ou
 npm run dev
 ```
 
@@ -108,8 +103,8 @@ npm run dev
 
 ## 🔒 Base de Dados
 
-O projeto utiliza **SQLite**. O ficheiro da base de dados encontra-se em `backend/mindmap.sqlite`.
-O script `backend/database.php` gere a conexão e a criação automática das tabelas (`users`, `projects`, etc.) caso não existam.
+O projeto utiliza **SQLite**. O ficheiro `backend/mindmap.sqlite` é gerado automaticamente na primeira execução.
+O script `backend/database.php` gere a conexão e a criação das tabelas (`users`, `projects`, etc.).
 
 ---
 
