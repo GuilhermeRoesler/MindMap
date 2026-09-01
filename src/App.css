@@ -309,6 +309,311 @@ button:active {
   color: #333;
 }
 
+/* PROJECTS PAGE NEW LAYOUT */
+.projects-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 16px 8px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: #6F34DC;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.add-space-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.add-space-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  font-size: 14px;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #6F34DC;
+  box-shadow: 0 0 0 2px rgba(111, 52, 220, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.sidebar-nav li a:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar-nav li.active a {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+/* MAIN HEADER */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar-header {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #6F34DC;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* PROJECTS AREA */
+.projects-area {
+  padding: 24px 40px;
+  flex-grow: 1;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.projects-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.create-new-btn {
+  background-color: #6F34DC;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.create-new-btn:hover {
+  background-color: #5e2ab2;
+}
+
+/* PROJECTS TABLE */
+.projects-table {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.table-header {
+  display: flex;
+  padding: 12px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.table-body {
+  /* No specific styles needed for the body container */
+}
+
+.table-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.col-name {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.col-last-opened {
+  flex: 1;
+  color: #555;
+  font-size: 14px;
+}
+
+.col-actions {
+  flex: 0.5;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  color: #555;
+}
+
+.project-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.project-modified {
+  font-size: 12px;
+  color: #888;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.action-btn:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: #888;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  color: #555;
+}
+
 /* DARK MODE STYLES */
 @media (prefers-color-scheme: dark) {
   body {
@@ -380,6 +685,108 @@ button:active {
     background-color: #8a5cf6;
     color: white;
     border-color: #8a5cf6;
+  }
+
+  .projects-layout {
+    background-color: #1a1a1a;
+  }
+
+  .sidebar {
+    background-color: #252526;
+    border-right-color: #444;
+  }
+
+  .user-name, .sidebar-nav li a {
+    color: #f0f0f0;
+  }
+
+  .add-space-btn {
+    color: #ccc;
+  }
+
+  .add-space-btn:hover {
+    background-color: #3a3a3a;
+  }
+
+  .search-bar input {
+    background-color: #1a1a1a;
+    border-color: #444;
+    color: #f0f0f0;
+  }
+
+  .search-bar input:focus {
+    border-color: #8a5cf6;
+    box-shadow: 0 0 0 2px rgba(138, 92, 246, 0.3);
+  }
+
+  .search-icon {
+    color: #aaa;
+  }
+
+  .sidebar-nav li a:hover {
+    background-color: #3a3a3a;
+  }
+
+  .sidebar-nav li.active a {
+    background-color: #3a3a3a;
+    color: #fff;
+  }
+
+  .main-header {
+    background-color: #252526;
+    border-bottom-color: #444;
+  }
+
+  .logo {
+    color: #f0f0f0;
+  }
+
+  .projects-header h2 {
+    color: #f0f0f0;
+  }
+
+  .projects-table {
+    background-color: #252526;
+    border-color: #444;
+  }
+
+  .table-header {
+    border-bottom-color: #444;
+    color: #aaa;
+  }
+
+  .table-row {
+    border-bottom-color: #444;
+  }
+
+  .table-row:hover {
+    background-color: #3a3a3a;
+  }
+
+  .col-last-opened {
+    color: #ccc;
+  }
+
+  .project-icon {
+    background-color: #3a3a3a;
+    color: #ccc;
+  }
+
+  .project-name {
+    color: #f0f0f0;
+  }
+
+  .project-modified {
+    color: #aaa;
+  }
+
+  .action-btn {
+    color: #aaa;
+  }
+
+  .action-btn:hover {
+    background-color: #444;
+    color: #fff;
   }
 }
 
