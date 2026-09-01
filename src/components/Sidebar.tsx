@@ -1,17 +1,14 @@
-import { Home } from 'lucide-react';
-import { getDisplayName, useGlobalConfigStore } from '../store/globalConfigStore';
+import { Home, Sparkles } from 'lucide-react';
 
 const Sidebar = () => {
-    const userEmail = useGlobalConfigStore((state) => state.userEmail);
-    const displayName = getDisplayName(userEmail);
-    const userInitial = displayName.charAt(0).toUpperCase();
-
     return (
         <aside className="sidebar">
             <div className="sidebar-header">
                 <div className="user-info">
-                    <div className="user-avatar">{userInitial}</div>
-                    <span className="user-name">{displayName}</span>
+                    <div className="user-avatar">
+                        <Sparkles size={18} />
+                    </div>
+                    <span className="user-name">MindMap</span>
                 </div>
             </div>
             <nav className="sidebar-nav">
@@ -19,7 +16,7 @@ const Sidebar = () => {
                     <li className="active">
                         <a href="#">
                             <Home size={20} />
-                            <span>Home</span>
+                            <span>Dashboard</span>
                         </a>
                     </li>
                 </ul>

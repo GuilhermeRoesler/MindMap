@@ -1,131 +1,85 @@
 # MindMap
 
-Uma aplicação web interativa para criação e gestão de mapas mentais, desenvolvida com uma arquitetura moderna de Frontend e um Backend leve. O projeto permite criar nós, estabelecer conexões e organizar ideias visualmente com recursos de layout automático.
+Aplicação web interativa para criação de mapas mentais — projeto de portfólio com persistência local no browser, sem backend.
 
 ![](public/demo.jpeg)
 
-## 🚀 Funcionalidades
+**Demo ao vivo:** [guilhermeroesler.github.io/MindMap](https://guilhermeroesler.github.io/MindMap/)
 
-- **Mapas Mentais Interativos:** Criação de nós e arestas com interface "drag-and-drop" utilizando [React Flow](https://reactflow.dev/).
-- **Layout Automático:** Organização automática dos nós para melhor visualização (baseado em Dagre).
-- **Gestão de Projetos:** Criação, salvamento e listagem de múltiplos projetos de mapas mentais.
-- **Autenticação de Utilizadores:** Sistema de Login e Registo de utilizadores.
-- **Temas:** Suporte a deteção de tema (Claro/Escuro).
-- **Nós Interativos:** Capacidade de adicionar, editar e expandir nós diretamente na interface.
+## Funcionalidades
 
-## 🛠️ Tecnologias Utilizadas
+- **Mapas mentais interativos:** criação de nós e conexões com [React Flow](https://reactflow.dev/)
+- **Layout automático:** organização dos nós com Dagre
+- **Dashboard de projetos:** CRUD completo (criar, renomear, abrir, apagar)
+- **Projeto demo:** mapa pré-carregado na primeira visita para explorar as funcionalidades
+- **Persistência local:** dados salvos em `localStorage` — sem servidor, sem login
+- **Temas:** suporte a modo claro e escuro
+- **Deploy automático:** GitHub Pages via GitHub Actions
 
-### Frontend
+## Tecnologias
 
-- **React 19** + **Vite** (Build tool e Framework)
-- **TypeScript** (Tipagem estática)
-- **React Flow (@xyflow/react)** (Biblioteca de grafos/mapas)
-- **Zustand** (Gestão de estado)
-- **TailwindCSS** (Estilização)
-- **Lucide React** (Ícones)
-- **Dagre** (Algoritmo de layout de grafos)
+- **React 19** + **Vite** + **TypeScript**
+- **React Flow (@xyflow/react)** — grafos interativos
+- **TailwindCSS** — estilização
+- **Dagre** — layout automático
+- **Vitest** — testes unitários
 
-### Backend
-
-- **PHP** (API RESTful simples)
-- **SQLite** (Base de dados leve baseada em ficheiro)
-
-## 📂 Estrutura do Projeto
+## Estrutura
 
 ```text
 mind-map/
-├── backend/            # API PHP e base de dados SQLite
-│   ├── auth_middleware.php
-│   ├── database.php
-│   ├── login.php
-│   └── ...
-├── src/                # Código fonte Frontend (React)
-│   ├── components/     # Componentes reutilizáveis (Nós, Modais, Paineis)
-│   ├── hooks/          # Custom Hooks (Layout, Cores, Eventos)
-│   ├── pages/          # Páginas da aplicação (Login, Projetos, MindMap)
-│   ├── utils/          # Utilitários e chamadas à API
-│   └── ...
-├── index.html
-├── package.json
+├── src/
+│   ├── components/     # Nós, header, sidebar, modais
+│   ├── data/           # Nós iniciais e projeto demo
+│   ├── hooks/          # Layout, cores, edição de nós
+│   ├── pages/          # Dashboard e editor MindMap
+│   └── utils/          # projectManager (localStorage)
+├── .github/workflows/  # CI + deploy GitHub Pages
 └── vite.config.ts
 ```
 
-## ⚙️ Pré-requisitos
-
-- **Node.js** (versão 18 ou superior)
-- **npm** (gestor de pacotes)
-- **Servidor PHP:** Necessário para rodar a pasta `/backend` (ex: Apache, Nginx, ou o servidor embutido do PHP).
-- **Extensão SQLite:** Habilitada no PHP (`php.ini`).
-
-## 🚀 Instalação e Execução
-
-### 1. Configurar o Backend
-
-A aplicação requer que o backend PHP esteja a correr para funcionar a autenticação e o salvamento de dados.
-
-1. Navegue até à pasta backend:
-
-```bash
-cd backend
-```
-
-2. Garanta que a pasta `backend/` tem permissões de escrita (a base de dados é criada automaticamente).
-3. Inicie um servidor PHP embutido para testes (na porta 8000, por exemplo):
-
-```bash
-php -S localhost:8000
-```
-
-_Nota: A URL da API é configurada via variável de ambiente (ver secção abaixo)._
-
-### 2. Configurar o Frontend
-
-1. Copie o ficheiro de exemplo de variáveis de ambiente:
-
-```bash
-cp .env.example .env
-```
-
-Por defeito, `VITE_API_BASE_URL` aponta para `http://localhost:8000/`. Ajuste se o backend correr noutra porta ou URL.
-
-2. Instale as dependências:
+## Instalação
 
 ```bash
 npm install
-```
-
-3. Inicie o servidor de desenvolvimento:
-
-```bash
 npm run dev
 ```
 
-4. Aceda à aplicação no navegador (geralmente em `http://localhost:5173`).
+Acesse `http://localhost:5173`.
 
-## 📜 Scripts Disponíveis
+## Scripts
 
-- `npm run dev`: Inicia o servidor de desenvolvimento Vite.
-- `npm run build`: Compila o TypeScript e gera a build de produção.
-- `npm run lint`: Executa o ESLint para verificar a qualidade do código.
-- `npm run typecheck`: Verifica tipos TypeScript sem gerar build.
-- `npm run test`: Executa os testes unitários (Vitest).
-- `npm run test:watch`: Executa testes em modo watch.
-- `npm run format`: Formata o código com Prettier.
-- `npm run validate`: Pipeline completo (typecheck, lint, format, test, build).
-- `npm run preview`: Visualiza a build de produção localmente.
+| Script             | Descrição                                |
+| ------------------ | ---------------------------------------- |
+| `npm run dev`      | Servidor de desenvolvimento              |
+| `npm run build`    | Build de produção                        |
+| `npm run preview`  | Preview da build local                   |
+| `npm run test`     | Testes unitários                         |
+| `npm run validate` | typecheck + lint + format + test + build |
 
-## ✅ Qualidade e CI
+## Deploy (GitHub Pages)
 
-O projeto inclui validação automática:
+O workflow `.github/workflows/deploy.yml` publica automaticamente em cada push para `main`.
 
-- **Pre-commit (Husky):** typecheck + lint/format nos ficheiros staged.
-- **GitHub Actions (`.github/workflows/ci.yml`):** typecheck, lint, format, testes, build (frontend) e syntax check PHP (backend).
+1. Em **Settings → Pages**, selecione **GitHub Actions** como source
+2. Faça push para `main` — o deploy roda sozinho
+3. A app fica em `https://<usuario>.github.io/MindMap/`
 
-## 🔒 Base de Dados
+Para build local com o mesmo base path do Pages:
 
-O projeto utiliza **SQLite**. O ficheiro `backend/mindmap.sqlite` é gerado automaticamente na primeira execução.
-O script `backend/database.php` gere a conexão e a criação das tabelas (`users`, `projects`, etc.).
+```bash
+VITE_BASE_PATH=/MindMap/ npm run build
+```
+
+## Persistência
+
+Os projetos ficam em `localStorage` (chave `mindmap_projects`). Na primeira visita, um **Demo Mind Map** é criado automaticamente. Dados são locais ao browser — limpar cache ou trocar de dispositivo apaga os projetos.
+
+## CI
+
+- **`.github/workflows/ci.yml`:** typecheck, lint, format, testes e build em PRs e pushes
+- **`.github/workflows/deploy.yml`:** build + deploy para GitHub Pages
 
 ---
 
-Desenvolvido com ❤️ utilizando React e PHP.
+Desenvolvido com React e React Flow.

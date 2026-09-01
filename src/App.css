@@ -422,6 +422,12 @@ button:active {
     gap: 16px;
 }
 
+.header-subtitle {
+    font-size: 13px;
+    color: #868e96;
+    font-weight: 400;
+}
+
 .user-avatar-header {
     width: 36px;
     height: 36px;
@@ -550,6 +556,20 @@ button:active {
 .project-name {
     font-weight: 600;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.demo-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: #ede9fe;
+    color: #6f34dc;
 }
 
 .project-modified {
@@ -718,6 +738,15 @@ button:active {
 
     .logo {
         color: #f0f0f0;
+    }
+
+    .header-subtitle {
+        color: #aaa;
+    }
+
+    .demo-badge {
+        background-color: #3a2d5c;
+        color: #c4b5fd;
     }
 
     .projects-header h2 {

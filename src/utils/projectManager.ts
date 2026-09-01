@@ -1,84 +1,119 @@
 import { type Node, type Edge } from '@xyflow/react';
+import { ulid } from 'ulid';
 import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
-import apiRequest from './api';
+import { DEMO_PROJECT_ID, DEMO_PROJECT_NAME, demoNodes, demoEdges } from '../data/demoProject';
+
+const STORAGE_KEY = 'mindmap_projects';
 
 export interface Project {
-    id: number;
+    id: string;
     name: string;
     nodes: Node[];
     edges: Edge[];
     updatedAt: string;
+    isDemo?: boolean;
 }
 
-export const getProjects = async (): Promise<Project[]> => {
+const loadProjects = (): Project[] => {
     try {
-        const projects = await apiRequest<Project[]>('projects.php');
-        return projects.sort(
-            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-        );
-    } catch (error) {
-        console.error('Failed to fetch projects:', error);
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw) as Project[];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
         return [];
     }
 };
 
+const persistProjects = (projects: Project[]): void => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+};
+
+const seedDemoProject = (): Project => ({
+    id: DEMO_PROJECT_ID,
+    name: DEMO_PROJECT_NAME,
+    nodes: demoNodes,
+    edges: demoEdges,
+    updatedAt: new Date().toISOString(),
+    isDemo: true,
+});
+
+const ensureInitialized = (): Project[] => {
+    const projects = loadProjects();
+    if (projects.length === 0) {
+        const demo = seedDemoProject();
+        persistProjects([demo]);
+        return [demo];
+    }
+    return projects;
+};
+
+export const getProjects = async (): Promise<Project[]> => {
+    const projects = ensureInitialized();
+    return [...projects].sort(
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    );
+};
+
 export const createProject = async (name: string): Promise<Project> => {
-    const newProjectData = {
+    const newProject: Project = {
+        id: ulid(),
         name,
         nodes: initialNodes,
         edges: initialEdges,
+        updatedAt: new Date().toISOString(),
     };
 
-    try {
-        const newProject = await apiRequest<Project>('projects.php', {
-            method: 'POST',
-            body: JSON.stringify(newProjectData),
-        });
-        return newProject;
-    } catch (error) {
-        console.error('Failed to create project:', error);
-        throw error;
-    }
+    const projects = ensureInitialized();
+    projects.unshift(newProject);
+    persistProjects(projects);
+    return newProject;
 };
 
-export const getProject = async (id: number): Promise<Project | null> => {
-    try {
-        const project = await apiRequest<Project>(`projects.php?id=${id}`);
-        return project;
-    } catch (error) {
-        console.error(`Failed to fetch project ${id}:`, error);
-        return null;
-    }
+export const getProject = async (id: string): Promise<Project | null> => {
+    const projects = ensureInitialized();
+    return projects.find((p) => p.id === id) ?? null;
 };
 
-export const saveProject = async (projectToSave: Project): Promise<void> => {
-    try {
-        await apiRequest(`projects.php?id=${projectToSave.id}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                _method: 'PUT',
-                name: projectToSave.name,
-                nodes: projectToSave.nodes,
-                edges: projectToSave.edges,
-            }),
-        });
-    } catch (error) {
-        console.error('Failed to save project:', error);
-        throw error;
-    }
+export const updateProjectData = async (
+    id: string,
+    nodes: Node[],
+    edges: Edge[],
+): Promise<void> => {
+    const projects = ensureInitialized();
+    const index = projects.findIndex((p) => p.id === id);
+    if (index === -1) throw new Error(`Project ${id} not found`);
+
+    projects[index] = {
+        ...projects[index],
+        nodes,
+        edges,
+        updatedAt: new Date().toISOString(),
+    };
+    persistProjects(projects);
 };
 
-export const deleteProject = async (id: number): Promise<void> => {
-    try {
-        await apiRequest(`projects.php?id=${id}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                _method: 'DELETE',
-            }),
-        });
-    } catch (error) {
-        console.error('Failed to delete project:', error);
-        throw error;
+export const renameProject = async (id: string, name: string): Promise<void> => {
+    const projects = ensureInitialized();
+    const index = projects.findIndex((p) => p.id === id);
+    if (index === -1) throw new Error(`Project ${id} not found`);
+
+    projects[index] = {
+        ...projects[index],
+        name: name.trim(),
+        updatedAt: new Date().toISOString(),
+    };
+    persistProjects(projects);
+};
+
+export const deleteProject = async (id: string): Promise<void> => {
+    const projects = ensureInitialized();
+    const project = projects.find((p) => p.id === id);
+    if (project?.isDemo) {
+        throw new Error('The demo project cannot be deleted.');
     }
+
+    const filtered = projects.filter((p) => p.id !== id);
+    persistProjects(filtered);
 };

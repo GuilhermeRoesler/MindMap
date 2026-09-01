@@ -1,42 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, History } from 'lucide-react';
-import { getProjects, createProject, deleteProject, type Project } from '../utils/projectManager';
+import { Plus, Trash2, History, Pencil } from 'lucide-react';
+import {
+    getProjects,
+    createProject,
+    deleteProject,
+    renameProject,
+    type Project,
+} from '../utils/projectManager';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import LoadingSpinner from '../icons/LoadingSpinner';
 import CreateProjectModal from '../components/CreateProjectModal';
 
 interface ProjectsPageProps {
-    onSelectProject: (projectId: number) => void;
-    onLogout: () => void;
+    onSelectProject: (projectId: string) => void;
 }
 
-const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }) => {
+const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            setIsLoading(true);
-            const fetchedProjects = await getProjects();
-            setProjects(fetchedProjects);
-            setIsLoading(false);
+        let cancelled = false;
+        getProjects().then((fetchedProjects) => {
+            if (!cancelled) {
+                setProjects(fetchedProjects);
+                setIsLoading(false);
+            }
+        });
+        return () => {
+            cancelled = true;
         };
-        fetchProjects();
     }, []);
 
     const handleCreateProject = async (name: string) => {
-        try {
-            const newProject = await createProject(name.trim());
-            onSelectProject(newProject.id);
-        } catch (error) {
-            console.error(error);
-            throw error; // Re-throw to be caught and displayed by the modal
-        }
+        const newProject = await createProject(name.trim());
+        onSelectProject(newProject.id);
     };
 
-    const handleDeleteProject = async (id: number) => {
+    const handleDeleteProject = async (id: string, isDemo?: boolean) => {
+        if (isDemo) {
+            alert('The demo project cannot be deleted.');
+            return;
+        }
         if (window.confirm('Are you sure you want to delete this mind map?')) {
             try {
                 await deleteProject(id);
@@ -45,6 +52,25 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                 alert('Failed to delete project. Please try again.');
                 console.error(error);
             }
+        }
+    };
+
+    const handleRenameProject = async (id: string, currentName: string, isDemo?: boolean) => {
+        if (isDemo) {
+            alert('The demo project name cannot be changed.');
+            return;
+        }
+        const newName = window.prompt('Rename mind map:', currentName);
+        if (!newName || newName.trim() === currentName) return;
+
+        try {
+            await renameProject(id, newName.trim());
+            setProjects((prev) =>
+                prev.map((p) => (p.id === id ? { ...p, name: newName.trim() } : p)),
+            );
+        } catch (error) {
+            alert('Failed to rename project. Please try again.');
+            console.error(error);
         }
     };
 
@@ -61,10 +87,10 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
         <div className="projects-layout">
             <Sidebar />
             <main className="main-content">
-                <Header onLogout={onLogout} />
+                <Header />
                 <div className="projects-area">
                     <div className="projects-header">
-                        <h2>Boards in this team</h2>
+                        <h2>Your mind maps</h2>
                         <div className="projects-header-actions">
                             <button onClick={() => setIsModalOpen(true)} className="create-new-btn">
                                 <Plus size={16} /> Create new
@@ -95,7 +121,12 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                                 <History size={20} />
                                             </div>
                                             <div className="project-details">
-                                                <span className="project-name">{project.name}</span>
+                                                <span className="project-name">
+                                                    {project.name}
+                                                    {project.isDemo && (
+                                                        <span className="demo-badge">Demo</span>
+                                                    )}
+                                                </span>
                                                 <span className="project-modified">
                                                     Modified {formatDate(project.updatedAt)}
                                                 </span>
@@ -107,16 +138,39 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                         <div className="col-actions">
                                             <button
                                                 className="action-btn group"
+                                                title="Rename"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDeleteProject(project.id);
+                                                    handleRenameProject(
+                                                        project.id,
+                                                        project.name,
+                                                        project.isDemo,
+                                                    );
                                                 }}
                                             >
-                                                <Trash2
+                                                <Pencil
                                                     size={16}
-                                                    className="group-hover:stroke-red-500 transition-all duration-300"
+                                                    className="group-hover:stroke-blue-500 transition-all duration-300"
                                                 />
                                             </button>
+                                            {!project.isDemo && (
+                                                <button
+                                                    className="action-btn group"
+                                                    title="Delete"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteProject(
+                                                            project.id,
+                                                            project.isDemo,
+                                                        );
+                                                    }}
+                                                >
+                                                    <Trash2
+                                                        size={16}
+                                                        className="group-hover:stroke-red-500 transition-all duration-300"
+                                                    />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 ))

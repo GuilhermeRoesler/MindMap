@@ -21,7 +21,7 @@ import { useConnectionColors } from '../hooks/useConnectionColors';
 import InteractiveNode from '../components/InteractiveNode';
 import HeaderPanel from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
-import { getProject, saveProject } from '../utils/projectManager';
+import { getProject, updateProjectData } from '../utils/projectManager';
 import LoadingSpinner from '../icons/LoadingSpinner';
 import { useThemeDetector } from '../hooks/useThemeDetector';
 
@@ -35,7 +35,7 @@ const flowConfig = {
 };
 
 interface FlowContentProps {
-    projectId: number;
+    projectId: string;
     onBackToProjects: () => void;
 }
 
@@ -50,19 +50,15 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const saveData = useCallback(async () => {
         if (isSavingRef.current || nodes === null || edges === null) return;
 
-        const project = await getProject(projectId);
-        if (project) {
-            isSavingRef.current = true;
-            try {
-                await saveProject({ ...project, nodes, edges });
-            } catch (error) {
-                console.error('Failed to save project:', error);
-                // Optionally, show a toast notification to the user
-            } finally {
-                setTimeout(() => {
-                    isSavingRef.current = false;
-                }, 500); // Debounce saving
-            }
+        isSavingRef.current = true;
+        try {
+            await updateProjectData(projectId, nodes, edges);
+        } catch (error) {
+            console.error('Failed to save project:', error);
+        } finally {
+            setTimeout(() => {
+                isSavingRef.current = false;
+            }, 500);
         }
     }, [projectId, nodes, edges]);
 
@@ -84,7 +80,6 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         setEdges((eds) => addEdge(connection, eds!));
     }, []);
 
-    // Load project data on mount
     useEffect(() => {
         const loadProjectData = async () => {
             const project = await getProject(projectId);
@@ -99,7 +94,6 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         loadProjectData();
     }, [projectId, onBackToProjects]);
 
-    // Save data when nodes or edges change
     useEffect(() => {
         if (nodes !== null && edges !== null) {
             saveData();
@@ -108,8 +102,6 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 
     const edgeStructureSignature = useMemo(() => {
         if (!edges) return '';
-        // Create a unique signature for the graph structure.
-        // This prevents the color update from running in a loop.
         return edges
             .map((e) => `${e.source}-${e.target}-${e.sourceHandle}-${e.targetHandle}`)
             .sort()
@@ -161,7 +153,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
 }
 
 interface MindMapProps {
-    projectId: number;
+    projectId: string;
     onBackToProjects: () => void;
 }
 
