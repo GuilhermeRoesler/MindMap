@@ -4,15 +4,15 @@ import { useHeaderActions } from '../hooks/useHeaderActions';
 import SettingsModal from './SettingsModal';
 
 const HeaderPanel = ({ onBack }: { onBack: () => void }) => {
-    const { handleLayoutNodes, handleExport, handleImport, handleColorize } = useHeaderActions();
+    const { handleLayoutNodes, handleColorize } = useHeaderActions();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     return (
         <Panel position="top-left" className='HeaderPanel toolbar'>
             <span className="material-symbols-outlined" title="Back to Projects" onClick={onBack}>arrow_back</span>
-            <span className="material-symbols-outlined" title="Download" onClick={handleExport}>download</span>
-            <span className="material-symbols-outlined" title="Upload" onClick={handleImport}>upload</span>
+            <span className="material-symbols-outlined" title="Download">download</span>
+            <span className="material-symbols-outlined" title="Upload">upload</span>
             <span className="material-symbols-outlined" title="More" onClick={() => setIsSettingsOpen(!isSettingsOpen)}>more_vert
                 {isSettingsOpen && (
                     <div className="more-container">

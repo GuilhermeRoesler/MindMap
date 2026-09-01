@@ -1,7 +1,7 @@
 import { useGlobalConfigStore } from '../store/globalConfigStore';
 
-// const API_BASE_URL = 'https://mind-map.fwh.is/api/';
-const API_BASE_URL = 'http://localhost:8000/';
+const API_BASE_URL = 'https://mind-map.fwh.is/api/';
+// const API_BASE_URL = 'http://localhost:8000/';
 
 interface RequestOptions extends RequestInit {
     // You can add custom options here if needed

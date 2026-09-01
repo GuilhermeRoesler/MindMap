@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, MoreHorizontal, Star, History } from 'lucide-react';
+import { Plus, Trash2, History } from 'lucide-react';
 import { getProjects, createProject, deleteProject, type Project } from '../utils/projectManager';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import LoadingSpinner from '../icons/LoadingSpinner';
+import CreateProjectModal from '../components/CreateProjectModal';
 
 interface ProjectsPageProps {
     onSelectProject: (projectId: number) => void;
@@ -13,6 +14,7 @@ interface ProjectsPageProps {
 const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -24,16 +26,13 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
         fetchProjects();
     }, []);
 
-    const handleCreateProject = async () => {
-        const name = prompt("Enter a name for your new mind map:");
-        if (name && name.trim()) {
-            try {
-                const newProject = await createProject(name.trim());
-                onSelectProject(newProject.id);
-            } catch (error) {
-                alert('Failed to create project. Please try again.');
-                console.error(error);
-            }
+    const handleCreateProject = async (name: string) => {
+        try {
+            const newProject = await createProject(name.trim());
+            onSelectProject(newProject.id);
+        } catch (error) {
+            console.error(error);
+            throw error; // Re-throw to be caught and displayed by the modal
         }
     };
 
@@ -67,7 +66,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                     <div className="projects-header">
                         <h2>Boards in this team</h2>
                         <div className="projects-header-actions">
-                            <button onClick={handleCreateProject} className="create-new-btn">
+                            <button onClick={() => setIsModalOpen(true)} className="create-new-btn">
                                 <Plus size={16} /> Create new
                             </button>
                         </div>
@@ -102,9 +101,8 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                                             {formatDate(project.updatedAt)}
                                         </div>
                                         <div className="col-actions">
-                                            <button className="action-btn" onClick={(e) => e.stopPropagation()}><Star size={16} /></button>
-                                            <button className="action-btn" onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}>
-                                                <MoreHorizontal size={16} />
+                                            <button className="action-btn group" onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}>
+                                                <Trash2 size={16} className='group-hover:stroke-red-500 transition-all duration-300' />
                                             </button>
                                         </div>
                                     </div>
@@ -119,6 +117,11 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject, onLogout }
                     </div>
                 </div>
             </main>
+            <CreateProjectModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onCreate={handleCreateProject}
+            />
         </div>
     );
 };

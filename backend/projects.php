@@ -6,7 +6,13 @@ require_once 'auth_middleware.php';
 // Authenticate user for all project operations
 $user_id = authenticate();
 
-$method = $_SERVER['REQUEST_METHOD'];
+$real_method = $_SERVER['REQUEST_METHOD'];
+$data = json_decode(file_get_contents('php://input'));
+
+$method = $real_method;
+if ($real_method === 'POST' && isset($data->_method)) {
+    $method = strtoupper($data->_method);
+}
 
 // Helper function to assemble node object from DB row
 function assemble_node($row) {
@@ -31,6 +37,8 @@ function assemble_edge($row) {
         'id' => $row['edge_id'],
         'source' => $row['source_node'],
         'target' => $row['target_node'],
+        'sourceHandle' => $row['source_handle'],
+        'targetHandle' => $row['target_handle'],
         'type' => $row['type'] ?? 'default',
         'style' => json_decode($row['style'] ?? '', true) ?: new stdClass(),
         'data' => json_decode($row['data'] ?? '', true) ?: new stdClass()
@@ -85,7 +93,6 @@ try {
             break;
 
         case 'POST':
-            $data = json_decode(file_get_contents('php://input'));
             $name = $data->name;
             $updated_at = date('Y-m-d H:i:s');
 
@@ -132,7 +139,6 @@ try {
                 exit();
             }
             $project_id = $_GET['id'];
-            $data = json_decode(file_get_contents('php://input'));
             $name = $data->name;
             $nodes = $data->nodes;
             $edges = $data->edges;
@@ -167,12 +173,14 @@ try {
 
             // Insert new edges
             $edge_stmt = $pdo->prepare("
-                INSERT INTO edges (project_id, edge_id, source_node, target_node, type, style, data)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO edges (project_id, edge_id, source_node, target_node, source_handle, target_handle, type, style, data)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             foreach ($edges as $edge) {
                 $edge_stmt->execute([
-                    $project_id, $edge->id, $edge->source, $edge->target, $edge->type ?? 'default',
+                    $project_id, $edge->id, $edge->source, $edge->target,
+                    $edge->sourceHandle ?? null, $edge->targetHandle ?? null,
+                    $edge->type ?? 'default',
                     json_encode($edge->style ?? null), json_encode($edge->data ?? null)
                 ]);
             }
