@@ -167,10 +167,6 @@ button:active {
   display: flex;
 }
 
-.add-button i {
-  font-size: 12px;
-}
-
 .interactive-node .node-content {
   max-width: 350px;
   word-wrap: break-word;
@@ -199,7 +195,12 @@ button:active {
   gap: 8px;
 }
 
-.toolbar span {
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
   font-size: 24px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -209,12 +210,12 @@ button:active {
   color: #555;
 }
 
-.toolbar span:hover {
+.toolbar-btn:hover {
   background-color: #f0f0f0;
   color: #333;
 }
 
-.toolbar span[title="More"] {
+.toolbar-menu {
   position: relative;
 }
 
@@ -250,13 +251,8 @@ button:active {
   font-size: .9rem;
 }
 
-.toolbar .more-item span {
-  font-size: 1.5rem;
-  padding: 0;
-}
-
-.toolbar .more-item span:hover {
-  background-color: transparent;
+.toolbar .more-item svg {
+  flex-shrink: 0;
 }
 
 /* App Container */
@@ -280,48 +276,7 @@ button:active {
   word-wrap: break-word;
 }
 
-/* Settings Modal */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  min-width: 300px;
-  max-width: 90%;
-  position: relative;
-}
-
-.modal-close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #888;
-  padding: 0;
-  line-height: 1;
-}
-
-.modal-close-button:hover {
-  color: #333;
-}
-
-/* PROJECTS PAGE NEW LAYOUT */
+/* App Container */
 .projects-layout {
   display: flex;
   height: 100vh;
@@ -679,11 +634,11 @@ button:active {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  .toolbar span {
+  .toolbar-btn {
     color: #ccc;
   }
 
-  .toolbar span:hover {
+  .toolbar-btn:hover {
     background-color: #3a3a3a;
     color: #fff;
   }

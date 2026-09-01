@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import useNodeHandler from '../hooks/useNodeHandler';
 
 const AddButton = ({ type, id }: { type: 'left' | 'right'; id: string }) => {
@@ -11,9 +12,9 @@ const AddButton = ({ type, id }: { type: 'left' | 'right'; id: string }) => {
                 createAdjacentNode(id, type);
             }}
         >
-            <i className="fa-solid fa-plus"></i>
+            <Plus size={12} />
         </button>
-    )
-}
+    );
+};
 
-export default AddButton
+export default AddButton;

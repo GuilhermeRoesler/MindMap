@@ -8,7 +8,6 @@ export const useConnectionColors = () => {
     const updateConnectionColors = useCallback(() => {
         const edges = getEdges();
 
-        // Group edges by parent AND by side
         const edgesByParentAndSide = edges.reduce((acc, edge) => {
             const key = `${edge.source}-${edge.targetHandle}`;
             if (!acc[key]) {
@@ -18,7 +17,6 @@ export const useConnectionColors = () => {
             return acc;
         }, {} as Record<string, Edge[]>);
 
-        // Update colors based on order per side
         const updatedEdges = edges.map(edge => {
             const key = `${edge.source}-${edge.targetHandle}`;
             const sideEdges = edgesByParentAndSide[key] || [];
@@ -41,10 +39,7 @@ export const useConnectionColors = () => {
         });
 
         setEdges(updatedEdges);
-
-        // Update localStorage
-        localStorage.setItem('edges', JSON.stringify(updatedEdges));
     }, [getEdges, setEdges]);
 
     return { updateConnectionColors };
-}
+};

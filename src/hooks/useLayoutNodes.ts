@@ -39,19 +39,13 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'LR') => 
 };
 
 export const useLayoutNodes = () => {
-    const { getNodes, getEdges, setNodes, setEdges, fitView } = useReactFlow();
+    const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
 
     const layoutNodes = useCallback(() => {
         const { nodes, edges } = getLayoutedElements(getNodes(), getEdges());
         setNodes(nodes);
         setEdges(edges);
-
-        if (false)
-            fitView({ duration: 500 });
-
-        localStorage.setItem('nodes', JSON.stringify(nodes));
-        localStorage.setItem('edges', JSON.stringify(edges));
-    }, [getNodes, getEdges, setNodes, setEdges])
+    }, [getNodes, getEdges, setNodes, setEdges]);
 
     return { layoutNodes };
-}
+};

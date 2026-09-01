@@ -1,42 +1,41 @@
 import { useState } from 'react';
 import { Panel } from '@xyflow/react';
+import { ArrowLeft, MoreVertical, Layers, Palette } from 'lucide-react';
 import { useHeaderActions } from '../hooks/useHeaderActions';
-import SettingsModal from './SettingsModal';
 
 const HeaderPanel = ({ onBack }: { onBack: () => void }) => {
     const { handleLayoutNodes, handleColorize } = useHeaderActions();
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <Panel position="top-left" className='HeaderPanel toolbar'>
-            <span className="material-symbols-outlined" title="Back to Projects" onClick={onBack}>arrow_back</span>
-            <span className="material-symbols-outlined" title="Download">download</span>
-            <span className="material-symbols-outlined" title="Upload">upload</span>
-            <span className="material-symbols-outlined" title="More" onClick={() => setIsSettingsOpen(!isSettingsOpen)}>more_vert
-                {isSettingsOpen && (
+        <Panel position="top-left" className="HeaderPanel toolbar">
+            <button type="button" className="toolbar-btn" title="Back to Projects" onClick={onBack}>
+                <ArrowLeft size={22} />
+            </button>
+            <div className="toolbar-menu">
+                <button
+                    type="button"
+                    className="toolbar-btn"
+                    title="More"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    <MoreVertical size={22} />
+                </button>
+                {isMenuOpen && (
                     <div className="more-container">
-                        <div className="more-item" title="Adjust Layers" onClick={handleLayoutNodes}>
-                            <span className="material-symbols-outlined">stacks</span>
+                        <div className="more-item" title="Adjust layout" onClick={() => { handleLayoutNodes(); setIsMenuOpen(false); }}>
+                            <Layers size={20} />
                             <p>Adjust layout</p>
                         </div>
-                        <div className="more-item" title="Colorize" onClick={handleColorize}>
-                            <span className="material-symbols-outlined">palette</span>
+                        <div className="more-item" title="Colorize" onClick={() => { handleColorize(); setIsMenuOpen(false); }}>
+                            <Palette size={20} />
                             <p>Colorize</p>
-                        </div>
-                        <div className="more-item" title="Settings" onClick={() => {
-                            setIsDialogOpen(true);
-                            setIsSettingsOpen(false);
-                        }}>
-                            <span className="material-symbols-outlined">settings</span>
-                            <p>Settings</p>
                         </div>
                     </div>
                 )}
-            </span>
-            {isDialogOpen && <SettingsModal isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />}
+            </div>
         </Panel>
-    )
-}
+    );
+};
 
-export default HeaderPanel
+export default HeaderPanel;

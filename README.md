@@ -76,23 +76,31 @@ cd backend
 php -S localhost:8000
 ```
 
-_Nota: Poderá ser necessário ajustar a URL da API no frontend (`src/utils/api.ts`) caso a porta seja diferente._
+_Nota: A URL da API é configurada via variável de ambiente (ver secção abaixo)._
 
 ### 2. Configurar o Frontend
 
-1. Instale as dependências:
+1. Copie o ficheiro de exemplo de variáveis de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+Por defeito, `VITE_API_BASE_URL` aponta para `http://localhost:8000/`. Ajuste se o backend correr noutra porta ou URL.
+
+2. Instale as dependências:
 
 ```bash
 npm install
 ```
 
-2. Inicie o servidor de desenvolvimento:
+3. Inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-3. Aceda à aplicação no navegador (geralmente em `http://localhost:5173`).
+4. Aceda à aplicação no navegador (geralmente em `http://localhost:5173`).
 
 ## 📜 Scripts Disponíveis
 

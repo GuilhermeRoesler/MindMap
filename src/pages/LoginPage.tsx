@@ -11,6 +11,7 @@ const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: a
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const setAuthToken = useGlobalConfigStore(state => state.setAuthToken);
+    const setUserEmail = useGlobalConfigStore(state => state.setUserEmail);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,6 +24,7 @@ const LoginPage = ({ onLoginSuccess, onNavigateToRegister }: { onLoginSuccess: a
             });
             if (data.token) {
                 setAuthToken(data.token);
+                setUserEmail(email);
                 onLoginSuccess();
             } else {
                 setError('Authentication token not received.');

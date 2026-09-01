@@ -1,8 +1,9 @@
-// import React from 'react';
+import { getDisplayName, useGlobalConfigStore } from '../store/globalConfigStore';
 
 const Header = ({ onLogout }: { onLogout: () => void }) => {
-    const userName = "Guilherme";
-    const userInitial = userName.charAt(0).toUpperCase();
+    const userEmail = useGlobalConfigStore(state => state.userEmail);
+    const displayName = getDisplayName(userEmail);
+    const userInitial = displayName.charAt(0).toUpperCase();
 
     return (
         <header className="main-header">
