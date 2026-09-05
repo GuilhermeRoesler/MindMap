@@ -1,15 +1,27 @@
-import { Play, Plus } from 'lucide-react';
+import { Play, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MindMapPreview from '@/components/MindMapPreview';
 
 interface DashboardHeroProps {
     onTryDemo: () => void;
     onCreateNew: () => void;
+    onDismiss: () => void;
 }
 
-const DashboardHero = ({ onTryDemo, onCreateNew }: DashboardHeroProps) => {
+const DashboardHero = ({ onTryDemo, onCreateNew, onDismiss }: DashboardHeroProps) => {
     return (
-        <section className="dashboard-hero mb-10 grid items-center gap-8 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <section className="dashboard-hero relative mb-10 grid items-center gap-8 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+            <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="absolute top-0 right-0 z-20 text-muted-foreground"
+                title="Dismiss welcome"
+                aria-label="Dismiss welcome"
+                onClick={onDismiss}
+            >
+                <X />
+            </Button>
             <div className="relative z-10">
                 <p className="mb-3 text-sm font-medium tracking-wide text-primary">MindMap</p>
                 <h2 className="mb-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
@@ -23,7 +35,7 @@ const DashboardHero = ({ onTryDemo, onCreateNew }: DashboardHeroProps) => {
                 <div className="flex flex-wrap gap-3">
                     <Button size="lg" onClick={onTryDemo} className="shadow-md shadow-primary/25">
                         <Play />
-                        Try Demo
+                        Open roadmap
                     </Button>
                     <Button size="lg" variant="outline" onClick={onCreateNew}>
                         <Plus />

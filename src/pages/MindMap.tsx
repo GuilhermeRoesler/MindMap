@@ -22,10 +22,12 @@ import InteractiveNode from '../components/InteractiveNode';
 import HeaderPanel, { type SaveStatus } from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, updateProjectData } from '../utils/projectManager';
+import { exportFlowToPng } from '../utils/exportImage';
 import { Loader2 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import OnboardingBanner from '../components/OnboardingBanner';
 import { ONBOARDING_KEY } from '../constants';
+import { useToast } from '../context/ToastContext';
 
 const nodeTypes = {
     interactive: InteractiveNode,
@@ -44,7 +46,9 @@ interface FlowContentProps {
 function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [nodes, setNodes] = useState<Node[] | null>(null);
     const [edges, setEdges] = useState<Edge[] | null>(null);
+    const [projectName, setProjectName] = useState('Mind map');
     const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+    const [isExporting, setIsExporting] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(
         () => !localStorage.getItem(ONBOARDING_KEY),
     );
@@ -54,6 +58,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const isInitialLoad = useRef(true);
     const savedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { isDark } = useTheme();
+    const { showToast } = useToast();
 
     const saveData = useCallback(async () => {
         if (isSavingRef.current || nodes === null || edges === null) return;
@@ -100,6 +105,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             if (project) {
                 setNodes(project.nodes);
                 setEdges(project.edges);
+                setProjectName(project.name);
             } else {
                 console.error(`Project with id ${projectId} not found.`);
                 onBackToProjects();
@@ -143,6 +149,19 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         setShowOnboarding(false);
     };
 
+    const handleExportPng = async () => {
+        if (!nodes) return;
+        setIsExporting(true);
+        try {
+            await exportFlowToPng(projectName, nodes);
+            showToast('PNG exported.', 'success');
+        } catch {
+            showToast('Failed to export PNG.', 'error');
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
     if (nodes === null || edges === null) {
         return (
             <div className="flex h-full w-full items-center justify-center bg-background">
@@ -164,19 +183,27 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 fitView
                 deleteKeyCode={null}
                 proOptions={{ hideAttribution: true }}
+                className="flow-enter"
                 {...flowConfig}
             >
                 <Controls />
                 <Background
                     variant={BackgroundVariant.Dots}
-                    bgColor={isDark ? '#12131c' : '#f3f5fb'}
-                    color={isDark ? '#2a2d3d' : '#d5dae8'}
+                    bgColor={isDark ? '#10141c' : '#f2f6f7'}
+                    color={isDark ? '#2a3340' : '#cfd8dc'}
                     gap={22}
                     size={1.5}
                 />
             </ReactFlow>
             {showOnboarding && <OnboardingBanner onDismiss={dismissOnboarding} />}
-            <HeaderPanel onBack={onBackToProjects} saveStatus={saveStatus} />
+            <HeaderPanel
+                onBack={onBackToProjects}
+                saveStatus={saveStatus}
+                projectName={projectName}
+                nodeCount={nodes.length}
+                onExportPng={() => void handleExportPng()}
+                isExporting={isExporting}
+            />
         </>
     );
 }

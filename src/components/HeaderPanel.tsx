@@ -1,5 +1,5 @@
 import { Panel } from '@xyflow/react';
-import { ArrowLeft, Check, Layers, Loader2, MoreVertical, Palette } from 'lucide-react';
+import { ArrowLeft, Check, ImageDown, Layers, Loader2, MoreVertical, Palette } from 'lucide-react';
 import { useHeaderActions } from '@/hooks/useHeaderActions';
 import ShortcutsPanel from './ShortcutsPanel';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -15,37 +16,49 @@ export type SaveStatus = 'idle' | 'saving' | 'saved';
 interface HeaderPanelProps {
     onBack: () => void;
     saveStatus: SaveStatus;
+    projectName: string;
+    nodeCount: number;
+    onExportPng: () => void;
+    isExporting?: boolean;
 }
 
-const HeaderPanel = ({ onBack, saveStatus }: HeaderPanelProps) => {
+const HeaderPanel = ({
+    onBack,
+    saveStatus,
+    projectName,
+    nodeCount,
+    onExportPng,
+    isExporting = false,
+}: HeaderPanelProps) => {
     const { handleLayoutNodes, handleColorize } = useHeaderActions();
 
     return (
         <>
             <Panel
                 position="top-left"
-                className="editor-glass-panel !m-2 flex items-center gap-1 rounded-xl !p-1.5"
+                className="editor-glass-panel !m-2 flex max-w-[min(100vw-1rem,28rem)] items-center gap-1 rounded-xl !p-1.5"
             >
                 <Button variant="ghost" size="icon-sm" title="Back to dashboard" onClick={onBack}>
                     <ArrowLeft className="size-5" />
                 </Button>
 
+                <div className="min-w-0 flex-1 px-1.5">
+                    <p className="truncate text-sm font-semibold tracking-tight text-foreground">
+                        {projectName}
+                    </p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                        {nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}
+                        {saveStatus === 'saving' && ' · Saving…'}
+                        {saveStatus === 'saved' && ' · Saved'}
+                    </p>
+                </div>
+
                 <div
-                    className="flex items-center gap-1.5 px-2 text-xs text-muted-foreground"
+                    className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground"
                     aria-live="polite"
                 >
-                    {saveStatus === 'saving' && (
-                        <>
-                            <Loader2 className="size-3.5 animate-spin" />
-                            <span>Saving...</span>
-                        </>
-                    )}
-                    {saveStatus === 'saved' && (
-                        <>
-                            <Check className="size-3.5 text-primary" />
-                            <span>Saved</span>
-                        </>
-                    )}
+                    {saveStatus === 'saving' && <Loader2 className="size-3.5 animate-spin" />}
+                    {saveStatus === 'saved' && <Check className="size-3.5 text-primary" />}
                 </div>
 
                 <ShortcutsPanel />
@@ -56,7 +69,7 @@ const HeaderPanel = ({ onBack, saveStatus }: HeaderPanelProps) => {
                             <MoreVertical className="size-5" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" side="right" className="w-44">
+                    <DropdownMenuContent align="start" side="right" className="w-48">
                         <DropdownMenuItem onClick={handleLayoutNodes}>
                             <Layers />
                             Adjust layout
@@ -64,6 +77,11 @@ const HeaderPanel = ({ onBack, saveStatus }: HeaderPanelProps) => {
                         <DropdownMenuItem onClick={handleColorize}>
                             <Palette />
                             Colorize
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={onExportPng} disabled={isExporting}>
+                            <ImageDown />
+                            {isExporting ? 'Exporting…' : 'Export PNG'}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

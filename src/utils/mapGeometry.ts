@@ -42,7 +42,7 @@ function getAccentForNode(nodeId: string, edges: Edge[]): string {
 
 function isRootNode(node: Node): boolean {
     const parentId = (node.data as { parentId?: string } | undefined)?.parentId;
-    return !parentId || node.id === 'root' || node.id === 'demo-root';
+    return !parentId;
 }
 
 /** Build a scaled SVG-friendly layout from React Flow nodes/edges. */

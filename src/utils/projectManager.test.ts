@@ -23,14 +23,15 @@ describe('projectManager (localStorage)', () => {
         localStorage.clear();
     });
 
-    it('seeds demo project on first access', async () => {
+    it('seeds demo and sample projects on first access', async () => {
         const projects = await getProjects();
 
-        expect(projects).toHaveLength(1);
-        expect(projects[0].id).toBe(DEMO_PROJECT_ID);
-        expect(projects[0].name).toBe(DEMO_PROJECT_NAME);
-        expect(projects[0].isDemo).toBe(true);
-        expect(projects[0].nodes.length).toBeGreaterThan(1);
+        expect(projects).toHaveLength(3);
+        const demo = projects.find((p) => p.id === DEMO_PROJECT_ID);
+        expect(demo?.name).toBe(DEMO_PROJECT_NAME);
+        expect(demo?.isDemo).toBe(true);
+        expect(demo?.nodes.length).toBeGreaterThan(1);
+        expect(projects.filter((p) => !p.isDemo)).toHaveLength(2);
     });
 
     it('creates a new project with initial nodes', async () => {
@@ -42,7 +43,7 @@ describe('projectManager (localStorage)', () => {
         expect(created.nodes[0].id).toBe('root');
 
         const projects = await getProjects();
-        expect(projects).toHaveLength(2);
+        expect(projects).toHaveLength(4);
     });
 
     it('reads a project by id', async () => {

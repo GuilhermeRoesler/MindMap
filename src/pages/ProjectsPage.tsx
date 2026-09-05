@@ -10,6 +10,7 @@ import {
     type Project,
 } from '@/utils/projectManager';
 import { DEMO_PROJECT_ID } from '@/data/demoProject';
+import { HERO_DISMISSED_KEY } from '@/constants';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import CreateProjectModal from '@/components/CreateProjectModal';
@@ -43,6 +44,7 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
     const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [pendingImportFile, setPendingImportFile] = useState<File | null>(null);
+    const [showHero, setShowHero] = useState(() => !localStorage.getItem(HERO_DISMISSED_KEY));
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -126,6 +128,11 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
         }
     };
 
+    const handleDismissHero = () => {
+        localStorage.setItem(HERO_DISMISSED_KEY, '1');
+        setShowHero(false);
+    };
+
     return (
         <div className="dashboard-shell flex h-screen w-screen bg-background">
             <Sidebar onExport={handleExport} onImport={handleImportFile} />
@@ -134,10 +141,13 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
                 <div className="relative flex-1 px-6 py-8 sm:px-10">
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_oklch,var(--primary)_10%,transparent),transparent_45%)]" />
                     <div className="relative mx-auto max-w-6xl">
-                        <DashboardHero
-                            onTryDemo={() => onSelectProject(DEMO_PROJECT_ID)}
-                            onCreateNew={() => setIsModalOpen(true)}
-                        />
+                        {showHero && (
+                            <DashboardHero
+                                onTryDemo={() => onSelectProject(DEMO_PROJECT_ID)}
+                                onCreateNew={() => setIsModalOpen(true)}
+                                onDismiss={handleDismissHero}
+                            />
+                        )}
 
                         <div className="mb-5 flex items-center justify-between gap-3">
                             <h2 className="text-xl font-semibold tracking-tight">Your mind maps</h2>
@@ -154,10 +164,11 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
                             </div>
                         ) : projects.length > 0 ? (
                             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                {projects.map((project) => (
+                                {projects.map((project, index) => (
                                     <ProjectCard
                                         key={project.id}
                                         project={project}
+                                        index={index}
                                         onOpen={() => onSelectProject(project.id)}
                                         onRename={() => setRenameTarget(project)}
                                         onDelete={() => setDeleteTarget(project)}

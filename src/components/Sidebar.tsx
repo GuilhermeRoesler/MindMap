@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-import { Code, Download, Home, Upload } from 'lucide-react';
-import { GITHUB_REPO_URL } from '@/constants';
+import { Code, Download, ExternalLink, Home, Upload } from 'lucide-react';
+import { GITHUB_REPO_URL, LIVE_DEMO_URL } from '@/constants';
 import MindMapIcon from '@/icons/MindMapIcon';
 import ThemeToggle from './ThemeToggle';
 import { Button } from '@/components/ui/button';
@@ -61,6 +61,12 @@ const Sidebar = ({ onExport, onImport }: SidebarProps) => {
 
             <div className="space-y-2 border-t border-border/70 pt-3">
                 <ThemeToggle />
+                <Button variant="ghost" className="w-full justify-start" asChild>
+                    <a href={LIVE_DEMO_URL} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink />
+                        Live demo
+                    </a>
+                </Button>
                 <Button variant="ghost" className="w-full justify-start" asChild>
                     <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
                         <Code />

@@ -2,7 +2,8 @@ import { type Node, type Edge } from '@xyflow/react';
 import { ulid } from 'ulid';
 import { initialNodes } from '../data/nodes';
 import { initialEdges } from '../data/edges';
-import { DEMO_PROJECT_ID, DEMO_PROJECT_NAME, demoNodes, demoEdges } from '../data/demoProject';
+import { DEMO_PROJECT_ID } from '../data/demoProject';
+import { SEED_PROJECTS } from '../data/seedMaps';
 
 const STORAGE_KEY = 'mindmap_projects';
 
@@ -30,22 +31,70 @@ const persistProjects = (projects: Project[]): void => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
 };
 
-const seedDemoProject = (): Project => ({
-    id: DEMO_PROJECT_ID,
-    name: DEMO_PROJECT_NAME,
-    nodes: demoNodes,
-    edges: demoEdges,
-    updatedAt: new Date().toISOString(),
-    isDemo: true,
-});
+const buildSeedProjects = (): Project[] => {
+    const now = Date.now();
+    return SEED_PROJECTS.map((seed, index) => ({
+        id: seed.id,
+        name: seed.name,
+        nodes: seed.nodes,
+        edges: seed.edges,
+        updatedAt: new Date(now - index * 60_000).toISOString(),
+        ...(seed.isDemo ? { isDemo: true as const } : {}),
+    }));
+};
 
+const seedDemoProject = (): Project => {
+    const seeds = buildSeedProjects();
+    return seeds.find((p) => p.id === DEMO_PROJECT_ID) ?? seeds[0];
+};
+
+/** Fresh install: all seeds. Existing storage: ensure demo exists; fill missing sample IDs. */
 const ensureInitialized = (): Project[] => {
     const projects = loadProjects();
     if (projects.length === 0) {
-        const demo = seedDemoProject();
-        persistProjects([demo]);
-        return [demo];
+        const seeds = buildSeedProjects();
+        persistProjects(seeds);
+        return seeds;
     }
+
+    let changed = false;
+    const ids = new Set(projects.map((p) => p.id));
+
+    if (!ids.has(DEMO_PROJECT_ID)) {
+        projects.unshift(seedDemoProject());
+        ids.add(DEMO_PROJECT_ID);
+        changed = true;
+    } else {
+        const demoIndex = projects.findIndex((p) => p.id === DEMO_PROJECT_ID);
+        const seed = seedDemoProject();
+        if (demoIndex >= 0) {
+            const current = projects[demoIndex];
+            const needsRefresh =
+                current.name !== seed.name ||
+                current.nodes.length !== seed.nodes.length ||
+                JSON.stringify(current.nodes) !== JSON.stringify(seed.nodes);
+            if (needsRefresh) {
+                projects[demoIndex] = {
+                    ...current,
+                    name: seed.name,
+                    nodes: seed.nodes,
+                    edges: seed.edges,
+                    isDemo: true,
+                };
+                changed = true;
+            }
+        }
+    }
+
+    for (const seed of buildSeedProjects()) {
+        if (seed.isDemo) continue;
+        if (ids.has(seed.id)) continue;
+        projects.push(seed);
+        ids.add(seed.id);
+        changed = true;
+    }
+
+    if (changed) persistProjects(projects);
     return projects;
 };
 

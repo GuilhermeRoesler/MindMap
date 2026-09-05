@@ -87,9 +87,11 @@ const useNodeHandler = () => {
     };
 
     const deleteNode = (id: string) => {
-        if (id === 'root') return; // Prevent deleting the root node
-
         const nodes = getNodes();
+        const target = nodes.find((node) => node.id === id);
+        const parentId = (target?.data as { parentId?: string } | undefined)?.parentId;
+        if (!target || !parentId || target.deletable === false) return;
+
         const edges = getEdges();
 
         const idsToRemove = collectDescendantIds(id, nodes);

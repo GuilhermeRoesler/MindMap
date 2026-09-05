@@ -25,7 +25,7 @@ function InteractiveNode({ id, data }: { id: string; data: InteractiveNodeData }
         return BRAND_COLOR;
     });
 
-    const isRoot = !data.parentId || id === 'root' || id === 'demo-root';
+    const isRoot = !data.parentId;
 
     const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Tab') {

@@ -12,6 +12,7 @@ interface ProjectCardProps {
     onRename: () => void;
     onDelete?: () => void;
     onRenameBlocked?: () => void;
+    index?: number;
 }
 
 const formatDate = (dateString: string) => {
@@ -27,14 +28,21 @@ const ProjectCard = ({
     onRename,
     onDelete,
     onRenameBlocked,
+    index = 0,
 }: ProjectCardProps) => {
     return (
         <Card
-            className="group project-card cursor-pointer overflow-hidden border-border/80 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_-28px_rgba(111,52,220,0.55)]"
+            className="group project-card animate-card-enter cursor-pointer overflow-hidden border-border/80 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_-28px_color-mix(in_oklch,var(--primary)_55%,transparent)]"
+            style={{ animationDelay: `${index * 70}ms` }}
             onClick={onOpen}
         >
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted/30">
-                <MapThumbnail nodes={project.nodes} edges={project.edges} className="opacity-95" />
+                <MapThumbnail
+                    nodes={project.nodes}
+                    edges={project.edges}
+                    showLabels
+                    className="opacity-95"
+                />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
             <CardContent className="flex items-start justify-between gap-3 p-4">
@@ -51,7 +59,7 @@ const ProjectCard = ({
                         )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        Modified {formatDate(project.updatedAt)}
+                        {project.nodes.length} nodes · Modified {formatDate(project.updatedAt)}
                     </p>
                 </div>
                 <div className="flex shrink-0 gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">

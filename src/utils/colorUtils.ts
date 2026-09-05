@@ -1,18 +1,18 @@
 import type { Edge } from '@xyflow/react';
 
 export const CONNECTION_COLORS = [
-    '#6F34DC',
-    '#A645E0',
-    '#DD59C9',
-    '#D11A6A',
-    '#E36E4B',
-    '#EFAE2C',
-    '#F3DD31',
-    '#C5E24C',
-    '#68C74F',
-    '#83DFCA',
-    '#31B4DE',
-    '#426DCC',
+    '#0F766E',
+    '#F59E0B',
+    '#E11D48',
+    '#2563EB',
+    '#DB2777',
+    '#EA580C',
+    '#7C3AED',
+    '#0891B2',
+    '#65A30D',
+    '#CA8A04',
+    '#14B8A6',
+    '#0D9488',
 ] as const;
 
 export const getConnectionColor = (childIndex: number): string => {
