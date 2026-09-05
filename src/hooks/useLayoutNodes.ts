@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useReactFlow, type Node, type Edge, Position } from '@xyflow/react';
 import dagre from 'dagre';
 
-const nodeWidth = 172;
-const nodeHeight = 36;
+const nodeWidth = 180;
+const nodeHeight = 44;
 
 const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'LR') => {
     const isHorizontal = direction === 'LR';

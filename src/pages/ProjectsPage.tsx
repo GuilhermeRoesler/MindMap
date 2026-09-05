@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import {
     getProjects,
     createProject,
@@ -12,15 +12,14 @@ import {
 import { DEMO_PROJECT_ID } from '@/data/demoProject';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
-import MindMapIcon from '@/icons/MindMapIcon';
 import CreateProjectModal from '@/components/CreateProjectModal';
 import DashboardHero from '@/components/DashboardHero';
+import ProjectCard from '@/components/ProjectCard';
+import EmptyProjectsState from '@/components/EmptyProjectsState';
 import RenameProjectModal from '@/components/RenameProjectModal';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useToast } from '@/context/ToastContext';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -127,138 +126,63 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
         }
     };
 
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const today = new Date();
-        if (date.toDateString() === today.toDateString()) return 'Today';
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    };
-
     return (
-        <div className="flex h-screen w-screen bg-background">
+        <div className="dashboard-shell flex h-screen w-screen bg-background">
             <Sidebar onExport={handleExport} onImport={handleImportFile} />
             <main className="flex flex-1 flex-col overflow-y-auto">
                 <Header />
-                <div className="flex-1 px-10 py-6">
-                    <DashboardHero
-                        onTryDemo={() => onSelectProject(DEMO_PROJECT_ID)}
-                        onCreateNew={() => setIsModalOpen(true)}
-                    />
+                <div className="relative flex-1 px-6 py-8 sm:px-10">
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_oklch,var(--primary)_10%,transparent),transparent_45%)]" />
+                    <div className="relative mx-auto max-w-6xl">
+                        <DashboardHero
+                            onTryDemo={() => onSelectProject(DEMO_PROJECT_ID)}
+                            onCreateNew={() => setIsModalOpen(true)}
+                        />
 
-                    <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-xl font-semibold">Your mind maps</h2>
-                        <Button onClick={() => setIsModalOpen(true)}>
-                            <Plus />
-                            Create new
-                        </Button>
-                    </div>
+                        <div className="mb-5 flex items-center justify-between gap-3">
+                            <h2 className="text-xl font-semibold tracking-tight">Your mind maps</h2>
+                            <Button onClick={() => setIsModalOpen(true)}>
+                                <Plus />
+                                Create new
+                            </Button>
+                        </div>
 
-                    <Card>
-                        <CardContent className="p-0">
-                            <div className="grid grid-cols-[1fr_auto_auto] items-center border-b px-6 py-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                                <div>Name</div>
-                                <div className="hidden w-32 sm:block">Last opened</div>
-                                <div className="w-20" />
+                        {isLoading ? (
+                            <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border bg-card/60 py-16 text-muted-foreground">
+                                <Loader2 className="size-8 animate-spin text-primary" />
+                                <p>Loading your mind maps...</p>
                             </div>
-
-                            {isLoading ? (
-                                <div className="flex flex-col items-center justify-center gap-4 py-12 text-muted-foreground">
-                                    <Loader2 className="size-8 animate-spin text-primary" />
-                                    <p>Loading your mind maps...</p>
-                                </div>
-                            ) : projects.length > 0 ? (
-                                <div>
-                                    {projects.map((project) => (
-                                        <div
-                                            key={project.id}
-                                            className="grid cursor-pointer grid-cols-[1fr_auto_auto] items-center border-b px-6 py-4 transition-colors last:border-b-0 hover:bg-muted/50"
-                                            onClick={() => onSelectProject(project.id)}
-                                        >
-                                            <div className="flex min-w-0 items-center gap-4">
-                                                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                                    <MindMapIcon size={20} />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2 font-semibold">
-                                                        <span className="truncate">
-                                                            {project.name}
-                                                        </span>
-                                                        {project.isDemo && (
-                                                            <Badge
-                                                                variant="secondary"
-                                                                className="shrink-0"
-                                                            >
-                                                                Demo
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        Modified {formatDate(project.updatedAt)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="hidden w-32 text-sm text-muted-foreground sm:block">
-                                                {formatDate(project.updatedAt)}
-                                            </div>
-                                            <div className="flex w-20 justify-end gap-1">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon-sm"
-                                                    title="Rename"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (project.isDemo) {
-                                                            showToast(
-                                                                'The demo project cannot be renamed.',
-                                                                'info',
-                                                            );
-                                                            return;
-                                                        }
-                                                        setRenameTarget(project);
-                                                    }}
-                                                >
-                                                    <Pencil />
-                                                </Button>
-                                                {!project.isDemo && (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon-sm"
-                                                        title="Delete"
-                                                        className="hover:text-destructive"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setDeleteTarget(project);
-                                                        }}
-                                                    >
-                                                        <Trash2 />
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-12 text-center text-muted-foreground">
-                                    <h3 className="mb-1 text-lg font-medium text-foreground">
-                                        No mind maps yet.
-                                    </h3>
-                                    <p>Use the &quot;Create new&quot; button to start one.</p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                        ) : projects.length > 0 ? (
+                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                {projects.map((project) => (
+                                    <ProjectCard
+                                        key={project.id}
+                                        project={project}
+                                        onOpen={() => onSelectProject(project.id)}
+                                        onRename={() => setRenameTarget(project)}
+                                        onDelete={() => setDeleteTarget(project)}
+                                        onRenameBlocked={() =>
+                                            showToast('The demo project cannot be renamed.', 'info')
+                                        }
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <EmptyProjectsState onCreate={() => setIsModalOpen(true)} />
+                        )}
+                    </div>
                 </div>
             </main>
 
             <CreateProjectModal
-                key={isModalOpen ? 'open' : 'closed'}
+                key={isModalOpen ? 'create-open' : 'create-closed'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onCreate={handleCreateProject}
             />
 
             <RenameProjectModal
-                key={renameTarget?.id ?? 'closed'}
+                key={renameTarget ? `rename-${renameTarget.id}` : 'rename-closed'}
                 isOpen={!!renameTarget}
                 currentName={renameTarget?.name ?? ''}
                 onClose={() => setRenameTarget(null)}

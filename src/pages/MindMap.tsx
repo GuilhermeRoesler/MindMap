@@ -162,17 +162,17 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 fitView
-                attributionPosition="bottom-left"
                 deleteKeyCode={null}
+                proOptions={{ hideAttribution: true }}
                 {...flowConfig}
             >
                 <Controls />
                 <Background
-                    variant={BackgroundVariant.Lines}
-                    bgColor={isDark ? '#1a1a1a' : '#f8f9fa'}
-                    lineWidth={1}
-                    color={isDark ? '#141414' : '#e9ecef'}
-                    gap={40}
+                    variant={BackgroundVariant.Dots}
+                    bgColor={isDark ? '#12131c' : '#f3f5fb'}
+                    color={isDark ? '#2a2d3d' : '#d5dae8'}
+                    gap={22}
+                    size={1.5}
                 />
             </ReactFlow>
             {showOnboarding && <OnboardingBanner onDismiss={dismissOnboarding} />}

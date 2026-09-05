@@ -8,20 +8,23 @@ interface OnboardingBannerProps {
 
 const OnboardingBanner = ({ onDismiss }: OnboardingBannerProps) => {
     return (
-        <Alert className="mx-4 mt-4 border-primary/20 bg-primary/5">
-            <Lightbulb className="text-primary" />
-            <AlertTitle>Welcome!</AlertTitle>
-            <AlertDescription>
-                Click any node to edit its label. Use <kbd className="rounded border px-1">Tab</kbd>{' '}
-                for child nodes and <kbd className="rounded border px-1">Enter</kbd> for siblings.
-                Open the menu for layout and color tools.
-            </AlertDescription>
-            <AlertAction>
-                <Button variant="ghost" size="icon-sm" onClick={onDismiss} aria-label="Dismiss">
-                    <X />
-                </Button>
-            </AlertAction>
-        </Alert>
+        <div className="onboarding-float">
+            <Alert className="editor-glass-panel border-primary/25 shadow-lg">
+                <Lightbulb className="text-primary" />
+                <AlertTitle>Welcome</AlertTitle>
+                <AlertDescription>
+                    Double-click a node to edit. Use{' '}
+                    <kbd className="rounded border bg-muted/80 px-1">Tab</kbd> for children and{' '}
+                    <kbd className="rounded border bg-muted/80 px-1">Enter</kbd> for siblings. Open
+                    the menu for layout and color tools.
+                </AlertDescription>
+                <AlertAction>
+                    <Button variant="ghost" size="icon-sm" onClick={onDismiss} aria-label="Dismiss">
+                        <X />
+                    </Button>
+                </AlertAction>
+            </Alert>
+        </div>
     );
 };
 

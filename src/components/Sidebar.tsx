@@ -24,10 +24,13 @@ const Sidebar = ({ onExport, onImport }: SidebarProps) => {
     };
 
     return (
-        <aside className="flex w-65 shrink-0 flex-col border-r bg-sidebar p-3">
-            <div className="flex items-center gap-3 px-2 py-3">
-                <MindMapIcon size={32} withBackground />
-                <span className="font-semibold">MindMap</span>
+        <aside className="flex w-65 shrink-0 flex-col border-r border-border/70 bg-sidebar/90 p-3 backdrop-blur-md">
+            <div className="mb-1 flex items-center gap-3 px-2 py-3">
+                <MindMapIcon size={34} withBackground />
+                <div className="min-w-0">
+                    <span className="block font-semibold tracking-tight">MindMap</span>
+                    <span className="block text-[11px] text-muted-foreground">Visual thinking</span>
+                </div>
             </div>
 
             <nav className="flex-1 space-y-1 py-2">
@@ -56,7 +59,7 @@ const Sidebar = ({ onExport, onImport }: SidebarProps) => {
                 />
             </nav>
 
-            <div className="space-y-2 border-t pt-3">
+            <div className="space-y-2 border-t border-border/70 pt-3">
                 <ThemeToggle />
                 <Button variant="ghost" className="w-full justify-start" asChild>
                     <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">

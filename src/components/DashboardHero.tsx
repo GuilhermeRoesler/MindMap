@@ -1,7 +1,6 @@
-import { Sparkles, Play } from 'lucide-react';
+import { Play, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import MindMapPreview from '@/components/MindMapPreview';
 
 interface DashboardHeroProps {
     onTryDemo: () => void;
@@ -10,30 +9,33 @@ interface DashboardHeroProps {
 
 const DashboardHero = ({ onTryDemo, onCreateNew }: DashboardHeroProps) => {
     return (
-        <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-card">
-            <CardContent className="pt-6">
-                <Badge variant="secondary" className="mb-4 gap-1.5 bg-primary/10 text-primary">
-                    <Sparkles className="size-3.5" />
-                    Portfolio project
-                </Badge>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight">
-                    Interactive mind maps in your browser
+        <section className="dashboard-hero mb-10 grid items-center gap-8 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+            <div className="relative z-10">
+                <p className="mb-3 text-sm font-medium tracking-wide text-primary">MindMap</p>
+                <h2 className="mb-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+                    Think visually.
+                    <span className="block text-primary">Stay local.</span>
                 </h2>
-                <p className="mb-6 max-w-2xl text-muted-foreground">
-                    Create, organize, and visualize ideas with drag-and-drop nodes, auto layout, and
-                    color-coded connections. No account required — everything stays on your device.
+                <p className="mb-7 max-w-lg text-base leading-relaxed text-muted-foreground">
+                    Drag ideas into a living map — auto layout, color-coded branches, and instant
+                    save in your browser. No account. No noise.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                    <Button onClick={onTryDemo}>
+                    <Button size="lg" onClick={onTryDemo} className="shadow-md shadow-primary/25">
                         <Play />
                         Try Demo
                     </Button>
-                    <Button variant="outline" onClick={onCreateNew}>
+                    <Button size="lg" variant="outline" onClick={onCreateNew}>
+                        <Plus />
                         Create new map
                     </Button>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+            <div className="relative">
+                <div className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-[radial-gradient(ellipse_at_center,color-mix(in_oklch,var(--primary)_22%,transparent),transparent_70%)] blur-2xl" />
+                <MindMapPreview />
+            </div>
+        </section>
     );
 };
 

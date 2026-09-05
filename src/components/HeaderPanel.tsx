@@ -24,7 +24,7 @@ const HeaderPanel = ({ onBack, saveStatus }: HeaderPanelProps) => {
         <>
             <Panel
                 position="top-left"
-                className="flex items-center gap-2 rounded-xl border bg-card p-2 shadow-md"
+                className="editor-glass-panel !m-2 flex items-center gap-1 rounded-xl !p-1.5"
             >
                 <Button variant="ghost" size="icon-sm" title="Back to dashboard" onClick={onBack}>
                     <ArrowLeft className="size-5" />

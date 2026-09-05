@@ -1,21 +1,19 @@
 import { Code, ExternalLink } from 'lucide-react';
 import { GITHUB_REPO_URL, LIVE_DEMO_URL } from '@/constants';
-import MindMapIcon from '@/icons/MindMapIcon';
 import ThemeToggle from './ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 const Header = () => {
     return (
-        <header className="flex shrink-0 items-center justify-between border-b bg-card px-10 py-4">
-            <h1 className="flex items-center gap-2.5 text-2xl font-bold">
-                <MindMapIcon size={28} withBackground className="shrink-0" />
-                MindMap
-            </h1>
-            <div className="flex items-center gap-3">
-                <span className="hidden text-sm text-muted-foreground sm:inline">
-                    Data saved locally in your browser
-                </span>
+        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border/70 bg-card/70 px-6 py-4 backdrop-blur-md sm:px-10">
+            <div className="min-w-0">
+                <h1 className="text-lg font-semibold tracking-tight">Dashboard</h1>
+                <p className="truncate text-xs text-muted-foreground sm:text-sm">
+                    Everything stays on this device
+                </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                 <ThemeToggle compact />
                 <Separator orientation="vertical" className="hidden h-6 sm:block" />
                 <Button variant="ghost" size="sm" asChild>
