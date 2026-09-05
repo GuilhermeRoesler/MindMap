@@ -24,6 +24,7 @@
         "dagre": "^0.8.5",
         "html-to-image": "^1.11.13",
         "lucide-react": "^1.39.0",
+        "motion": "^13.2.0",
         "radix-ui": "^1.6.7",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",

@@ -1,10 +1,11 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { ArrowUpRight, Pencil, Trash2 } from 'lucide-react';
+import { motion } from 'motion/react';
 import type { Project } from '@/utils/projectManager';
 import MindMapIcon from '@/icons/MindMapIcon';
 import MapThumbnail from '@/components/MapThumbnail';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 interface ProjectCardProps {
     project: Project;
@@ -31,21 +32,39 @@ const ProjectCard = ({
     index = 0,
 }: ProjectCardProps) => {
     return (
-        <Card
-            className="group project-card animate-card-enter cursor-pointer overflow-hidden border-border/80 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_-28px_color-mix(in_oklch,var(--primary)_55%,transparent)]"
+        <motion.article
+            role="button"
+            tabIndex={0}
+            className={cn(
+                'group project-card relative cursor-pointer overflow-hidden rounded-xl bg-card text-card-foreground',
+                'shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.35)]',
+                'dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]',
+                'ring-1 ring-border/60 transition-[box-shadow,ring-color] duration-300 hover:ring-primary/35',
+            )}
             style={{ animationDelay: `${index * 70}ms` }}
+            initial={{ y: 16, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.35, delay: index * 0.05, ease: 'easeOut' }}
+            whileHover={{ y: -4, scale: 1.015 }}
             onClick={onOpen}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onOpen();
+                }
+            }}
         >
             <div className="relative aspect-[16/10] overflow-hidden border-b bg-muted/30">
                 <MapThumbnail
                     nodes={project.nodes}
                     edges={project.edges}
                     showLabels
-                    className="opacity-95"
+                    className="opacity-95 transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
-            <CardContent className="flex items-start justify-between gap-3 p-4">
+
+            <div className="flex items-start justify-between gap-3 p-4">
                 <div className="min-w-0">
                     <div className="mb-1 flex items-center gap-2">
                         <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -93,8 +112,18 @@ const ProjectCard = ({
                         </Button>
                     )}
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+
+            {/* Cult ShiftCard–inspired expand strip */}
+            <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr]">
+                <div className="overflow-hidden">
+                    <div className="flex items-center justify-between border-t border-primary/10 bg-primary/5 px-4 py-2.5 text-xs font-medium text-primary">
+                        <span>Open map</span>
+                        <ArrowUpRight className="size-3.5" />
+                    </div>
+                </div>
+            </div>
+        </motion.article>
     );
 };
 

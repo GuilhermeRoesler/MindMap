@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *, .dark-theme *));
 
 @theme inline {
+    --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
     --font-heading: var(--font-sans);
     --font-sans: 'Sora', ui-sans-serif, system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
@@ -116,6 +117,17 @@
     --sidebar-accent-foreground: oklch(0.97 0.01 255);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.68 0.19 292.7);
+}
+
+@keyframes spotlight {
+    0% {
+        opacity: 0;
+        transform: translate(-72%, -62%) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -40%) scale(1);
+    }
 }
 
 @layer base {

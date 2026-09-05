@@ -17,6 +17,7 @@ import CreateProjectModal from '@/components/CreateProjectModal';
 import DashboardHero from '@/components/DashboardHero';
 import ProjectCard from '@/components/ProjectCard';
 import EmptyProjectsState from '@/components/EmptyProjectsState';
+import { HoverGrid, HoverGridItem } from '@/components/ui/card-hover-effect';
 import RenameProjectModal from '@/components/RenameProjectModal';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useToast } from '@/context/ToastContext';
@@ -163,21 +164,33 @@ const ProjectsPage = ({ onSelectProject }: ProjectsPageProps) => {
                                 <p>Loading your mind maps...</p>
                             </div>
                         ) : projects.length > 0 ? (
-                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                {projects.map((project, index) => (
-                                    <ProjectCard
-                                        key={project.id}
-                                        project={project}
-                                        index={index}
-                                        onOpen={() => onSelectProject(project.id)}
-                                        onRename={() => setRenameTarget(project)}
-                                        onDelete={() => setDeleteTarget(project)}
-                                        onRenameBlocked={() =>
-                                            showToast('The demo project cannot be renamed.', 'info')
-                                        }
-                                    />
-                                ))}
-                            </div>
+                            <HoverGrid className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                {({ hoveredIndex, setHoveredIndex }) =>
+                                    projects.map((project, index) => (
+                                        <HoverGridItem
+                                            key={project.id}
+                                            index={index}
+                                            hoveredIndex={hoveredIndex}
+                                            setHoveredIndex={setHoveredIndex}
+                                            className="p-1"
+                                        >
+                                            <ProjectCard
+                                                project={project}
+                                                index={index}
+                                                onOpen={() => onSelectProject(project.id)}
+                                                onRename={() => setRenameTarget(project)}
+                                                onDelete={() => setDeleteTarget(project)}
+                                                onRenameBlocked={() =>
+                                                    showToast(
+                                                        'The demo project cannot be renamed.',
+                                                        'info',
+                                                    )
+                                                }
+                                            />
+                                        </HoverGridItem>
+                                    ))
+                                }
+                            </HoverGrid>
                         ) : (
                             <EmptyProjectsState onCreate={() => setIsModalOpen(true)} />
                         )}
