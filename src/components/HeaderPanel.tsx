@@ -1,7 +1,15 @@
 import { Panel } from '@xyflow/react';
-import { ArrowLeft, Check, ImageDown, Layers, Loader2, MoreVertical, Palette } from 'lucide-react';
+import {
+    ArrowLeft,
+    Check,
+    ImageDown,
+    Keyboard,
+    Layers,
+    Loader2,
+    MoreVertical,
+    Palette,
+} from 'lucide-react';
 import { useHeaderActions } from '@/hooks/useHeaderActions';
-import ShortcutsPanel from './ShortcutsPanel';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -20,6 +28,7 @@ interface HeaderPanelProps {
     nodeCount: number;
     onExportPng: () => void;
     isExporting?: boolean;
+    onOpenShortcuts?: () => void;
 }
 
 const HeaderPanel = ({
@@ -29,6 +38,7 @@ const HeaderPanel = ({
     nodeCount,
     onExportPng,
     isExporting = false,
+    onOpenShortcuts,
 }: HeaderPanelProps) => {
     const { handleLayoutNodes, handleColorize } = useHeaderActions();
 
@@ -48,20 +58,37 @@ const HeaderPanel = ({
                     </p>
                     <p className="truncate text-[11px] text-muted-foreground">
                         {nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}
-                        {saveStatus === 'saving' && ' · Saving…'}
-                        {saveStatus === 'saved' && ' · Saved'}
                     </p>
                 </div>
 
                 <div
-                    className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground"
+                    className={`save-status-pill save-status-pill--${saveStatus}`}
                     aria-live="polite"
                 >
-                    {saveStatus === 'saving' && <Loader2 className="size-3.5 animate-spin" />}
-                    {saveStatus === 'saved' && <Check className="size-3.5 text-primary" />}
+                    {saveStatus === 'saving' && (
+                        <>
+                            <Loader2 className="size-3 animate-spin" />
+                            <span>Saving</span>
+                        </>
+                    )}
+                    {saveStatus === 'saved' && (
+                        <>
+                            <Check className="size-3 text-primary" />
+                            <span>Saved</span>
+                        </>
+                    )}
                 </div>
 
-                <ShortcutsPanel />
+                {onOpenShortcuts && (
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Keyboard shortcuts"
+                        onClick={onOpenShortcuts}
+                    >
+                        <Keyboard className="size-5" />
+                    </Button>
+                )}
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

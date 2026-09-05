@@ -18,8 +18,9 @@ Interactive mind map editor — portfolio project with local browser storage, no
 - Pre-loaded **Demo Mind Map** on first visit
 - Local storage persistence — no login, no server
 - Light / dark / system theme toggle
-- Keyboard shortcuts panel and first-visit onboarding
-- Auto-save with visual feedback in the editor
+- Keyboard shortcuts dock and first-visit onboarding (does not cover the map)
+- Auto-save with cinematic status pill in the editor
+- Export framed PNG for portfolio screenshots
 - Deployed on GitHub Pages with CI/CD
 
 ### Tech stack
@@ -60,8 +61,9 @@ Push to `main` triggers `.github/workflows/deploy.yml`. Enable **GitHub Actions*
 - Projeto **Demo Mind Map** criado automaticamente na primeira visita
 - Persistência em `localStorage` — sem login, sem backend
 - Tema claro / escuro / sistema
-- Painel de atalhos e onboarding na primeira visita ao editor
-- Auto-save com indicador visual
+- Painel de atalhos em dock + onboarding discreto na primeira visita
+- Auto-save com indicador visual no editor
+- Export PNG enquadrado para screenshots de portfólio
 - Deploy automático no GitHub Pages
 
 ### Instalação

@@ -8,6 +8,7 @@ import {
     applyEdgeChanges,
     applyNodeChanges,
     addEdge,
+    useReactFlow,
     type Connection,
     type Node,
     type Edge,
@@ -26,6 +27,8 @@ import { exportFlowToPng } from '../utils/exportImage';
 import { Loader2 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import OnboardingBanner from '../components/OnboardingBanner';
+import FirstBranchHint from '../components/FirstBranchHint';
+import { ShortcutsDock } from '../components/ShortcutsPanel';
 import { ONBOARDING_KEY } from '../constants';
 import { useToast } from '../context/ToastContext';
 
@@ -49,16 +52,18 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const [projectName, setProjectName] = useState('Mind map');
     const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
     const [isExporting, setIsExporting] = useState(false);
-    const [showOnboarding, setShowOnboarding] = useState(
-        () => !localStorage.getItem(ONBOARDING_KEY),
-    );
+    const [showOnboarding, setShowOnboarding] = useState(false);
+    const [flowEnter, setFlowEnter] = useState(true);
     const { updateConnectionColors } = useConnectionColors();
     const { layoutNodes } = useLayoutNodes();
+    const { fitView } = useReactFlow();
     const isSavingRef = useRef(false);
     const isInitialLoad = useRef(true);
+    const hasFittedRef = useRef(false);
     const savedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { isDark } = useTheme();
     const { showToast } = useToast();
+    const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
     const saveData = useCallback(async () => {
         if (isSavingRef.current || nodes === null || edges === null) return;
@@ -69,7 +74,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             await updateProjectData(projectId, nodes, edges);
             setSaveStatus('saved');
             if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
-            savedTimeoutRef.current = setTimeout(() => setSaveStatus('idle'), 2000);
+            savedTimeoutRef.current = setTimeout(() => setSaveStatus('idle'), 2200);
         } catch (error) {
             console.error('Failed to save project:', error);
             setSaveStatus('idle');
@@ -101,6 +106,9 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     useEffect(() => {
         const loadProjectData = async () => {
             isInitialLoad.current = true;
+            hasFittedRef.current = false;
+            setFlowEnter(true);
+            setShowOnboarding(false);
             const project = await getProject(projectId);
             if (project) {
                 setNodes(project.nodes);
@@ -122,6 +130,34 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         }
         saveData();
     }, [nodes, edges, saveData]);
+
+    // Fit the full map into view once nodes are ready — portfolio "wow" shot
+    useEffect(() => {
+        if (!nodes || hasFittedRef.current) return;
+
+        const fit = () => {
+            fitView({ padding: 0.22, duration: 700, maxZoom: 1.2, minZoom: 0.35 });
+            hasFittedRef.current = true;
+        };
+
+        const t1 = window.setTimeout(fit, 60);
+        const t2 = window.setTimeout(fit, 280);
+        const clearEnter = window.setTimeout(() => setFlowEnter(false), 1400);
+
+        return () => {
+            window.clearTimeout(t1);
+            window.clearTimeout(t2);
+            window.clearTimeout(clearEnter);
+        };
+    }, [nodes, fitView]);
+
+    // Onboarding arrives after the map is the hero
+    useEffect(() => {
+        if (!nodes || localStorage.getItem(ONBOARDING_KEY)) return;
+
+        const t = window.setTimeout(() => setShowOnboarding(true), 1200);
+        return () => window.clearTimeout(t);
+    }, [nodes, projectId]);
 
     useEffect(() => {
         return () => {
@@ -152,12 +188,17 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
     const handleExportPng = async () => {
         if (!nodes) return;
         setIsExporting(true);
+        document.documentElement.classList.add('exporting-png');
         try {
+            // Reframe tightly before capture
+            fitView({ padding: 0.18, duration: 0, maxZoom: 1.35 });
+            await new Promise((r) => setTimeout(r, 80));
             await exportFlowToPng(projectName, nodes);
             showToast('PNG exported.', 'success');
         } catch {
             showToast('Failed to export PNG.', 'error');
         } finally {
+            document.documentElement.classList.remove('exporting-png');
             setIsExporting(false);
         }
     };
@@ -170,6 +211,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         );
     }
 
+    const showFirstBranchHint = nodes.length === 1 && !showOnboarding;
+
     return (
         <>
             <ReactFlow
@@ -181,21 +224,29 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 fitView
+                fitViewOptions={{ padding: 0.22, maxZoom: 1.2 }}
                 deleteKeyCode={null}
                 proOptions={{ hideAttribution: true }}
-                className="flow-enter"
+                className={flowEnter ? 'flow-enter flow-enter--initial' : 'flow-enter'}
                 {...flowConfig}
             >
-                <Controls />
+                <Controls showInteractive={false} />
                 <Background
                     variant={BackgroundVariant.Dots}
-                    bgColor={isDark ? '#12131c' : '#f3f5fb'}
-                    color={isDark ? '#2a2d3d' : '#d5dae8'}
+                    bgColor={isDark ? '#12131c' : '#eef1f8'}
+                    color={isDark ? '#2a2d3d' : '#c8d0e4'}
                     gap={22}
                     size={1.5}
                 />
             </ReactFlow>
-            {showOnboarding && <OnboardingBanner onDismiss={dismissOnboarding} />}
+            {showOnboarding && (
+                <OnboardingBanner
+                    onDismiss={dismissOnboarding}
+                    onOpenShortcuts={() => setShortcutsOpen(true)}
+                />
+            )}
+            <FirstBranchHint visible={showFirstBranchHint} />
+            <ShortcutsDock open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
             <HeaderPanel
                 onBack={onBackToProjects}
                 saveStatus={saveStatus}
@@ -203,6 +254,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 nodeCount={nodes.length}
                 onExportPng={() => void handleExportPng()}
                 isExporting={isExporting}
+                onOpenShortcuts={() => setShortcutsOpen(true)}
             />
         </>
     );
@@ -215,7 +267,7 @@ interface MindMapProps {
 
 function MindMap({ projectId, onBackToProjects }: MindMapProps) {
     return (
-        <div className="app-container">
+        <div className="app-container page-enter">
             <ReactFlowProvider>
                 <FlowContent projectId={projectId} onBackToProjects={onBackToProjects} />
             </ReactFlowProvider>

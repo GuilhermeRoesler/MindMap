@@ -59,6 +59,22 @@ button:active {
     animation: fadeIn 0.5s ease-out forwards;
 }
 
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.995);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.page-enter {
+    animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @keyframes cardEnter {
     from {
         opacity: 0;
@@ -75,20 +91,15 @@ button:active {
     animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.flow-enter .react-flow__edge-path {
-    stroke-dasharray: 8;
-    animation:
-        edgeFade 0.55s ease-out both,
-        edgeDrawIn 0.7s ease-out both;
-}
-
 @keyframes edgeDrawIn {
     from {
-        stroke-dashoffset: 48;
+        stroke-dashoffset: 120;
+        opacity: 0.15;
     }
 
     to {
         stroke-dashoffset: 0;
+        opacity: 1;
         stroke-dasharray: none;
     }
 }
@@ -122,7 +133,7 @@ button:active {
 @keyframes nodeAppear {
     from {
         opacity: 0;
-        transform: scale(0.92) translateY(6px);
+        transform: scale(0.9) translateY(10px);
     }
 
     to {
@@ -167,6 +178,33 @@ button:active {
     }
 }
 
+@keyframes savePillIn {
+    from {
+        opacity: 0;
+        max-width: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        max-width: 6rem;
+        transform: scale(1);
+    }
+}
+
+@keyframes hintPulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.35);
+        opacity: 0.15;
+    }
+}
+
 .thumb-edge-draw {
     animation: thumbEdgeDraw 0.7s ease-out forwards;
 }
@@ -181,6 +219,78 @@ button:active {
     width: 100vw;
     height: 100vh;
     position: relative;
+}
+
+/* Soft paper grain — signature canvas texture (light + dark) */
+.app-container::before,
+.dashboard-shell::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+}
+
+html.dark-theme .app-container::before,
+html.dark-theme .dashboard-shell::before {
+    opacity: 0.07;
+    mix-blend-mode: soft-light;
+}
+
+.dashboard-shell {
+    position: relative;
+}
+
+.dashboard-shell > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Brand block in sidebar */
+.sidebar-brand {
+    position: relative;
+    background:
+        radial-gradient(
+            ellipse 120% 100% at 0% 0%,
+            color-mix(in oklch, var(--primary) 22%, transparent),
+            transparent 60%
+        ),
+        linear-gradient(
+            160deg,
+            color-mix(in oklch, var(--primary) 10%, var(--card)),
+            color-mix(in oklch, var(--muted) 70%, var(--card))
+        );
+    border: 1px solid color-mix(in oklch, var(--primary) 18%, var(--border));
+    box-shadow: inset 0 1px 0 color-mix(in oklch, white 35%, transparent);
+}
+
+html.dark-theme .sidebar-brand {
+    box-shadow: inset 0 1px 0 color-mix(in oklch, white 8%, transparent);
+}
+
+.react-flow::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.5;
+    background-image:
+        linear-gradient(
+            to right,
+            color-mix(in oklch, var(--primary) 6%, transparent) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            color-mix(in oklch, var(--primary) 6%, transparent) 1px,
+            transparent 1px
+        );
+    background-size: 88px 88px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%);
 }
 
 .react-flow::after {
@@ -214,6 +324,79 @@ button:active {
     background: transparent;
 }
 
+/* Cascade entrance on first open */
+.flow-enter--initial .react-flow__node .interactive-node {
+    animation: nodeAppear 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(1) .interactive-node {
+    animation-delay: 40ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(2) .interactive-node {
+    animation-delay: 90ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(3) .interactive-node {
+    animation-delay: 140ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(4) .interactive-node {
+    animation-delay: 190ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(5) .interactive-node {
+    animation-delay: 240ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(6) .interactive-node {
+    animation-delay: 290ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(7) .interactive-node {
+    animation-delay: 340ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(8) .interactive-node {
+    animation-delay: 390ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(9) .interactive-node {
+    animation-delay: 440ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(10) .interactive-node {
+    animation-delay: 490ms;
+}
+.flow-enter--initial .react-flow__nodes > .react-flow__node:nth-child(n + 11) .interactive-node {
+    animation-delay: 540ms;
+}
+
+.flow-enter--initial .react-flow__edge-path {
+    stroke-dasharray: 100;
+    animation: edgeDrawIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(1) .react-flow__edge-path {
+    animation-delay: 120ms;
+}
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(2) .react-flow__edge-path {
+    animation-delay: 180ms;
+}
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(3) .react-flow__edge-path {
+    animation-delay: 240ms;
+}
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(4) .react-flow__edge-path {
+    animation-delay: 300ms;
+}
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(5) .react-flow__edge-path {
+    animation-delay: 360ms;
+}
+.flow-enter--initial .react-flow__edges > .react-flow__edge:nth-child(6) .react-flow__edge-path {
+    animation-delay: 420ms;
+}
+.flow-enter--initial
+    .react-flow__edges
+    > .react-flow__edge:nth-child(n + 7)
+    .react-flow__edge-path {
+    animation-delay: 480ms;
+}
+
+.flow-enter .react-flow__edge-path {
+    stroke-linecap: round;
+}
+
 .react-flow__node.selected .interactive-node,
 .react-flow__node.focused .interactive-node {
     outline: 2px solid var(--primary);
@@ -228,9 +411,9 @@ button:active {
 }
 
 .react-flow__edge-path {
-    stroke-width: 2.75;
+    stroke-width: 2.85;
     stroke-linecap: round;
-    animation: edgeFade 0.45s ease-out both;
+    filter: drop-shadow(0 0 0.5px color-mix(in oklch, var(--primary) 25%, transparent));
 }
 
 .react-flow__controls {
@@ -281,8 +464,8 @@ button:active {
     min-width: 150px;
     backdrop-filter: blur(8px);
     transition:
-        box-shadow 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
-        transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
+        box-shadow 0.4s cubic-bezier(0.34, 1.45, 0.64, 1),
+        transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1),
         border-color 0.22s ease;
     animation: nodeAppear 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -302,9 +485,10 @@ button:active {
 .interactive-node:hover {
     box-shadow:
         0 1px 0 color-mix(in oklch, white 50%, transparent),
-        0 16px 34px rgba(15, 18, 35, 0.14);
-    transform: translateY(-3px) scale(1.02);
-    border-color: color-mix(in oklch, var(--node-accent) 45%, var(--border));
+        0 18px 40px rgba(15, 18, 35, 0.16),
+        0 0 0 1px color-mix(in oklch, var(--node-accent) 30%, transparent);
+    transform: translateY(-4px) scale(1.035);
+    border-color: color-mix(in oklch, var(--node-accent) 50%, var(--border));
 }
 
 .interactive-node--root {
@@ -320,6 +504,12 @@ button:active {
 
 .interactive-node--root::before {
     display: none;
+}
+
+.interactive-node--root:hover {
+    box-shadow:
+        0 0 0 5px color-mix(in oklch, var(--primary) 16%, transparent),
+        0 18px 36px color-mix(in oklch, var(--primary) 24%, transparent);
 }
 
 .add-button {
@@ -386,14 +576,161 @@ button:active {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
 }
 
-.onboarding-float {
+/* Onboarding — top-right corner, keeps map + shortcut dock clear */
+.onboarding-corner {
     position: absolute;
-    top: 1rem;
+    top: 4.75rem;
+    right: 1rem;
+    z-index: 6;
+    width: min(288px, calc(100% - 2rem));
+}
+
+.save-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    overflow: hidden;
+    max-width: 0;
+    opacity: 0;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    border-radius: 9999px;
+    transition:
+        max-width 0.35s ease,
+        opacity 0.25s ease,
+        padding 0.25s ease,
+        background 0.25s ease;
+}
+
+.save-status-pill--saving,
+.save-status-pill--saved {
+    max-width: 6rem;
+    opacity: 1;
+    padding: 0.2rem 0.55rem;
+    background: color-mix(in oklch, var(--primary) 10%, var(--muted));
+    animation: savePillIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.save-status-pill--saved {
+    color: var(--foreground);
+}
+
+.shortcut-dock {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    transform: translateX(-50%);
+    padding: 0.45rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+    background: color-mix(in oklch, var(--card) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(1.15);
+    box-shadow: 0 10px 28px rgba(15, 18, 35, 0.12);
+    color: var(--foreground);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1),
+        border-color 0.2s ease,
+        box-shadow 0.25s ease;
+}
+
+.shortcut-dock:hover {
+    transform: translateX(-50%) translateY(-2px);
+    border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+    box-shadow: 0 14px 32px color-mix(in oklch, var(--primary) 18%, transparent);
+}
+
+.shortcut-dock__keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.shortcut-dock kbd {
+    border-radius: 0.35rem;
+    border: 1px solid var(--border);
+    background: var(--muted);
+    padding: 0.1rem 0.35rem;
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+}
+
+.shortcut-dock__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 9999px;
+    background: var(--muted-foreground);
+    opacity: 0.45;
+}
+
+.editor-branch-hint {
+    position: absolute;
+    top: 5.5rem;
     left: 50%;
     z-index: 5;
-    width: min(520px, calc(100% - 2rem));
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     transform: translateX(-50%);
-    animation: fadeIn 0.4s ease-out;
+    padding: 0.55rem 0.95rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklch, var(--primary) 25%, var(--border));
+    background: color-mix(in oklch, var(--card) 82%, transparent);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px color-mix(in oklch, var(--primary) 14%, transparent);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--foreground);
+    animation: fadeIn 0.5s ease-out both;
+}
+
+.editor-branch-hint kbd {
+    border-radius: 0.35rem;
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--primary) 12%, var(--muted));
+    padding: 0.1rem 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--primary);
+}
+
+.editor-branch-hint__pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--primary);
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 40%, transparent);
+    animation: hintPulse 1.6s ease-in-out infinite;
+}
+
+html.exporting-png .react-flow__controls,
+html.exporting-png .editor-glass-panel,
+html.exporting-png .onboarding-corner,
+html.exporting-png .shortcut-dock,
+html.exporting-png .editor-branch-hint {
+    visibility: hidden !important;
+}
+
+/* Light mode — richer card lift for portfolio screenshots */
+html:not(.dark-theme) .project-card {
+    box-shadow: 0 10px 28px -18px color-mix(in oklch, var(--primary) 35%, transparent);
+}
+
+html:not(.dark-theme) .mindmap-preview {
+    box-shadow: 0 24px 56px -28px color-mix(in oklch, var(--primary) 40%, transparent);
+}
+
+html:not(.dark-theme) .dashboard-hero {
+    padding: 0.5rem 0 0.25rem;
 }
 
 /* CANVAS DARK MODE OVERRIDES */
@@ -418,8 +755,29 @@ html.dark-theme .interactive-node {
         0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
+html.dark-theme .interactive-node:hover {
+    box-shadow:
+        0 1px 0 color-mix(in oklch, white 10%, transparent),
+        0 18px 40px rgba(0, 0, 0, 0.45),
+        0 0 0 1px color-mix(in oklch, var(--node-accent) 40%, transparent);
+}
+
 html.dark-theme .interactive-node--root {
     box-shadow:
         0 0 0 4px color-mix(in oklch, var(--primary) 18%, transparent),
         0 14px 32px color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+@media (max-width: 640px) {
+    .shortcut-dock__keys .text-muted-foreground {
+        display: none;
+    }
+
+    .onboarding-corner {
+        top: auto;
+        bottom: 4rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+    }
 }

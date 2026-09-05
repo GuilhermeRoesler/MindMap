@@ -25,7 +25,11 @@ const AppContent = () => {
         return <MindMap projectId={selectedProjectId} onBackToProjects={handleBackToProjects} />;
     }
 
-    return <ProjectsPage onSelectProject={handleSelectProject} />;
+    return (
+        <div className="page-enter" key="projects">
+            <ProjectsPage onSelectProject={handleSelectProject} />
+        </div>
+    );
 };
 
 const App = () => (
