@@ -189,8 +189,8 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 <Controls />
                 <Background
                     variant={BackgroundVariant.Dots}
-                    bgColor={isDark ? '#10141c' : '#f2f6f7'}
-                    color={isDark ? '#2a3340' : '#cfd8dc'}
+                    bgColor={isDark ? '#12131c' : '#f3f5fb'}
+                    color={isDark ? '#2a2d3d' : '#d5dae8'}
                     gap={22}
                     size={1.5}
                 />

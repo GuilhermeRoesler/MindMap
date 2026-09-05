@@ -29,7 +29,7 @@ const EmptyProjectsState = ({ onCreate }: EmptyProjectsStateProps) => {
                 />
                 <path
                     d="M52 55 C78 55, 88 82, 114 82"
-                    stroke="#F59E0B"
+                    stroke="#DD59C9"
                     strokeWidth="2.2"
                     strokeOpacity="0.5"
                     fill="none"
@@ -67,7 +67,7 @@ const EmptyProjectsState = ({ onCreate }: EmptyProjectsStateProps) => {
                     height="26"
                     rx="8"
                     fill="var(--card)"
-                    stroke="#F59E0B"
+                    stroke="#DD59C9"
                     strokeWidth="1.5"
                     strokeOpacity="0.75"
                     className="thumb-node-appear"

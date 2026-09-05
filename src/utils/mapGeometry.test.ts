@@ -22,8 +22,8 @@ const edges: Edge[] = [
         id: 'e1',
         source: 'root',
         target: 'child',
-        style: { stroke: '#0F766E' },
-        data: { color: '#0F766E' },
+        style: { stroke: '#6F34DC' },
+        data: { color: '#6F34DC' },
     },
 ];
 
@@ -33,7 +33,7 @@ describe('mapGeometry', () => {
         expect(layout.nodes).toHaveLength(2);
         expect(layout.edges).toHaveLength(1);
         expect(layout.nodes[0]?.isRoot).toBe(true);
-        expect(layout.edges[0]?.color).toBe('#0F766E');
+        expect(layout.edges[0]?.color).toBe('#6F34DC');
         expect(layout.nodes.every((n) => n.x >= 0 && n.y >= 0)).toBe(true);
     });
 

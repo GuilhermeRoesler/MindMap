@@ -16,7 +16,7 @@ const MindMapIcon = ({ size = 20, withBackground = false, className }: MindMapIc
                 className={className}
                 aria-hidden="true"
             >
-                <rect width="32" height="32" rx="7" fill="#0f766e" />
+                <rect width="32" height="32" rx="7" fill="#6f34dc" />
                 <path
                     d="M16 11v2M16 19v2M11 16h2M19 16h2M13.5 13.5l1.4 1.4M17.1 17.1l1.4 1.4M18.5 13.5l-1.4 1.4M14.9 17.1l-1.4 1.4"
                     stroke="white"
