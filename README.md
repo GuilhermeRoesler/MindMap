@@ -4,7 +4,7 @@ Interactive mind map editor — portfolio project with local browser storage, no
 
 **Live demo:** [guilhermeroesler.github.io/MindMap](https://guilhermeroesler.github.io/MindMap/) · **Source:** [github.com/GuilhermeRoesler/MindMap](https://github.com/GuilhermeRoesler/MindMap)
 
-![](public/demo.jpeg)
+![](public/demo.webp)
 
 ---
 

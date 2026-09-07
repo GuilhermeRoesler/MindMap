@@ -10,6 +10,7 @@ import {
     Palette,
 } from 'lucide-react';
 import { useHeaderActions } from '@/hooks/useHeaderActions';
+import type { ExportPngQuality } from '@/utils/exportImage';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -26,7 +27,7 @@ interface HeaderPanelProps {
     saveStatus: SaveStatus;
     projectName: string;
     nodeCount: number;
-    onExportPng: () => void;
+    onExportPng: (quality: ExportPngQuality) => void;
     isExporting?: boolean;
     onOpenShortcuts?: () => void;
 }
@@ -106,9 +107,19 @@ const HeaderPanel = ({
                             Colorize
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={onExportPng} disabled={isExporting}>
+                        <DropdownMenuItem
+                            onClick={() => onExportPng('standard')}
+                            disabled={isExporting}
+                        >
                             <ImageDown />
                             {isExporting ? 'Exporting…' : 'Export PNG'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => onExportPng('high')}
+                            disabled={isExporting}
+                        >
+                            <ImageDown />
+                            {isExporting ? 'Exporting…' : 'Export PNG (2×)'}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

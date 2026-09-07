@@ -23,7 +23,7 @@ import InteractiveNode from '../components/InteractiveNode';
 import HeaderPanel, { type SaveStatus } from '../components/HeaderPanel';
 import { useLayoutNodes } from '../hooks/useLayoutNodes';
 import { getProject, updateProjectData } from '../utils/projectManager';
-import { exportFlowToPng } from '../utils/exportImage';
+import { exportFlowToPng, type ExportPngQuality } from '../utils/exportImage';
 import { Loader2 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import OnboardingBanner from '../components/OnboardingBanner';
@@ -185,7 +185,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
         setShowOnboarding(false);
     };
 
-    const handleExportPng = async () => {
+    const handleExportPng = async (quality: ExportPngQuality = 'standard') => {
         if (!nodes) return;
         setIsExporting(true);
         document.documentElement.classList.add('exporting-png');
@@ -193,7 +193,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
             // Reframe tightly before capture
             fitView({ padding: 0.18, duration: 0, maxZoom: 1.35 });
             await new Promise((r) => setTimeout(r, 80));
-            await exportFlowToPng(projectName, nodes);
+            await exportFlowToPng(projectName, nodes, quality);
             showToast('PNG exported.', 'success');
         } catch {
             showToast('Failed to export PNG.', 'error');
@@ -252,7 +252,7 @@ function FlowContent({ projectId, onBackToProjects }: FlowContentProps) {
                 saveStatus={saveStatus}
                 projectName={projectName}
                 nodeCount={nodes.length}
-                onExportPng={() => void handleExportPng()}
+                onExportPng={(quality) => void handleExportPng(quality)}
                 isExporting={isExporting}
                 onOpenShortcuts={() => setShortcutsOpen(true)}
             />

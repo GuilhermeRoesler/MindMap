@@ -6,6 +6,13 @@ const IMAGE_HEIGHT = 1080;
 /** Extra margin around the graph so exports look portfolio-ready */
 const FRAME_PADDING = 0.2;
 
+export type ExportPngQuality = 'standard' | 'high';
+
+const PIXEL_RATIO: Record<ExportPngQuality, number> = {
+    standard: 1,
+    high: 2,
+};
+
 function resolveCanvasBackground(): string {
     const flow = document.querySelector('.react-flow') as HTMLElement | null;
     if (flow) {
@@ -15,7 +22,11 @@ function resolveCanvasBackground(): string {
     return getComputedStyle(document.body).backgroundColor || '#eef1f8';
 }
 
-export async function exportFlowToPng(fileName: string, nodes: Node[]): Promise<void> {
+export async function exportFlowToPng(
+    fileName: string,
+    nodes: Node[],
+    quality: ExportPngQuality = 'standard',
+): Promise<void> {
     const viewportEl = document.querySelector('.react-flow__viewport') as HTMLElement | null;
     if (!viewportEl) {
         throw new Error('Canvas not ready for export.');
@@ -44,7 +55,7 @@ export async function exportFlowToPng(fileName: string, nodes: Node[]): Promise<
             height: `${IMAGE_HEIGHT}px`,
             transform: `translate(${x}px, ${y}px) scale(${zoom})`,
         },
-        pixelRatio: 2,
+        pixelRatio: PIXEL_RATIO[quality],
         filter: (node) => {
             if (!(node instanceof HTMLElement)) return true;
             return !node.classList?.contains('react-flow__controls');
